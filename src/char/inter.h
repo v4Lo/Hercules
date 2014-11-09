@@ -11,8 +11,6 @@
 
 struct accreg;
 
-#define inter_cfgName "conf/inter-server.conf"
-
 extern unsigned int party_share_level;
 
 void inter_defaults(void);
