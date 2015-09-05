@@ -22,6 +22,15 @@
 -- Table structure for table `atcommandlog`
 --
 
+CREATE TABLE IF NOT EXISTS `char_online_log` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `account_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `char_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `action` TINYINT(1),
+  `time_stamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
 CREATE TABLE IF NOT EXISTS `atcommandlog` (
   `atcommand_id` MEDIUMINT(9) UNSIGNED NOT NULL AUTO_INCREMENT,
   `atcommand_date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',

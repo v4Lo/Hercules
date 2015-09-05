@@ -1,0 +1,66 @@
+//===== Hercules Script ======================================
+prontera,165,83,3	script	Card Collector	8_M_JPNMASTER,{
+	set .@id, 25000;
+	set .@cost, 1000000;
+	set .@amount, 1000;
+	if (checkweight(1201,1) == 0) {
+		mes "^3355FFJust a minute!";
+		mes "I can't offer any of my";
+		mes "services to you because";
+		mes "you're carrying too much";
+		mes "stuff. Put your extra items in";
+		mes "Kafra Storage and come again, kiddo.";
+		close;
+	}
+	mes "[Card Collector]";
+	mes "Hello young one.";
+	mes "I collect cards of any";
+	mes "kind. To tell you the truth,";
+	mes "I have got ^AA00FFall^000000 of them.";
+	mes "But I still like to help";
+	mes "fellow collectors.";
+	next;
+	mes "[Card Collector]";
+	mes "So how about you trade " + .@amount + " of";
+	mes "those ^ff0000Mystical Card Fragments^000000";
+	mes "plus " + .@cost + " zeny";
+	mes "for one of my card albums?";
+	mes "But I get to choose";
+	mes "which album... hoho.";
+	next;
+	if (select("Okay, old man!:Not now, but I'll be back.") == 1) {
+		if (countitem(.@id) <= 100) {
+			mes "[Card Collector]";
+			mes "Hey...";
+			mes "You don't have";
+			mes "enough ^ff0000Mystical Card Fragments^000000.";
+			close;
+		}
+		if (Zeny < .@cost) {
+			mes "[Card Collector]";
+			mes "Poor kiddo, doesn't even";
+			mes "own " + .@cost + " zeny...";
+			mes "When I was your age that";
+			mes "would have been pocket change!";
+			close;
+		}
+		if (MaxWeight - Weight < 5) {
+			mes "[Card Collector]";
+			mes "Hmm...";
+			mes "Would you make";
+			mes "a little more room";
+			mes "in your inventory?";
+			close;
+		}
+		Zeny -= .@cost;
+		delitem .@id,.@amount;
+		if(rand(10) > 0) { // 9 aus 10
+			getitem 616,1;
+		} else { // 1 aus 10
+			getitem 12246,1;
+		}
+		
+		close;
+	}
+	close;
+}

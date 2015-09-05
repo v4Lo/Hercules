@@ -1,0 +1,353 @@
+-	script	bg_queue	-1,{
+
+OnInit:
+	set $@garbage, queue(); // queue id 0
+
+	$@bgdpsq = queue();
+	$@bgsupq = queue();
+	
+	setd("$@onlyro_bgvalues_"+$@bgdpsq, 0);
+	setd("$@onlyro_bgvalues_"+$@bgsupq, 0);
+	
+	queueopt($@bgsupq,HQO_OnMapChange,"bg_queue::OnCheckMap");
+	queueopt($@bgsupq,HQO_OnLogout,"bg_queue::OnQueueLogout");
+		
+	queueopt($@bgdpsq,HQO_OnMapChange,"bg_queue::OnCheckMap");
+	queueopt($@bgdpsq,HQO_OnLogout,"bg_queue::OnQueueLogout");
+	
+	set .bg_active, 2;
+	
+	$@bg_queue_size = 0; // current amount of players in queue
+	$@max_bg_party = 2; // maximum party size, need to add additional things in the checking function if increased
+	bindatcmd "joinbg",strnpcinfo(3)+"::OnJoin";
+	bindatcmd "leavebg",strnpcinfo(3)+"::OnLeave";
+	//bindatcmd "joinbgparty",strnpcinfo(3)+"::OnPartyJoin";
+	setarray .bg_types$[0], "BG_CTF", "BG_SC", "BG_TD", "BG_Conquest1", "BG_Dominion", "BG_EOS", "BG_Conquest2"; //, "BG_Flavius";
+	setarray $@bg_names$[0], "Treasure Theft", "Stone Control", "Team Deathmatch", "Conquest 1.0", "Dominion", "Eye of the Storm", "Conquest 2.0"; //, "Flavius";
+	setarray .bg_min[0], 10, 10, 10, 10, 10, 10, 10; //, 10; // minimum size of bg queue for bg to start
+	//setarray .bg_min[0], 2, 2, 2, 2, 2, 2, 2;
+	set $@bg_count, getarraysize(.bg_types$); // amount of available bgs
+	set $@bg_index, rand($@bg_count-1); // currently chosen bg id
+	set .bg_type$,.bg_types$[$@bg_index]; // current bg npc name
+	set $@bg_players_needed, .bg_min[$@bg_index]; // how many players are needed for the current bg to start
+	$@going = 0; // 0 if bg queue is waiting for more players. 1 if waiting final 15 seconds before starting
+	$@morePlayers = 0;
+	initnpctimer;
+	end;
+OnJoin:
+	#master_id = getcharid(5);
+	if( BaseLevel < 75 ) {
+		dispbottom "I am sorry, but you are too weak to participate in a Battleground.";
+		dispbottom "You must be at least level 75.";
+		end;
+	}
+	if( getd("$onlyro_bgdelay_"+#master_id) >= gettimetick(2) ) {
+		dispbottom "You are not allowed to participate in a Battleground match for another ^0000FF"+ callfunc("Time2Str",getd("$onlyro_bgdelay_"+#master_id)) + "^000000.";
+		end;
+	}
+	if(getmapflag(strcharinfo(3),mf_noreturn) || getmapflag(strcharinfo(3),mf_nosave)) {
+		dispbottom "You cannot join a Battleground from your current location.";
+		end;
+	}
+	if(getd("$@onlyro_bgqueue_"+#master_id) == 0) {
+		if($@bgqi + 1 > 127) { //no longer needed in hercules as array size is no longer 127 but 2 or 4m
+			dispbottom "Sorry, the Battleground Queue is full.";
+			end;
+		}
+		.@queueid = $bgsupq;
+		.@value = -1;
+		switch ( BaseJob ) {
+			case Job_Alchemist: .@queueid = $bgdpsq; break;
+			case Job_Monk: .@queueid = $bgdpsq; break;
+			case Job_Star_Gladiator: .@queueid = $bgdpsq; break;
+			case Job_Sage: break;
+			case Job_Crusader: break;
+			case Job_SuperNovice: .@queueid = $bgdpsq; break;
+			case Job_Knight: .@queueid = $bgdpsq; break;
+			case Job_Wizard: .@queueid = $bgdpsq; break;
+			case Job_Priest: break;
+			case Job_Bard: case Job_Dancer:   break;
+			case Job_Rogue: break;
+			case Job_Assassin: .@queueid = $bgdpsq; break;
+			case Job_Blacksmith: .@queueid = $bgdpsq; break;
+			case Job_Hunter:  .@queueid = $bgdpsq; break;
+			case Job_Soul_Linker: break;
+			default:
+				break;
+		}
+		if(.@queueid == $bgdpsq) {
+			.@value = 1;
+		}
+		queueadd(.@queueid, getcharid(3));
+		setd("$@onlyro_bgqueue_"+#master_id, .@queueid);
+		setd("$@onlyro_bgvalue_"+#master_id, .@value);
+		dispbottom "You entered the Battleground Queue. You can leave the queue by using !leavebg.";
+	} else {
+		dispbottom "You already enlisted with one of your characters.";
+	}
+	end;
+OnLeave:
+	if(getd("$@onlyro_bgqueue_"+#master_id) != 0) {
+		queueremove(getd("$@onlyro_bgqueue_"+#master_id), getcharid(3));
+		setd("$@onlyro_bgqueue_"+#master_id, 0);
+		//$@bg_queue_size--;
+		dispbottom "You left the Battleground Queue.";
+	} else {
+		dispbottom "You are currently not in the Battleground Queue.";
+	}
+	end;
+OnCheckMap:
+	if(getmapflag(strcharinfo(3),mf_noreturn) || getmapflag(strcharinfo(3),mf_nosave)) {
+		if(getd("$@onlyro_bgqueue_"+#master_id) != 0) {
+			queueremove(getd("$@onlyro_bgqueue_"+#master_id), getcharid(3));
+			setd("$@onlyro_bgqueue_"+#master_id, 0);
+			announce "You cannot join a Battleground from your current location. You have been removed from the Battleground Queue.",bc_self,0xEE5555;
+		}
+	}
+	end;
+OnQueueLogout:
+	if(getd("$@onlyro_bgqueue_"+#master_id) != 0) {
+		queueremove(getd("$@onlyro_bgqueue_"+#master_id), getcharid(3));
+		setd("$@onlyro_bgqueue_"+#master_id, 0);
+	}
+	end;
+OnTimer15000:
+	if(.bg_active == 2) {
+		initnpctimer;
+		return; // already running, do nothing
+	}
+OnRespawn:
+	$@bg_queue_size = queuesize($@bgdpsq) + queuesize($@bgsupq);
+	
+	if($@bg_queue_size == 0) { // nothing to do
+		return;
+	}
+	
+	// bg still running
+	if(.bg_active != 2) {
+		return;
+	}
+	if( set($@bg_index,$@bg_index + 1) >= $@bg_count ) {
+		set $@bg_index,0;
+	}
+	set .bg_type$,.bg_types$[$@bg_index];
+	set $@bg_players_needed, .bg_min[$@bg_index];	
+	// debug
+	//announce "Debug : There are "+$@bg_queue_size+"/"+$@bg_players_needed+" players in the Battleground Queue / Partys: "+$@bgqi,bc_blue|bc_all;
+	$@bg_players_needed = 2;
+	// gubed
+	if($@bg_queue_size > 0 && $@bg_queue_size >= $@bg_players_needed && .bg_active != 2) {
+		
+		$@readyQueue1 = queue();
+		if($@readyQueue1 == 0) {
+			set $@readyQueue1, queue();
+		}
+		$@readyQueue2 = queue();
+		if($@readyQueue2 == 0) {
+			set $@readyQueue2, queue();
+		}
+	
+		if (rand(0,1) == 0) {
+			.@currentQ = $@bgdpsq;
+			.@otherQ = $@bgsupq;
+		} else {
+			.@currentQ = $@bgsupq;
+			.@otherQ = $@bgdpsq;
+		}
+		
+		.@qit = queueiterator(.@currentQ);
+		while((set(.@cRID, qinext(.@qit))) != 0) {
+			if(queuesize($@readyQueue1) < queuesize($@readyQueue2)) {
+				.@qToAdd = $@readyQueue1;
+			} else if(queuesize($@readyQueue1) == queuesize($@readyQueue2) && rand(0,1) == 0) {
+				.@qToAdd = $@readyQueue1;
+			} else {
+				.@qToAdd = $@readyQueue2;
+			}
+			attachrid .@cRID;
+			queueadd(.@qToAdd, .@cRID);
+			setd("$@onlyro_bgvalues_"+.@qToAdd, getd("$@onlyro_bgvalues_"+.@qToAdd) + getd("$@onlyro_bgvalue_"+#master_id));
+			detachrid;
+			queueremove(.@currentQ, .@cRID);
+		}
+		qiclear(.@qit);
+		.@qit = queueiterator(.@otherQ);
+		while((set(.@cRID, qinext(.@qit))) != 0) {
+			if(queuesize($@readyQueue1) < queuesize($@readyQueue2)) {
+				.@qToAdd = $@readyQueue1;
+			} else if(queuesize($@readyQueue1) == queuesize($@readyQueue2) && rand(0,1) == 0) {
+				.@qToAdd = $@readyQueue1;
+			} else {
+				.@qToAdd = $@readyQueue2;
+			}
+			attachrid .@cRID;
+			queueadd(.@qToAdd, .@cRID);
+			setd("$@onlyro_bgvalues_"+.@qToAdd, getd("$@onlyro_bgvalues_"+.@qToAdd) + getd("$@onlyro_bgvalue_"+#master_id));
+			detachrid;
+			queueremove(.@otherQ, .@cRID);
+		}
+		qiclear(.@qit);
+		$@bg_queue_size = $@bg_queue_size - queuesize($@bgq[.@i]);
+		deletearray $@bgq[0],.@index+1;
+		donpcevent "bg_queue::OnReady";
+	} else if (.bg_active != 2) {
+		if (rand(0,1) == 0) {
+			.@currentQ = $@bgdpsq;
+			.@otherQ = $@bgsupq;
+		} else {
+			.@currentQ = $@bgsupq;
+			.@otherQ = $@bgdpsq;
+		}
+		
+		.@qit = queueiterator(.@currentQ);
+		while((set(.@cRID, qinext(.@qit))) != 0) {
+			.@value = getd("$@onlyro_bgvalues_"+.@currentQ);
+			if(queuesize($@readyQueue1) < queuesize($@readyQueue2)) {
+				.@qToAdd = $@readyQueue1;
+			} else if(queuesize($@readyQueue1) == queuesize($@readyQueue2) && rand(0,1) == 0) {
+				.@qToAdd = $@readyQueue1;
+			} else {
+				.@qToAdd = $@readyQueue2;
+			}
+			queueadd(.@qToAdd, .@cRID);
+			queueremove(.@currentQ, .@cRID);
+		}
+		qiclear(.@qit);
+		.@qit = queueiterator(.@otherQ);
+		while((set(.@cRID, qinext(.@qit))) != 0) {
+			if(queuesize($@readyQueue1) < queuesize($@readyQueue2)) {
+				.@qToAdd = $@readyQueue1;
+			} else if(queuesize($@readyQueue1) == queuesize($@readyQueue2) && rand(0,1) == 0) {
+				.@qToAdd = $@readyQueue1;
+			} else {
+				.@qToAdd = $@readyQueue2;
+			}
+			queueadd(.@qToAdd, .@cRID);
+			queueremove(.@otherQ, .@cRID);
+		}
+		qiclear(.@qit);
+	}
+		
+	initnpctimer;
+	end;
+OnBGLogout:
+	queueremove(@TriggerQueue, getcharid(3));
+end;
+OnReady:
+	donpcevent .bg_type$ + "::OnBuildTeams";
+	if(rand(0,1)) {
+		.@temp = $@readyQueue1;
+		$@readyQueue1 = $@readyQueue2;
+		$@readyQueue2 = .@temp;
+	}
+	.@rqitA = queueiterator($@readyQueue1);
+	.@rqitB = queueiterator($@readyQueue2);
+
+	while ((set(.currentRID, qinext(.@rqitA))) != 0) {
+		bg_join_team getd("$@"+.bg_type$ + "t1"), .currentRID;
+		attachrid .currentRID;
+		if (getmapxy(.@mapname$,.@mapx,.@mapy,0,strcharinfo(0))!=0) {
+			BG_x = .@mapx;
+			BG_y = .@mapy;
+			BG_mapname$ = .@mapname$;
+		}
+		sc_end SC_ALL;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 60*60); //hmm
+		setd("$@onlyro_bgqueue_"+#master_id, 0);
+		detachrid;
+	}
+	while ((set(.currentRID, qinext(.@rqitB))) != 0) {
+		bg_join_team getd("$@"+.bg_type$ + "t2"), .currentRID;
+		attachrid .currentRID;
+		if (getmapxy(.@mapname$,.@mapx,.@mapy,0,strcharinfo(0))!=0) {
+			BG_x = .@mapx;
+			BG_y = .@mapy;
+			BG_mapname$ = .@mapname$;
+		}
+		sc_end SC_ALL;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 60*60); //hmm
+		setd("$@onlyro_bgqueue_"+#master_id, 0);
+		detachrid;
+	}
+	qiclear(.@rqitA);
+	qiclear(.@rqitB);
+	queueopt($@readyQueue1,HQO_OnLogout,"bg_queue::OnBGLogout");
+	queueopt($@readyQueue2,HQO_OnLogout,"bg_queue::OnBGLogout");
+	setd("$@"+.bg_type$ + "q1", $@readyQueue1);
+	setd("$@"+.bg_type$ + "q2", $@readyQueue2);
+	.bg_active = 1;
+	donpcevent .bg_type$ + "::OnReady";
+	end;
+OnHasBGFinished:
+	end;
+}
+-	script	bg_npc	-1,{
+	if(getgroupid() >= 98) {
+
+		mes "select.";
+		next;
+		set .@menu$, "Select BG ID:Talk to NPC:BG Delay Reset";
+		set .@foo, select(.@menu$)-1;
+		switch(.@foo) {
+			case 0:
+				input(.@theinp);
+				if(.@theinp >= 0 && .@theinp < $@bg_count) {
+					set $@bg_index, .@theinp;
+					mes "id set.";
+				}
+				close;
+				break;
+			case 1:
+				break;
+			case 2:
+				setd("$onlyro_bgdelay_"+#master_id, 0);
+				mes "bg delay reset!";
+				close;
+				break;
+		}
+	}
+	mes "[BG Information]", "Greetings traveler.";
+	mes "I want to teach you about Battlegrounds..";
+	mes "Once you reached level 75 you can participate in a battle using the ^AA0000!joinbg^000000 command.";
+	mes "This will put you in the Queue. No battle will start until the queue has reached the minimum amount of players.";
+	next;
+	mes "[BG Information]";
+	mes "Should you desert from a battle you will receive a penalty.";
+	mes "Once a battle has started every member of the battle has to finish to avoid this.";
+	mes "A fair fight has to be even numbers, right?";
+	close;
+	end;
+	
+	OnInit:
+		initnpctimer;
+	end;
+	
+	OnTimer1000:
+		delwaitingroom;
+		if($@going == 1) {
+			waitingroom "Starting: "+(15-(getnpctimer(0,"bg_queue")/1000))+"s | Queue: " + $@bg_queue_size + "/"+$@bg_players_needed, 0;
+		} else {
+			waitingroom "Queue: " + $@bg_queue_size + "/"+$@bg_players_needed +" | Next: "+$@bg_names$[$@bg_index], 0;
+		}
+		initnpctimer;
+	end;
+}
+
+prontera,139,98,5	duplicate(bg_npc)	BG Information#bg_pron	1_M_KNIGHTMASTER
+morocc,159,97,5	duplicate(bg_npc)	BG Information#bg_mor	1_M_KNIGHTMASTER
+geffen,110,69,5	duplicate(bg_npc)	BG Information#bg_gef	1_M_KNIGHTMASTER
+aldebaran,152,120,5	duplicate(bg_npc)	BG Information#bg_alde	1_M_KNIGHTMASTER
+alberta,20,240,5	duplicate(bg_npc)	BG Information#bg_alb	1_M_KNIGHTMASTER
+izlude,136,90,3	duplicate(bg_npc)	BG Information#bg_iz	1_M_KNIGHTMASTER
+yuno,142,187,5	duplicate(bg_npc)	BG Information#bg_yuno	1_M_KNIGHTMASTER
+einbroch,246,196,3	duplicate(bg_npc)	BG Information#bg_einbr	1_M_KNIGHTMASTER
+lighthalzen,164,108,3	duplicate(bg_npc)	BG Information#bg_lhz	1_M_KNIGHTMASTER
+payon,165,103,5	duplicate(bg_npc)	BG Information#bg_pay	1_M_KNIGHTMASTER
+comodo,193,158,5	duplicate(bg_npc)	BG Information#bg_com	1_M_KNIGHTMASTER
+gonryun,162,126,5	duplicate(bg_npc)	BG Information#bg_gon	1_M_KNIGHTMASTER
+rachel,107,133,5	duplicate(bg_npc)	BG Information#bg_rac	1_M_KNIGHTMASTER
+veins,211,135,5	duplicate(bg_npc)	BG Information#bg_ve	1_M_KNIGHTMASTER
+hugel,105,158,3	duplicate(bg_npc)	BG Information#bg_hu	1_M_KNIGHTMASTER
+amatsu,102,154,3	duplicate(bg_npc)	BG Information#bg_ama	1_M_KNIGHTMASTER
+louyang,227,104,3	duplicate(bg_npc)	BG Information#bg_lou	1_M_KNIGHTMASTER
+ayothaya,212,181,3	duplicate(bg_npc)	BG Information#bg_ayo	1_M_KNIGHTMASTER

@@ -16,7 +16,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Bamboo Grove Hill#1::OutsideFlagsPA5	GUILD_FLAG,{
+-	script	Jukk-Rim-Hyun#1::OutsideFlagsPA5	GUILD_FLAG,{
 
 	.@GID = getcastledata("payg_cas05",1);
 
@@ -66,14 +66,14 @@ OnRecvCastlePy05:
 	end;
 }
 
-pay_gld,208,268,4	duplicate(OutsideFlagsPA5)	Bamboo Grove Hill#1-2	GUILD_FLAG
-pay_gld,199,268,4	duplicate(OutsideFlagsPA5)	Bamboo Grove Hill#2	GUILD_FLAG
-pay_gld,190,277,3	duplicate(OutsideFlagsPA5)	Bamboo Grove Hill#3	GUILD_FLAG
-pay_gld,187,294,2	duplicate(OutsideFlagsPA5)	Bamboo Grove Hill#4	GUILD_FLAG
+pay_gld,208,268,4	duplicate(OutsideFlagsPA5)	Jukk-Rim-Hyun#1-2	GUILD_FLAG
+pay_gld,199,268,4	duplicate(OutsideFlagsPA5)	Jukk-Rim-Hyun#2	GUILD_FLAG
+pay_gld,190,277,3	duplicate(OutsideFlagsPA5)	Jukk-Rim-Hyun#3	GUILD_FLAG
+pay_gld,187,294,2	duplicate(OutsideFlagsPA5)	Jukk-Rim-Hyun#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Bamboo Grove Hill#5::InsideFlagsPA5	GUILD_FLAG,{
+-	script	Jukk-Rim-Hyun#5::InsideFlagsPA5	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePy05:
@@ -81,17 +81,17 @@ OnRecvCastlePy05:
 	end;
 }
 
-payg_cas05,32,249,4	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#5-2	GUILD_FLAG
-payg_cas05,24,249,4	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#6	GUILD_FLAG
-payg_cas05,62,271,0	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#7	GUILD_FLAG
-payg_cas05,57,271,0	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#8	GUILD_FLAG
-payg_cas05,55,252,2	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#9	GUILD_FLAG
-payg_cas05,55,260,2	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#10	GUILD_FLAG
+payg_cas05,32,249,4	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#5-2	GUILD_FLAG
+payg_cas05,24,249,4	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#6	GUILD_FLAG
+payg_cas05,62,271,0	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#7	GUILD_FLAG
+payg_cas05,57,271,0	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#8	GUILD_FLAG
+payg_cas05,55,252,2	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#9	GUILD_FLAG
+payg_cas05,55,260,2	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-payon,123,322,4	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#11	GUILD_FLAG
-payon,166,161,3	duplicate(InsideFlagsPA5)	Bamboo Grove Hill#12	GUILD_FLAG
+payon,123,322,4	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#11	GUILD_FLAG
+payon,166,161,3	duplicate(InsideFlagsPA5)	Jukk-Rim-Hyun#12	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -126,7 +126,7 @@ payg_cas05,157,132,0	duplicate(Gld_Trea_Spawn)	Treasure#payg_cas05	-1
 
 // AGIT Manager
 //============================================================
-payg_cas05,30,30,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas05	-1
+//payg_cas05,30,30,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas05	-1
 
 // Guardians
 //============================================================

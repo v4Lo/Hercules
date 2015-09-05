@@ -159,6 +159,13 @@ yuno_in02,38,61,5	script	Dean of the Academy#sa	2_M_SAGE_OLD,{
 			completequest 2052;
 			callfunc "Job_Change",Job_Sage;
 			callfunc "F_ClearJobVar";
+			
+			getitem 2571, 1;
+			getitem 15011, 1;
+			getitem 2458, 1;
+			getitem 18514, 1;
+			getitem 1658, 1; //waffe
+			
 			mes "[Kayron Grik]";
 			mes "Congratulations! You have now become a Sage.";
 			mes "Always remember to keep a studious and analytical mindset.";

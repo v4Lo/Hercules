@@ -190,10 +190,18 @@ hu_in01,386,373,4	script	Hunter Guildsman#hnt	4_F_JOB_HUNTER,{
 			next;
 			mes "[Hunter Sherin]";
 			mes "And also, here is a little reward for all the effort you put in. It's from me, of course~";
+			
+			getitem 2571, 1;
+			getitem 15011, 1;
+			getitem 2458, 1;
+			getitem 18514, 1;
+			
 			if (.@joblvl > 49)
-				getitem 1718,1; //Hunter_Bow
+				//getitem 1718,1; //Hunter_Bow
+				getitem 18106, 1;
 			else
-				getitem 1710,1; //CrossBow
+				//getitem 1710,1; //CrossBow
+				getitem 1748, 1;
 			close;
 		}
 		else if ((JobLevel > 39) && ((HNTR_Q == 0) || (HNTR_Q == 1))) {

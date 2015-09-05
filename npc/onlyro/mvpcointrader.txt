@@ -1,0 +1,71 @@
+//===== Hercules Script ======================================
+prontera,165,83,3	script	Card Collector#ccprt	8_M_JPNMASTER,{
+	set .@currency, 25000;
+	if (checkweight(1201,1) == 0) {
+		mes "^3355FFJust a minute!";
+		mes "I can't offer any of my services to you because you're carrying too much stuff.";
+		mes "Put your extra items in Kafra Storage and come again, kiddo.";
+		close;
+	}
+	mes "[Card Collector]";
+	mes "Hello young one.";
+	mes "I collect cards and mystical boxes of any kind. To tell you the truth,";
+	mes "I have got ^AA00FFall^000000 of them.";
+	mes "But I still like to help fellow collectors.";
+	next;
+	mes "[Card Collector]";
+	mes "So how about you trade your ^aa0000Burned Card Albums^000000 plus some of your zeny for one of my items?";
+	mes "These albums are burned and useless anyway.";
+	next;
+	select("Okay, old man!:Not now, but I'll be back.");
+	@menu = @menu - 1;
+	if (@menu == 1) {
+		mes "[Card Collector]";
+		mes "We will surely meet again.";
+	} else {
+		mes "[Card Collector]";
+		mes "Have a look at my collection.";
+		mes	"Everything is up for trade!";
+		next;
+		set .@choicestr$, "Gift Box 10k Zeny + 10^aa0000BCA^000000:Old Blue Box 50k Zeny + 25^aa0000BCA^000000:Old Violet Box 100k Zeny + 50^aa0000BCA^000000:Old Card Album 1m Zeny + 300^aa0000BCA^000000:Mystical Card Album 10m Zeny + 3000^aa0000BCA^000000";
+		select(.@choicestr$);
+		@menu = @menu - 1;
+		if(@menu == 0) {
+			set .@cost, 10000;
+			set .@amount, 10;
+			set .@reward, 644;
+		} else if(@menu == 1) {
+			set .@cost, 50000;
+			set .@amount, 25;
+			set .@reward, 603;
+		} else if(@menu == 2) {
+			set .@cost, 100000;
+			set .@amount, 50;
+			set .@reward, 617;
+		} else if(@menu == 3) {
+			set .@cost, 1000000;
+			set .@amount, 300;
+			set .@reward, 616;
+		} else if(@menu == 4) {
+			set .@cost, 10000000;
+			set .@amount, 3000;
+			set .@reward, 12246;
+		}
+		if (Zeny < .@cost) {
+			mes "[Card Collector]";
+			mes "That does not look like " + .@cost + " Zeny...";
+			mes "When I was your age that would have been pocket change!";
+			close;
+		}
+		if (countitem(.@currency) < .@amount) {
+			mes "[Card Collector]";
+			mes "You don't have enough ^aa0000Burned Card Albums^000000!";
+			close;
+		}
+		Zeny -= .@cost;
+		delitem .@currency, .@amount;
+		getitem .@reward, 1;
+	}
+	close;
+}
+

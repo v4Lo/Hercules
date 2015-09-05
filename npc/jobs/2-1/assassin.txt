@@ -133,6 +133,13 @@ in_moc_16,19,33,1	script	Guildsman#asn	1_M_JOBTESTER,{
 		completequest 8008;
 		callfunc "Job_Change",Job_Assassin;
 		callfunc "F_ClearJobVar";		// clears all job variables for the current player
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 1289, 1; //waffe
+		
 		mes "[Assassin Expert 'Huey']";
 		mes "Now! Do your best to be a great Assassin! Travel with faith and kill with dignity. Come by anytime and pay us a visit. Once again, congratulations.";
 		close;

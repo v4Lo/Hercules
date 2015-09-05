@@ -417,6 +417,13 @@ int map_count_oncell(int16 m, int16 x, int16 y, int type, int flag) {
 	if (type&~BL_MOB) {
 		for (bl = map->list[m].block[bx+by*map->list[m].bxs]; bl != NULL; bl = bl->next) {
 			if (bl->x == x && bl->y == y && bl->type&type) {
+				
+				if (bl->type&BL_PC) {
+					struct map_session_data *sd = BL_CAST(BL_PC, bl);
+					if (sd->vd.class_ == INVISIBLE_CLASS) {
+						continue;
+					}
+				}
 				if (flag&0x2) {
 					struct status_change *sc = status->get_sc(bl);
 					if (sc && (sc->option&OPTION_INVISIBLE))
@@ -1622,17 +1629,50 @@ int map_addflooritem(struct item *item_data,int amount,int16 m,int16 x,int16 y,i
 	fitem->third_get_charid = third_charid;
 	fitem->third_get_tick = fitem->second_get_tick + ((flags&1) ? battle_config.mvp_item_third_get_time : battle_config.item_third_get_time);
 
+	fitem->mvp = (flags & 1) > 0;
+
 	memcpy(&fitem->item_data,item_data,sizeof(*item_data));
 	fitem->item_data.amount=amount;
 	fitem->subx=(r&3)*3+3;
 	fitem->suby=((r>>2)&3)*3+3;
 	fitem->cleartimer=timer->add(timer->gettick()+battle_config.flooritem_lifetime,map->clearflooritem_timer,fitem->bl.id,0);
+	fitem->no_bsgreed = ((flags & 4) != 0); // [Zephyrus] @flooritem
 
 	map->addiddb(&fitem->bl);
 	map->addblock(&fitem->bl);
 	clif->dropflooritem(fitem);
 
 	return fitem->bl.id;
+}
+
+int map_addflooritem_area(struct block_list* bl, int m, int x, int y, int nameid, int amount)
+{
+	struct item item_tmp;
+	int count, range, i;
+	short mx, my;
+
+	memset(&item_tmp, 0, sizeof(item_tmp));
+	item_tmp.nameid = nameid;
+	item_tmp.identify = 1;
+
+	if (bl != NULL) m = bl->m;
+
+	count = 0;
+	range = (int)sqrt(amount) + 2;
+	for (i = 0; i < amount; i++)
+	{
+		if (bl != NULL)
+			map->search_freecell(bl, 0, &mx, &my, range, range, 0);
+		else
+		{
+			mx = x; my = y;
+			map->search_freecell(NULL, m, &mx, &my, range, range, 1);
+		}
+
+		count += (map->addflooritem(&item_tmp, 1, m, mx, my, 0, 0, 0, 4) != 0) ? 1 : 0;
+	}
+
+	return count;
 }
 
 /**
@@ -1702,6 +1742,18 @@ void map_reqnickdb(struct map_session_data * sd, int charid)
 	struct map_session_data* tsd;
 
 	nullpo_retv(sd);
+
+	if (battle_config.reserved_costume_id && battle_config.reserved_costume_id == charid)
+	{
+		clif->solved_charname(sd->fd, charid, "Costume");
+		return;
+	}
+
+	if (BG_CHARID == charid)
+	{
+		clif->solved_charname(sd->fd, charid, "Battleground");
+		return;
+	}
 
 	tsd = map->charid2sd(charid);
 	if( tsd ) {
@@ -1810,15 +1862,16 @@ int map_quit(struct map_session_data *sd) {
 
 	for( i = 0; i < sd->queues_count; i++ ) {
 		struct hQueue *queue;
-		if( (queue = script->queue(sd->queues[i])) && queue->onLogOut[0] != '\0' ) {
+		if ((queue = script->queue(sd->queues[i])) && queue->onLogOut[0] != '\0') {
+			pc->setreg(sd, script->add_str("@TriggerQueue"), sd->queues[i]);
 			npc->event(sd, queue->onLogOut, 0);
 		}
 	}
 	/* two times, the npc event above may assign a new one or delete others */
-	for( i = 0; i < sd->queues_count; i++ ) {
+	/*for( i = 0; i < sd->queues_count; i++ ) {
 		if( sd->queues[i] != -1 )
 			script->queue_remove(sd->queues[i],sd->status.account_id);
-	}
+	}*/ // TODO onlyro I have no idea what's going on
 
 	npc->script_event(sd, NPCE_LOGOUT);
 
@@ -4703,6 +4756,15 @@ bool map_zone_mf_cache(int m, char *flag, char *params) {
 			else if( map->list[m].flag.nocashshop )
 				map_zone_mf_cache_add(m,"nocashshop");
 		}
+	} else if (!strcmpi(flag, "enableec")) {
+		if (state && map->list[m].flag.enableec)
+			; /* nothing to do */
+		else {
+			if (state)
+				map_zone_mf_cache_add(m, "enableec\toff");
+			else if (map->list[m].flag.enableec)
+				map_zone_mf_cache_add(m, "enableec");
+		}
 	}
 
 	return false;
@@ -5444,6 +5506,7 @@ int do_final(void) {
 	itemdb->final();
 	instance->final();
 	gstorage->final();
+	mstorage->final();
 	guild->final();
 	party->final();
 	pc->final();
@@ -5629,6 +5692,7 @@ void map_load_defaults(void) {
 	chrif_defaults();
 	guild_defaults();
 	gstorage_defaults();
+	mstorage_defaults();
 	homunculus_defaults();
 	instance_defaults();
 	ircbot_defaults();
@@ -5964,6 +6028,7 @@ int do_init(int argc, char *argv[])
 	party->init(minimal);
 	guild->init(minimal);
 	gstorage->init(minimal);
+	mstorage->init(minimal);
 	pet->init(minimal);
 	homun->init(minimal);
 	mercenary->init(minimal);

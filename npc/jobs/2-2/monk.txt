@@ -865,10 +865,15 @@ monk_in,99,58,1	script	Sensei Moohae#mk	1_M_PASTOR,{
 			mes "[Sensei Moohae]";
 			mes "Now...you may leave where the wind may take you.";
 			mes "Oh and I have a gift for you before you leave.";
-			if (.@jlevel == 50)
-				getitem 1804,1; //Knuckle_Duster_
-			else
-				getitem 1801,1; //Waghnakh
+			//if (.@jlevel == 50)
+				//getitem 1804,1; //Knuckle_Duster_
+			//else
+				//getitem 1801,1; //Waghnakh
+			getitem 2571, 1;
+			getitem 15011, 1;
+			getitem 2458, 1;
+			getitem 18514, 1;
+			getitem 1831, 1; //waffe
 		}
 		close;
 	}

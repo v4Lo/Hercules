@@ -24,27 +24,18 @@
 //============================================================
 -	script	Mailbox#dummy::MailBox	-1,{
 	mes "[Mailbox]";
-	mes "To use the mailbox service,";
-	mes "you are required to pay 130 zeny.";
-	mes "Would you like to use the service?";
+	mes "^FF0000Please don't send any new mails. Mail system will be removed 18. January 2015. Please remove all zeny and items from mails.^000000";
 	next;
 	switch(select("Yes.:No.")) {
 	case 1:
 		mes "[Mailbox]";
-		if (Zeny < 130) {
-			mes "I am sorry, but you do not have enough money.";
-			mes "To use the mailbox service,";
-			mes "you are required to pay 130 zeny.";
-			close;
-		}
-		mes "Thank you, please come again.";
-		Zeny -= 130;
+		mes "^FF0000Please don't send any new mails.^000000";
 		close2;
 		openmail;
 		end;
 	case 2:
 		mes "[Mailbox]";
-		mes "Thank you, please come again.";
+		mes "^FF0000Please don't send any new mails.^000000";
 		close;
 	}
 }

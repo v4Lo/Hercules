@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "battleground.h"
+
 struct vending_interface vending_s;
 struct vending_interface *vending;
 
@@ -263,7 +265,8 @@ void vending_openvending(struct map_session_data* sd, const char* message, const
 		 || sd->status.cart[index].attribute == 1 // broken item
 		 || sd->status.cart[index].expire_time // It should not be in the cart but just in case
 		 || (sd->status.cart[index].bound && !pc_can_give_bound_items(sd)) // can't trade bound items w/o permission
-		 || !itemdb_cantrade(&sd->status.cart[index], pc_get_group_level(sd), pc_get_group_level(sd)) ) // untradeable item
+		 || !itemdb_cantrade(&sd->status.cart[index], pc_get_group_level(sd), pc_get_group_level(sd)) // untradeable item
+		 || (sd->status.cart[index].card[0] == CARD0_CREATE && (int)MakeDWord(sd->status.cart[index].card[2], sd->status.cart[index].card[3]) == BG_CHARID && (BG_TRADE & 2)>0)) // "Battleground's Items"
 			continue;
 
 		sd->vending[i].index = index;

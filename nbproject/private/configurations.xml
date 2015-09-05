@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="94">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="3rdparty">
+        <df name="cmake">
+          <df name="tests">
+            <in>HAVE_MONOTONIC_CLOCK.c</in>
+          </df>
+        </df>
+        <df name="libconfig">
+          <df name="extra">
+            <df name="aux-build">
+            </df>
+            <df name="doc">
+            </df>
+            <df name="gen">
+            </df>
+          </df>
+          <in>grammar.c</in>
+          <in>grammar.h</in>
+          <in>libconfig.c</in>
+          <in>libconfig.h</in>
+          <in>parsectx.h</in>
+          <in>scanctx.c</in>
+          <in>scanctx.h</in>
+          <in>scanner.c</in>
+          <in>scanner.h</in>
+          <in>strbuf.c</in>
+          <in>strbuf.h</in>
+          <in>wincompat.h</in>
+        </df>
+        <df name="msinttypes">
+          <df name="include">
+            <in>inttypes.h</in>
+            <in>stdint.h</in>
+          </df>
+        </df>
+        <df name="mt19937ar">
+          <in>mt19937ar.c</in>
+          <in>mt19937ar.h</in>
+          <in>mtTest.c</in>
+        </df>
+        <df name="mysql">
+          <df name="include">
+            <in>config-win.h</in>
+            <in>m_ctype.h</in>
+            <in>my_alloc.h</in>
+            <in>my_dbug.h</in>
+            <in>my_global.h</in>
+            <in>my_list.h</in>
+            <in>my_pthread.h</in>
+            <in>my_sys.h</in>
+            <in>mysql.h</in>
+            <in>mysql_com.h</in>
+            <in>mysql_time.h</in>
+            <in>mysql_version.h</in>
+            <in>raid.h</in>
+            <in>typelib.h</in>
+          </df>
+          <df name="lib">
+          </df>
+        </df>
+        <df name="pcre">
+          <df name="include">
+            <in>pcre.h</in>
+          </df>
+          <df name="lib">
+          </df>
+        </df>
+        <df name="zlib">
+          <df name="include">
+            <in>zconf.h</in>
+            <in>zlib.h</in>
+          </df>
+          <df name="lib">
+          </df>
+        </df>
+      </df>
+      <df name="cache">
+        <df name="db">
+          <df name="pre-re">
+          </df>
+          <df name="re">
+          </df>
+        </df>
+      </df>
+      <df name="conf">
+        <df name="battle">
+          <in>battle.conf</in>
+          <in>battleground.conf</in>
+          <in>client.conf</in>
+          <in>drops.conf</in>
+          <in>exp.conf</in>
+          <in>feature.conf</in>
+          <in>gm.conf</in>
+          <in>guild.conf</in>
+          <in>homunc.conf</in>
+          <in>items.conf</in>
+          <in>misc.conf</in>
+          <in>monster.conf</in>
+          <in>party.conf</in>
+          <in>pet.conf</in>
+          <in>player.conf</in>
+          <in>skill.conf</in>
+          <in>status.conf</in>
+        </df>
+        <df name="import-tmpl">
+        </df>
+        <in>atcommand.conf</in>
+        <in>battle.conf</in>
+        <in>battlegrounds.conf</in>
+        <in>channels.conf</in>
+        <in>char-server.conf</in>
+        <in>groups.conf</in>
+        <in>inter-server.conf</in>
+        <in>login-server.conf</in>
+        <in>logs.conf</in>
+        <in>map-server.conf</in>
+        <in>maps.conf</in>
+        <in>messages.conf</in>
+        <in>packet.conf</in>
+        <in>plugins.conf</in>
+        <in>script.conf</in>
+        <in>subnet.conf</in>
+      </df>
+      <df name="db">
+        <df name="pre-re">
+          <in>item_chain.conf</in>
+          <in>item_db.conf</in>
+          <in>item_group.conf</in>
+          <in>item_packages.conf</in>
+          <in>map_zone_db.conf</in>
+          <in>skill_tree.conf</in>
+        </df>
+        <df name="re">
+          <in>item_chain.conf</in>
+          <in>item_db.conf</in>
+          <in>item_group.conf</in>
+          <in>item_packages.conf</in>
+          <in>map_zone_db.conf</in>
+          <in>skill_tree.conf</in>
+        </df>
+        <in>cashshop_db.conf</in>
+        <in>item_db2.conf</in>
+      </df>
+      <df name="doc">
+        <df name="sample">
+        </df>
+      </df>
+      <df name="Hercules.xcodeproj">
+        <df name="project.xcworkspace">
+        </df>
+        <df name="xcshareddata">
+          <df name="xcschemes">
+          </df>
+        </df>
+      </df>
+      <df name="npc">
+        <df name="airports">
+        </df>
+        <df name="battleground">
+          <df name="flavius">
+          </df>
+          <df name="kvm">
+          </df>
+          <df name="tierra">
+          </df>
+        </df>
+        <df name="cities">
+        </df>
+        <df name="custom">
+          <df name="battleground">
+          </df>
+          <df name="bgqueue">
+          </df>
+          <df name="etc">
+          </df>
+          <df name="events">
+          </df>
+          <df name="quests">
+            <df name="thq">
+            </df>
+          </df>
+        </df>
+        <df name="dev">
+        </df>
+        <df name="events">
+          <df name="nguild">
+          </df>
+        </df>
+        <df name="guild">
+        </df>
+        <df name="guild2">
+        </df>
+        <df name="instances">
+        </df>
+        <df name="jobs">
+          <df name="1-1e">
+          </df>
+          <df name="2-1">
+          </df>
+          <df name="2-1a">
+          </df>
+          <df name="2-1e">
+          </df>
+          <df name="2-2">
+          </df>
+          <df name="2-2a">
+          </df>
+          <df name="2-2e">
+          </df>
+          <df name="novice">
+          </df>
+        </df>
+        <df name="kafras">
+        </df>
+        <df name="mapflag">
+        </df>
+        <df name="merchants">
+        </df>
+        <df name="mobs">
+        </df>
+        <df name="other">
+          <df name="arena">
+          </df>
+        </df>
+        <df name="pre-re">
+          <df name="airports">
+          </df>
+          <df name="cities">
+          </df>
+          <df name="guides">
+          </df>
+          <df name="jobs">
+            <df name="1-1">
+            </df>
+            <df name="novice">
+            </df>
+          </df>
+          <df name="kafras">
+          </df>
+          <df name="merchants">
+          </df>
+          <df name="mobs">
+            <df name="dungeons">
+            </df>
+            <df name="fields">
+            </df>
+          </df>
+          <df name="other">
+          </df>
+          <df name="quests">
+            <df name="collection">
+            </df>
+            <df name="first_class">
+            </df>
+          </df>
+          <df name="warps">
+            <df name="cities">
+            </df>
+            <df name="fields">
+            </df>
+            <df name="other">
+            </df>
+          </df>
+          <in>scripts.conf</in>
+          <in>scripts_jobs.conf</in>
+          <in>scripts_main.conf</in>
+          <in>scripts_monsters.conf</in>
+          <in>scripts_warps.conf</in>
+        </df>
+        <df name="quests">
+          <df name="first_class">
+          </df>
+          <df name="newgears">
+          </df>
+          <df name="seals">
+          </df>
+          <df name="skills">
+          </df>
+        </df>
+        <df name="re">
+          <df name="airports">
+          </df>
+          <df name="cities">
+          </df>
+          <df name="guides">
+          </df>
+          <df name="guild">
+          </df>
+          <df name="instances">
+          </df>
+          <df name="jobs">
+            <df name="1-1">
+            </df>
+            <df name="3-1">
+            </df>
+            <df name="3-2">
+            </df>
+            <df name="novice">
+            </df>
+          </df>
+          <df name="kafras">
+          </df>
+          <df name="merchants">
+          </df>
+          <df name="mobs">
+            <df name="dungeons">
+            </df>
+            <df name="fields">
+            </df>
+          </df>
+          <df name="other">
+          </df>
+          <df name="quests">
+            <df name="eden">
+            </df>
+            <df name="first_class">
+            </df>
+          </df>
+          <df name="warps">
+            <df name="cities">
+            </df>
+            <df name="dungeons">
+            </df>
+            <df name="fields">
+            </df>
+            <df name="other">
+            </df>
+          </df>
+          <in>scripts.conf</in>
+          <in>scripts_guild.conf</in>
+          <in>scripts_jobs.conf</in>
+          <in>scripts_main.conf</in>
+          <in>scripts_monsters.conf</in>
+          <in>scripts_warps.conf</in>
+        </df>
+        <df name="viva">
+          <in>mapflags.txt</in>
+          <in>warper.txt</in>
+        </df>
+        <df name="warps">
+          <df name="cities">
+          </df>
+          <df name="dungeons">
+          </df>
+          <df name="fields">
+          </df>
+          <df name="other">
+          </df>
+        </df>
+        <in>scripts.conf</in>
+        <in>scripts_custom.conf</in>
+        <in>scripts_dev.conf</in>
+        <in>scripts_guild.conf</in>
+        <in>scripts_jobs.conf</in>
+        <in>scripts_mapflags.conf</in>
+        <in>scripts_monsters.conf</in>
+        <in>scripts_warps.conf</in>
+      </df>
+      <df name="plugins">
+      </df>
+      <df name="sql-files">
+        <df name="tools">
+        </df>
+        <df name="upgrades">
+        </df>
+      </df>
+      <df name="src">
+        <df name="char">
+          <in>char.c</in>
+          <in>char.h</in>
+          <in>int_auction.c</in>
+          <in>int_auction.h</in>
+          <in>int_elemental.c</in>
+          <in>int_elemental.h</in>
+          <in>int_guild.c</in>
+          <in>int_guild.h</in>
+          <in>int_homun.c</in>
+          <in>int_homun.h</in>
+          <in>int_mail.c</in>
+          <in>int_mail.h</in>
+          <in>int_mercenary.c</in>
+          <in>int_mercenary.h</in>
+          <in>int_party.c</in>
+          <in>int_party.h</in>
+          <in>int_pet.c</in>
+          <in>int_pet.h</in>
+          <in>int_quest.c</in>
+          <in>int_quest.h</in>
+          <in>int_storage.c</in>
+          <in>int_storage.h</in>
+          <in>inter.c</in>
+          <in>inter.h</in>
+          <in>pincode.c</in>
+          <in>pincode.h</in>
+        </df>
+        <df name="common">
+          <in>HPM.c</in>
+          <in>HPM.h</in>
+          <in>HPMDataCheck.h</in>
+          <in>HPMi.h</in>
+          <in>atomic.h</in>
+          <in>cbasetypes.h</in>
+          <in>conf.c</in>
+          <in>conf.h</in>
+          <in>console.c</in>
+          <in>console.h</in>
+          <in>core.c</in>
+          <in>core.h</in>
+          <in>db.c</in>
+          <in>db.h</in>
+          <in>des.c</in>
+          <in>des.h</in>
+          <in>ers.c</in>
+          <in>ers.h</in>
+          <in>grfio.c</in>
+          <in>grfio.h</in>
+          <in>malloc.c</in>
+          <in>malloc.h</in>
+          <in>mapindex.c</in>
+          <in>mapindex.h</in>
+          <in>md5calc.c</in>
+          <in>md5calc.h</in>
+          <in>mmo.h</in>
+          <in>mutex.c</in>
+          <in>mutex.h</in>
+          <in>nullpo.c</in>
+          <in>nullpo.h</in>
+          <in>random.c</in>
+          <in>random.h</in>
+          <in>showmsg.c</in>
+          <in>showmsg.h</in>
+          <in>socket.c</in>
+          <in>socket.h</in>
+          <in>spinlock.h</in>
+          <in>sql.c</in>
+          <in>sql.h</in>
+          <in>strlib.c</in>
+          <in>strlib.h</in>
+          <in>sysinfo.c</in>
+          <in>sysinfo.h</in>
+          <in>thread.c</in>
+          <in>thread.h</in>
+          <in>timer.c</in>
+          <in>timer.h</in>
+          <in>utils.c</in>
+          <in>utils.h</in>
+          <in>winapi.h</in>
+        </df>
+        <df name="config">
+          <df name="classes">
+            <in>general.h</in>
+          </df>
+          <in>const.h</in>
+          <in>core.h</in>
+          <in>renewal.h</in>
+          <in>secure.h</in>
+        </df>
+        <df name="login">
+          <df name="sql">
+          </df>
+          <in>account.h</in>
+          <in>account_sql.c</in>
+          <in>ipban.h</in>
+          <in>ipban_sql.c</in>
+          <in>login.c</in>
+          <in>login.h</in>
+          <in>loginlog.h</in>
+          <in>loginlog_sql.c</in>
+        </df>
+        <df name="map">
+          <df name="sql">
+          </df>
+          <in>HPMmap.c</in>
+          <in>HPMmap.h</in>
+          <in>atcommand.c</in>
+          <in>atcommand.h</in>
+          <in>battle.c</in>
+          <in>battle.h</in>
+          <in>battleground.c</in>
+          <in>battleground.h</in>
+          <in>buyingstore.c</in>
+          <in>buyingstore.h</in>
+          <in>chat.c</in>
+          <in>chat.h</in>
+          <in>chrif.c</in>
+          <in>chrif.h</in>
+          <in>clif.c</in>
+          <in>clif.h</in>
+          <in>date.c</in>
+          <in>date.h</in>
+          <in>duel.c</in>
+          <in>duel.h</in>
+          <in>elemental.c</in>
+          <in>elemental.h</in>
+          <in>guild.c</in>
+          <in>guild.h</in>
+          <in>homunculus.c</in>
+          <in>homunculus.h</in>
+          <in>instance.c</in>
+          <in>instance.h</in>
+          <in>intif.c</in>
+          <in>intif.h</in>
+          <in>irc-bot.c</in>
+          <in>irc-bot.h</in>
+          <in>itemdb.c</in>
+          <in>itemdb.h</in>
+          <in>log.c</in>
+          <in>log.h</in>
+          <in>mail.c</in>
+          <in>mail.h</in>
+          <in>map.c</in>
+          <in>map.h</in>
+          <in>mapreg.h</in>
+          <in>mapreg_sql.c</in>
+          <in>mercenary.c</in>
+          <in>mercenary.h</in>
+          <in>mob.c</in>
+          <in>mob.h</in>
+          <in>npc.c</in>
+          <in>npc.h</in>
+          <in>npc_chat.c</in>
+          <in>packets.h</in>
+          <in>packets_struct.h</in>
+          <in>party.c</in>
+          <in>party.h</in>
+          <in>path.c</in>
+          <in>path.h</in>
+          <in>pc.c</in>
+          <in>pc.h</in>
+          <in>pc_groups.c</in>
+          <in>pc_groups.h</in>
+          <in>pet.c</in>
+          <in>pet.h</in>
+          <in>quest.c</in>
+          <in>quest.h</in>
+          <in>script.c</in>
+          <in>script.h</in>
+          <in>searchstore.c</in>
+          <in>searchstore.h</in>
+          <in>skill.c</in>
+          <in>skill.h</in>
+          <in>status.c</in>
+          <in>status.h</in>
+          <in>storage.c</in>
+          <in>storage.h</in>
+          <in>trade.c</in>
+          <in>trade.h</in>
+          <in>unit.c</in>
+          <in>unit.h</in>
+          <in>vending.c</in>
+          <in>vending.h</in>
+        </df>
+        <df name="plugins">
+          <df name="HPMHooking">
+            <in>HPMHooking.GetSymbol.inc</in>
+            <in>HPMHooking.HPMHooksCore.inc</in>
+            <in>HPMHooking.HookingPoints.inc</in>
+            <in>HPMHooking.Hooks.inc</in>
+            <in>HPMHooking.sources.inc</in>
+          </df>
+          <in>HPMHooking.c</in>
+          <in>db2sql.c</in>
+          <in>dbghelpplug.c</in>
+          <in>sample.c</in>
+        </df>
+        <df name="test">
+          <in>test_spinlock.c</in>
+        </df>
+        <df name="tool">
+          <in>mapcache.c</in>
+        </df>
+      </df>
+      <df name="tools">
+        <df name="HPMHookGen">
+          <in>doxygen.conf</in>
+        </df>
+      </df>
+      <df name="vcproj-10">
+      </df>
+      <df name="vcproj-11">
+      </df>
+      <df name="vcproj-12">
+      </df>
+      <df name="vcproj-9">
+      </df>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>3</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -762,13 +762,13 @@ ve_in,238,120,4	script	Drunkard#Aru1	4_F_DESERT,{
 }
 
 ve_fild07,125,128,0	script	Boat#Aru	HIDDEN_NPC,{
-	if (aru_monas < 16) {
-		mes "^3355FFThis boat seems to ";
-		mes "be in decent condition.";
-		mes "Who could its owner be?^000000";
-		close;
-	}
-	else if (aru_monas == 16) {
+	//if (aru_monas < 16) {
+	//	mes "^3355FFThis boat seems to ";
+	//	mes "be in decent condition.";
+	//	mes "Who could its owner be?^000000";
+	//	close;
+	//}
+	if (aru_monas == 16) {
 		mes "^3355FFThis must be the boat that";
 		mes "Karyn was talking about.";
 		mes "It seems to be in pretty";

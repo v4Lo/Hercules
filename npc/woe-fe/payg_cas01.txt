@@ -16,7 +16,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Bright Arbor#1::OutsideFlagsPA1	GUILD_FLAG,{
+-	script	Myung-Jung#1::OutsideFlagsPA1	GUILD_FLAG,{
 
 	.@GID = getcastledata("payg_cas01",1);
 
@@ -66,14 +66,14 @@ OnRecvCastlePy01:
 	end;
 }
 
-pay_gld,125,236,4	duplicate(OutsideFlagsPA1)	Bright Arbor#1-2	GUILD_FLAG
-pay_gld,110,233,4	duplicate(OutsideFlagsPA1)	Bright Arbor#2	GUILD_FLAG
-pay_gld,116,233,4	duplicate(OutsideFlagsPA1)	Bright Arbor#3	GUILD_FLAG
-pay_gld,91,239,2	duplicate(OutsideFlagsPA1)	Bright Arbor#4	GUILD_FLAG
+pay_gld,125,236,4	duplicate(OutsideFlagsPA1)	Myung-Jung#1-2	GUILD_FLAG
+pay_gld,110,233,4	duplicate(OutsideFlagsPA1)	Myung-Jung#2	GUILD_FLAG
+pay_gld,116,233,4	duplicate(OutsideFlagsPA1)	Myung-Jung#3	GUILD_FLAG
+pay_gld,91,239,2	duplicate(OutsideFlagsPA1)	Myung-Jung#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Bright Arbor#5::InsideFlagsPA1	GUILD_FLAG,{
+-	script	Myung-Jung#5::InsideFlagsPA1	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePy01:
@@ -81,17 +81,17 @@ OnRecvCastlePy01:
 	end;
 }
 
-payg_cas01,238,67,4	duplicate(InsideFlagsPA1)	Bright Arbor#5-2	GUILD_FLAG
-payg_cas01,233,67,4	duplicate(InsideFlagsPA1)	Bright Arbor#6	GUILD_FLAG
-payg_cas01,221,123,4	duplicate(InsideFlagsPA1)	Bright Arbor#7	GUILD_FLAG
-payg_cas01,221,116,4	duplicate(InsideFlagsPA1)	Bright Arbor#8	GUILD_FLAG
-payg_cas01,206,108,4	duplicate(InsideFlagsPA1)	Bright Arbor#9	GUILD_FLAG
-payg_cas01,212,108,4	duplicate(InsideFlagsPA1)	Bright Arbor#10	GUILD_FLAG
+payg_cas01,238,67,4	duplicate(InsideFlagsPA1)	Myung-Jung#5-2	GUILD_FLAG
+payg_cas01,233,67,4	duplicate(InsideFlagsPA1)	Myung-Jung#6	GUILD_FLAG
+payg_cas01,221,123,4	duplicate(InsideFlagsPA1)	Myung-Jung#7	GUILD_FLAG
+payg_cas01,221,116,4	duplicate(InsideFlagsPA1)	Myung-Jung#8	GUILD_FLAG
+payg_cas01,206,108,4	duplicate(InsideFlagsPA1)	Myung-Jung#9	GUILD_FLAG
+payg_cas01,212,108,4	duplicate(InsideFlagsPA1)	Myung-Jung#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-payon,90,322,4	duplicate(InsideFlagsPA1)	Bright Arbor#11	GUILD_FLAG
-payon,166,177,3	duplicate(InsideFlagsPA1)	Bright Arbor#12	GUILD_FLAG
+payon,90,322,4	duplicate(InsideFlagsPA1)	Myung-Jung#11	GUILD_FLAG
+payon,166,177,3	duplicate(InsideFlagsPA1)	Myung-Jung#12	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -126,7 +126,7 @@ payg_cas01,291,8,0	duplicate(Gld_Trea_Spawn)	Treasure#payg_cas01	-1
 
 // AGIT Manager
 //============================================================
-payg_cas01,139,139,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas01	-1
+//payg_cas01,139,139,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas01	-1
 
 // Guardians
 //============================================================

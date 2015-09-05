@@ -14,7 +14,7 @@
 
 // Guild Flag (Outside Castle)
 //============================================================
--	script	Mersetzdeitz#1::OutsideFlagsG5	GUILD_FLAG,{
+-	script	Melcedez#1::OutsideFlagsG5	GUILD_FLAG,{
 
 	.@GID = getcastledata("gefg_cas05",1);
 
@@ -64,14 +64,14 @@ OnRecvCastleG05:
 	end;
 }
 
-gef_fild13,302,87,7	duplicate(OutsideFlagsG5)	Mersetzdeitz#1-2	GUILD_FLAG
-gef_fild13,313,83,0	duplicate(OutsideFlagsG5)	Mersetzdeitz#2	GUILD_FLAG
-gef_fild13,252,51,2	duplicate(OutsideFlagsG5)	Mersetzdeitz#3	GUILD_FLAG
-gef_fild13,26,147,2	duplicate(OutsideFlagsG5)	Mersetzdeitz#4	GUILD_FLAG
+gef_fild13,302,87,7	duplicate(OutsideFlagsG5)	Melcedez#1-2	GUILD_FLAG
+gef_fild13,313,83,0	duplicate(OutsideFlagsG5)	Melcedez#2	GUILD_FLAG
+gef_fild13,252,51,2	duplicate(OutsideFlagsG5)	Melcedez#3	GUILD_FLAG
+gef_fild13,26,147,2	duplicate(OutsideFlagsG5)	Melcedez#4	GUILD_FLAG
 
 // Guild Flag (Inside Castle)
 //============================================================
--	script	Mersetzdeitz#5::InsideFlagsG5	GUILD_FLAG,{
+-	script	Melcedez#5::InsideFlagsG5	GUILD_FLAG,{
 	end;
 
 OnRecvCastleG05:
@@ -79,16 +79,16 @@ OnRecvCastleG05:
 	end;
 }
 
-gefg_cas05,77,185,7	duplicate(InsideFlagsG5)	Mersetzdeitz#5-2	GUILD_FLAG
-gefg_cas05,92,181,0	duplicate(InsideFlagsG5)	Mersetzdeitz#6	GUILD_FLAG
-gefg_cas05,83,158,1	duplicate(InsideFlagsG5)	Mersetzdeitz#7	GUILD_FLAG
-gefg_cas05,62,144,7	duplicate(InsideFlagsG5)	Mersetzdeitz#8	GUILD_FLAG
-gefg_cas05,62,66,4	duplicate(InsideFlagsG5)	Mersetzdeitz#9	GUILD_FLAG
-gefg_cas05,69,66,4	duplicate(InsideFlagsG5)	Mersetzdeitz#10	GUILD_FLAG
+gefg_cas05,77,185,7	duplicate(InsideFlagsG5)	Melcedez#5-2	GUILD_FLAG
+gefg_cas05,92,181,0	duplicate(InsideFlagsG5)	Melcedez#6	GUILD_FLAG
+gefg_cas05,83,158,1	duplicate(InsideFlagsG5)	Melcedez#7	GUILD_FLAG
+gefg_cas05,62,144,7	duplicate(InsideFlagsG5)	Melcedez#8	GUILD_FLAG
+gefg_cas05,62,66,4	duplicate(InsideFlagsG5)	Melcedez#9	GUILD_FLAG
+gefg_cas05,69,66,4	duplicate(InsideFlagsG5)	Melcedez#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-geffen,131,123,6	duplicate(InsideFlagsG5)	Mersetzdeitz#11	GUILD_FLAG
+geffen,131,123,6	duplicate(InsideFlagsG5)	Melcedez#11	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -123,7 +123,7 @@ gefg_cas05,144,110,0	duplicate(Gld_Trea_Spawn)	Treasure#gefg_cas05	-1
 
 // AGIT Manager
 //============================================================
-gefg_cas05,194,184,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas05	-1
+//gefg_cas05,194,184,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas05	-1
 
 // Guardians
 //============================================================

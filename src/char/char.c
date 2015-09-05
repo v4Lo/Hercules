@@ -50,6 +50,7 @@
 #endif
 
 // private declarations
+char char_online[256] = "char_online_log";
 char char_db[256] = "char";
 char scdata_db[256] = "sc_data";
 char cart_db[256] = "cart_inventory";
@@ -59,6 +60,7 @@ char storage_db[256] = "storage";
 char interlog_db[256] = "interlog";
 char skill_db[256] = "skill";
 char memo_db[256] = "memo";
+char master_db[256] = "cp_login_login";
 char guild_db[256] = "guild";
 char guild_alliance_db[256] = "guild_alliance";
 char guild_castle_db[256] = "guild_castle";
@@ -67,6 +69,7 @@ char guild_member_db[256] = "guild_member";
 char guild_position_db[256] = "guild_position";
 char guild_skill_db[256] = "guild_skill";
 char guild_storage_db[256] = "guild_storage";
+char master_storage_db[256] = "master_storage";
 char party_db[256] = "party";
 char pet_db[256] = "pet";
 char mail_db[256] = "mail"; // MAIL SYSTEM
@@ -234,7 +237,12 @@ void char_set_char_online(int map_id, int char_id, int account_id)
 	character->server = map_id;
 
 	if( character->server > -1 )
+	{
 		chr->server[character->server].users++;
+
+		if (SQL_ERROR == SQL->Query(inter->sql_handle, "INSERT INTO `%s` (`account_id`, `char_id`, `action`, `time_stamp`) VALUES ('%d', '%d', '1', '%u')", char_online, account_id, char_id, (unsigned int)time(0)))
+			Sql_ShowDebug(inter->sql_handle);
+	}
 
 	//Get rid of disconnect timer
 	if(character->waiting_disconnect != INVALID_TIMER) {
@@ -270,6 +278,9 @@ void char_set_char_offline(int char_id, int account_id)
 		if( SQL_ERROR == SQL->Query(inter->sql_handle, "UPDATE `%s` SET `online`='0' WHERE `char_id`='%d' LIMIT 1", char_db, char_id) )
 			Sql_ShowDebug(inter->sql_handle);
 	}
+
+	if (SQL_ERROR == SQL->Query(inter->sql_handle, "INSERT INTO `%s` (`account_id`, `char_id`, `action`, `time_stamp`) VALUES ('%d', '%d', '0', '%u')", char_online, account_id, char_id, (unsigned int)time(0)))
+		Sql_ShowDebug(inter->sql_handle);
 
 	if ((character = (struct online_char_data*)idb_get(chr->online_char_db, account_id)) != NULL) {
 		//We don't free yet to avoid aCalloc/aFree spamming during char change. [Skotlex]
@@ -694,6 +705,7 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, int tabl
 	case TABLE_CART:          tablename = cart_db;          selectoption = "char_id";    break;
 	case TABLE_STORAGE:       tablename = storage_db;       selectoption = "account_id"; break;
 	case TABLE_GUILD_STORAGE: tablename = guild_storage_db; selectoption = "guild_id";   break;
+	case TABLE_MASTER_STORAGE: tablename = master_storage_db; selectoption = "master_account_id";   break;
 	default:
 		ShowError("Invalid table name!\n");
 		return 1;
@@ -5499,6 +5511,8 @@ void char_sql_config_read(const char* cfgName)
 			safestrncpy(guild_position_db, w2, sizeof(guild_position_db));
 		else if(!strcmpi(w1,"guild_storage_db"))
 			safestrncpy(guild_storage_db, w2, sizeof(guild_storage_db));
+		else if (!strcmpi(w1, "master_storage_db"))
+			safestrncpy(master_storage_db, w2, sizeof(master_storage_db));
 		else if(!strcmpi(w1,"party_db"))
 			safestrncpy(party_db, w2, sizeof(party_db));
 		else if(!strcmpi(w1,"pet_db"))

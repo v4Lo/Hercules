@@ -316,3 +316,34 @@ bat_a02	mapflag	nopenalty
 
 // Poring War ==================
 poring_w02	mapflag	nopenalty
+
+aldeg_cas01	mapflag	nopenalty
+aldeg_cas02	mapflag	nopenalty
+aldeg_cas03	mapflag	nopenalty
+aldeg_cas04	mapflag	nopenalty
+aldeg_cas05	mapflag	nopenalty
+gefg_cas01	mapflag	nopenalty
+gefg_cas02	mapflag	nopenalty
+gefg_cas03	mapflag	nopenalty
+gefg_cas04	mapflag	nopenalty
+gefg_cas05	mapflag	nopenalty
+payg_cas01	mapflag	nopenalty
+payg_cas02	mapflag	nopenalty
+payg_cas03	mapflag	nopenalty
+payg_cas04	mapflag	nopenalty
+payg_cas05	mapflag	nopenalty
+prtg_cas01	mapflag	nopenalty
+prtg_cas02	mapflag	nopenalty
+prtg_cas03	mapflag	nopenalty
+prtg_cas04	mapflag	nopenalty
+prtg_cas05	mapflag	nopenalty
+schg_cas01	mapflag	nopenalty
+schg_cas02	mapflag	nopenalty
+schg_cas03	mapflag	nopenalty
+schg_cas04	mapflag	nopenalty
+schg_cas05	mapflag	nopenalty
+arug_cas01	mapflag	nopenalty
+arug_cas02	mapflag	nopenalty
+arug_cas03	mapflag	nopenalty
+arug_cas04	mapflag	nopenalty
+arug_cas05	mapflag	nopenalty

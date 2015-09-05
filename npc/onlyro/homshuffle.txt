@@ -1,0 +1,32 @@
+prontera,115,87,5	script	Homunculus Helper	4_F_GEFFEN_FAY,{
+	if(checkhomcall() == -2) {
+		homunculusReshuffle = 3;
+	}
+	if((checkhomcall() == 0 || checkhomcall() == -2) && homunculusReshuffle > 0) {
+		mes "[Homunculus Helper]";
+		mes "Do you want to reshuffle your homunculus? You have "+homunculusReshuffle+ " stat reshuffles left.";
+		next;
+		if(select("Yes, please.:No. I am fine, thanks!") == 1) {
+			mes "[Homunculus Helper]";
+			mes "Okay. Let's do this.";
+			emotion e_ic;
+			next;
+			homunculusReshuffle = homunculusReshuffle - 1;
+			homshuffle;
+			mes "[Homunculus Helper]";
+			mes "All done.";
+		}
+	} else {
+		mes "[Homunculus Helper]";
+		mes "Sorry, you do not have an active Homunculus or are not eligible.";
+	}
+	close;
+
+OnPCLoginEvent:
+	if(checkhomcall() < -1) {
+		mes "[Homunculus Helper]";
+		mes "Your Homunculus stats were partly reset due to a bug in the evolution stat calculation. You are allowed to reroll your Homunculus stats three times. Just pay me a visit at Prontera, West of Tool Dealer Achim, right by the benches.";
+		close;
+	}
+	end;
+}

@@ -3093,7 +3093,7 @@ OnTouch:
 
 prt_maze02,25,161,0	script	#music	-1,7,7,{
 OnTouch:
-	soundeffect "effect\\¼®¾çÀÇ ¾î½Ø½Å.wav",1;
+	soundeffect "effect\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ø½ï¿½.wav",1;
 	end;
 }
 
@@ -12270,7 +12270,7 @@ OnTimer45000:
 
 geffen,119,48,0	script	Fountain#s	HIDDEN_NPC,{
 	callfunc "F_UpdateSignVars";
-	if (countitem(7025) > 0) {
+	//if (countitem(7025) > 0) {
 		mes "^3355FFAs you approach the fountain,";
 		mes "a strange light begins to emit from the Lucifer's Lament in your pocket and from something deep within";
 		mes "the fountain's water.^000000";
@@ -12291,12 +12291,12 @@ geffen,119,48,0	script	Fountain#s	HIDDEN_NPC,{
 			mes ".......";
 			close;
 		}
-	}
-	else {
-		mes "^3355FFThis is the";
-		mes "Geffen Fountain.^000000";
-		close;
-	}
+	//}
+	//else {
+	//	mes "^3355FFThis is the";
+	//	mes "Geffen Fountain.^000000";
+	//	close;
+	//}
 }
 
 que_sign01,196,44,0	script	Starter#serin	-1,32,32,{

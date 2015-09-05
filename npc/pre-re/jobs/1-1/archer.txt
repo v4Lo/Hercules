@@ -191,6 +191,9 @@ payon_in02,64,71,4	script	Archer Guildsman#archer	4_M_03,{
 		next;
 		callfunc "Job_Change",Job_Archer;
 		callfunc "F_ClearJobVar";
+		
+
+		
 		completequest 1004;
 		mes "[Archer Guildsman]";
 		mes "Congratulations!";
@@ -201,8 +204,13 @@ payon_in02,64,71,4	script	Archer Guildsman#archer	4_M_03,{
 		next;
 		mes "[Archer Guildsman]";
 		mes "Ah, your bow has arrived from the Bow Production Department. Here, take it! It's yours~";
-		getitem 1702,1; //Bow_
+		//getitem 1702,1; //Bow_
 		getitem 1750,.@total_archer2; //Arrow
+		getitem 5583, 1;
+		getitem 2456, 1;
+		getitem 15009, 1;
+		getitem 2560, 1;
+		getitem 1747, 1; // waffe
 		next;
 		mes "[Archer Guildsman]";
 		mes "Now, off you go. Hunt with pride, knowing you were trained by one of the best!";

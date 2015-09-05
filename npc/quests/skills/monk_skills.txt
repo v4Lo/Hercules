@@ -13,6 +13,12 @@
 
 prt_monk,270,198,3	script	Apprentice Monk#qsk_mo	4_M_MONK,{
 	if (BaseJob == Job_Monk) {
+		if(getskilllv("MO_KITRANSLATION") == 0 && MONK_SK >= 7) {
+			skill "MO_KITRANSLATION",1,0;
+		}
+		if(getskilllv("MO_BALKYOUNG") == 0 && MONK_SK >= 6) {
+			skill "MO_BALKYOUNG",1,0;
+		}
 		if (MONK_SK == 7) {
 			mes "[Monk]";
 			mes "To take the time to";

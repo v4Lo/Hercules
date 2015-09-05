@@ -4613,8 +4613,8 @@ mid_camp,336,171,1	script	Camp Guard#man1	4_M_EIN_SOLDIER,{
 	mes "Stop!";
 	mes "You're about to enter an area that has not been fully explored.";
 	mes "Only personnel--researchers and explorers--authorized by United Midgard and the garrison are allowed to enter the danger zone.";
-	if (ep13_ryu < 100 && ep13_start < 100)
-		close;
+	//if (ep13_ryu < 100 && ep13_start < 100)
+	//	close;
 	next;
 	switch(select("I want to enter the next area.:I want to stay.")) {
 	case 1:

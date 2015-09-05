@@ -18,24 +18,38 @@
 #	include <unistd.h>
 #endif
 
+// http://www.concentric.net/~Ttwang/tech/inthash.htm
+unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
+{
+	a = a - b;  a = a - c;  a = a ^ (c >> 13);
+	b = b - c;  b = b - a;  b = b ^ (a << 8);
+	c = c - a;  c = c - b;  c = c ^ (b >> 13);
+	a = a - b;  a = a - c;  a = a ^ (c >> 12);
+	b = b - c;  b = b - a;  b = b ^ (a << 16);
+	c = c - a;  c = c - b;  c = c ^ (b >> 5);
+	a = a - b;  a = a - c;  a = a ^ (c >> 3);
+	b = b - c;  b = b - a;  b = b ^ (a << 10);
+	c = c - a;  c = c - b;  c = c ^ (b >> 15);
+	return c;
+}
 
 /// Initializes the random number generator with an appropriate seed.
 void rnd_init(void)
 {
-	unsigned long seed = (unsigned long)timer->gettick();
-	seed += (unsigned long)time(NULL);
+	unsigned long pid = 0;
+	//unsigned long tid;
 #if defined(WIN32)
-	seed += (unsigned long)GetCurrentProcessId();
-	seed += (unsigned long)GetCurrentThreadId();
+	pid = (unsigned long)GetCurrentProcessId();
+	//tid = (unsigned long)GetCurrentThreadId();
 #else
 #if defined(HAVE_GETPID)
-	seed += (unsigned long)getpid();
+	pid = (unsigned long)getpid();
 #endif // HAVE_GETPID
 #if defined(HAVE_GETTID)
-	seed += (unsigned long)gettid();
+	//tid = (unsigned long)gettid();
 #endif // HAVE_GETTID
 #endif
-	init_genrand(seed);
+	init_genrand(mix(clock(), (unsigned long)time(NULL), pid));
 }
 
 

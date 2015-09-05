@@ -413,7 +413,7 @@ comodo,226,123,5	script	Wandering Bard	2_M_BARD_ORIENT,{
 		next;
 		BARD_Q = 3;
 		changequest 3001,3002;
-		xmas_npc = 1;
+		if(xmas_npc < 1) xmas_npc = 1;
 		mes "[Lalo]";
 		mes "if you become friends with ^008800Jack Frost^000000, you will receive something.";
 		mes "And also talk to the townspeople while you're at it...";
@@ -445,7 +445,7 @@ comodo,226,123,5	script	Wandering Bard	2_M_BARD_ORIENT,{
 			}
 			else {
 				cutin "job_bard_aiolo01",2;
-				xmas_npc = 1;
+				if(xmas_npc < 1) xmas_npc = 1;
 				mes "[Lalo]";
 				mes "Eh, you still haven't become his friend?";
 				mes "Talking will not be enough.";
@@ -879,6 +879,13 @@ comodo,226,123,5	script	Wandering Bard	2_M_BARD_ORIENT,{
 					completequest 3003;
 					callfunc "Job_Change",Job_Bard;
 					callfunc "F_ClearJobVar";		//clears all job variables for the current player
+					
+					getitem 2571, 1;
+					getitem 15011, 1;
+					getitem 2458, 1;
+					getitem 18514, 1;
+					getitem 1931, 1; //waffe
+					
 					mes "[Lalo]";
 					mes "Very well! Hope you sing happy enjoyable songs.";
 					mes "Live like the wind and the clouds!";
@@ -923,6 +930,13 @@ S_ChangeJob:
 	mes "^3355FFSqueak Squeak Scratch Scratch^000000";
 	delitem getarg(0),60;
 	getitem getarg(1),1;
+	
+	getitem 2571, 1;
+	getitem 15011, 1;
+	getitem 2458, 1;
+	getitem 18514, 1;
+	getitem 1931, 1; //waffe
+	
 	next;
 	mes "[Lalo]";
 	mes "Here you go, a souvenir. It is useful when you sing.";

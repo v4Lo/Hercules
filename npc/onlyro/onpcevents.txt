@@ -1,0 +1,138 @@
+-	script	MvPCoins	-1,{
+	end;
+OnInit:
+	setarray .minibossid[0],1088, 1089, 1090, 1091, 1092, 1093, 1096, 1120, 1198, 1203, 1204, 1205, 1250, 1259, 1268, 1283, 1289, 1296, 1302, 1307, 1388, 1582, 1618, 1681, 1704, 1705, 1706, 1707, 1720; // alle minibosse die im mca sind
+	end;
+OnNPCKillEvent:
+	if ( getmonsterinfo( killedrid, MOB_MVPEXP ) > 0 ) {
+		getitem 25000, 1;
+		getitem 25000, 1;
+		if(rand(2) == 0){
+			getitem 25000, 1;
+		}
+		
+		.@ckrid = killedrid;
+		//.@krid = getcharid(3);
+		if ( getcharid(1) ) {
+			getmapxy(.@map1$,.@x1,.@y1,0);
+			getpartymember getcharid(1), 1;
+			getpartymember getcharid(1), 2;
+			for ( .@i = 0; .@i < $@partymembercount; .@i++ ) {
+				if ( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i] ) ) {
+					attachrid $@partymemberaid[.@i];
+					getmapxy(.@map2$,.@x2,.@y2,0);
+					if ((.@map1$ == .@map2$) && (distance(.@x1,.@y1,.@x2,.@y2) <= 30)) {
+						setd ("kill_"+.@ckrid, getd("kill_"+.@ckrid)+1);
+						dispbottom "You killed ["+ getmonsterinfo(.@ckrid, MOB_NAME) +"]";
+						dispbottom ""+ getd("kill_"+.@ckrid) +" total kill"+( getd("kill_"+.@ckrid) == 1 ? "":"s")+".";
+					}
+				}
+			}
+		} else {
+			setd ("kill_"+killedrid, getd("kill_"+killedrid)+1);
+			dispbottom "You killed ["+  getmonsterinfo(killedrid, MOB_NAME) +"]"; 
+			dispbottom ""+ getd("kill_"+killedrid) +" total kill"+( getd("kill_"+killedrid) == 1 ? "":"s")+".";
+		}
+		//attachrid .@krid;
+	} else {
+		for (.@i = 0; .@i < getarraysize(.minibossid); .@i++) {
+			if ( .minibossid[.@i] == killedrid ) {
+				getitem 25000, 1;
+				.@ckrid = killedrid;
+				//.@krid = getcharid(3);
+				if ( getcharid(1) ) {
+					getmapxy(.@map1$,.@x1,.@y1,0);
+					getpartymember getcharid(1), 1;
+					getpartymember getcharid(1), 2;
+					for ( .@j = 0; .@j < $@partymembercount; .@j++ ) {
+						if ( isloggedin( $@partymemberaid[.@j], $@partymembercid[.@j] ) ) {
+							attachrid $@partymemberaid[.@j];
+							getmapxy(.@map2$,.@x2,.@y2,0);
+							if ((.@map1$ == .@map2$) && (distance(.@x1,.@y1,.@x2,.@y2) <= 30)) {
+								setd ("kill_"+.@ckrid, getd("kill_"+.@ckrid)+1);
+								dispbottom "You killed ["+ getmonsterinfo(.@ckrid, MOB_NAME) +"]";
+								dispbottom ""+ getd("kill_"+.@ckrid) +" total kill"+( getd("kill_"+.@ckrid) == 1 ? "":"s")+".";
+							}
+						}
+					}
+				} else {
+					setd ("kill_"+killedrid, getd("kill_"+killedrid)+1);
+					dispbottom "You killed ["+  getmonsterinfo(killedrid, MOB_NAME) +"]"; 
+					dispbottom ""+ getd("kill_"+killedrid) +" total kill"+( getd("kill_"+killedrid) == 1 ? "":"s")+".";
+				}
+				break;
+			}
+		}
+	}
+	end;
+}
+
+-	script	bgafk	-1,{
+OnPCLoadMapEvent:
+	if(getmapflag(strcharinfo(3),mf_battleground)){
+		//announce "Attached npc timer to"+strcharinfo(0), bc_self;
+		attachnpctimer ""+strcharinfo(0);
+		initnpctimer;
+		bgafk = 0;
+	}
+	end;
+
+OnTimer6000:
+	//announce ""+bgafk, bc_self;
+	if(getmapflag(strcharinfo(3),mf_battleground)) {
+		if(!getstatus(SC_STONE, 0) && !getstatus(SC_SLEEP, 0) && !getstatus(SC_FREEZE, 0) && !getstatus(SC_BLADESTOP_WAIT) && !getstatus(SC_BLADESTOP)) {
+			if(checkidle()>=5) {
+				bgafk += 6;
+			} else if(checkidle() <= 3 && bgafk >= 0) {
+				bgafk -= 2;
+			}
+			if(checkidle()>=5 && bgafk >= 90){
+				detachnpctimer;
+				bgafk = 0;
+				announce "You have been automatically kicked from the Battleground because of extended AFKing.", bc_self;
+				atcommand "!kick "+strcharinfo(0);
+				end;
+			} else if(bgafk >= 70 && checkidle() >= 5) {
+				announce "Warning -- You are marked as AFK. Any more AFKing will not be tolerated.", bc_self;
+			}
+		}
+		initnpctimer;
+	} else {
+		bgafk = 0;
+		detachnpctimer;
+	}
+	end;
+}
+
+-	script	punishmentdisplay	-1,{
+	end;
+//OnPCLoginEvent:
+//OnMinute00:
+//OnMinute15:
+//OnMinute30:
+//OnMinute45:
+	if((.@punishmessage$ = readpunish()) != "") {
+		announce "[Automated Message]", bc_self;
+		do {
+			announce .@punishmessage$, bc_self;
+		} while((.@punishmessage$ = readpunish()) != "");
+		announce "If you have any questions about the content of this automated message please contact us via control panel support ticket. The OnlyRO staff is happy to help.", bc_self;
+	}
+	end;
+}
+
+-	script	WoELimit	-1,{
+	end;
+OnPCLoadMapEvent:
+	if(getmapflag(strcharinfo(3),mf_gvg_castle)){
+		//announce "Attached npc timer to"+strcharinfo(0), bc_self;
+		if(getcharid(2)) {
+			.@users = getmapguildusers(strcharinfo(3),getcharid(2));
+			if(.@users > 36) {
+				dispbottom "Your guild already has 36 soldiers in this castle. You have been teleported to your savepoint.";
+				warp "SavePoint", 0, 0;
+			}
+		}
+	}
+	end;
+}

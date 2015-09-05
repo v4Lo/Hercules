@@ -1839,15 +1839,15 @@ kh_school,188,185,0	script	Window#kh2	HIDDEN_NPC,{
 // Grave/Kiel Hyre dungeon entry
 //----------------------------------------------------------------------------
 yuno_fild08,71,170,0	script	Grave#kh	HIDDEN_NPC,{
-	if (KielHyreQuest < 36) {
-		mes "^3355FFIt's just a grave.";
-		mes "It might be important";
-		mes "to you later, but now";
-		mes "it's not really all that";
-		mes "helpful to you.^000000";
-		close;
-	}
-	else if (KielHyreQuest == 36) {
+	//if (KielHyreQuest < 36) {
+	//	mes "^3355FFIt's just a grave.";
+	//	mes "It might be important";
+	//	mes "to you later, but now";
+	//	mes "it's not really all that";
+	//	mes "helpful to you.^000000";
+	//	close;
+	//} else 
+	if (KielHyreQuest == 36) {
 		if (countitem(7492) < 1) {
 			mes "^3355FFIt's just a grave.";
 			mes "It might be important";
@@ -1903,8 +1903,7 @@ yuno_fild08,71,170,0	script	Grave#kh	HIDDEN_NPC,{
 				close;
 			}
 		}
-	}
-	else if ((KielHyreQuest >= 38) && (KielHyreQuest < 106)) {
+	} else if ((KielHyreQuest >= 38) && (KielHyreQuest < 106)) {
 		mes "^3355FFThe door to the";
 		mes "factory is wide open.^000000";
 		next;
@@ -1921,12 +1920,12 @@ yuno_fild08,71,170,0	script	Grave#kh	HIDDEN_NPC,{
 	}
 
 	else if (KielHyreQuest >= 106) {
-		if (countitem(7509) < 1) {
-			mes "^3355FFThe secret entrance";
-			mes "has now been sealed.^000000";
-			close;
-		}
-		else {
+		// if (countitem(7509) < 1) {
+			// mes "^3355FFThe secret entrance";
+			// mes "has now been sealed.^000000";
+			// close;
+		// }
+		//else {
 			mes "As you aproach the";
 			mes "grave, it begins to";
 			mes "emit flashes of light.^000000";
@@ -1953,6 +1952,34 @@ yuno_fild08,71,170,0	script	Grave#kh	HIDDEN_NPC,{
 				mes "............";
 				close;
 			}
+		//}
+	} else { // Custom entrance
+		mes "As you aproach the";
+		mes "grave, it begins to";
+		mes "emit flashes of light.^000000";
+		next;
+		switch(select("Investigate the Grave:Ignore")) {
+		case 1:
+			mes "Once you get near";
+			mes "a secret path opens^000000";
+			next;
+		
+			switch(select("Enter:cancel")) {
+				case 1:
+					warp "kh_dun01",3,230;
+					end;
+				case 2:
+					mes "......";
+					mes ".........";
+					mes "............";
+					close;
+			}
+			
+		case 2:
+			mes "......";
+			mes ".........";
+			mes "............";
+			close;
 		}
 	}
 }
@@ -3754,27 +3781,26 @@ OnTouch:
 // Robot Factory Second Floor Entrances
 //----------------------------------------------------------------------------
 kh_dun01,44,203,0	script	Entrance Device#khd2::KHAccess	HIDDEN_NPC,{
-	if (countitem(7509) < 1) {
-		mes "^3355FFYou encounter";
-		mes "a mechanical device.";
-		mes "It looks like it can be";
-		mes "operated by inserting the";
-		mes "correct keycard into the slot.^000000";
-		close;
-	}
-	else {
-		mes "^3355FFYou encounter";
-		mes "a mechanical device.";
-		mes "It looks like it can be";
-		mes "operated by inserting the";
-		mes "correct keycard into the slot.^000000";
-		next;
-		input .@KHInput$;
-		if (.@KHInput$ == "Luxurious Keycard") {
-			mes "^3355FFAs you insert the";
-			mes "Luxurious Keycard";
-			mes "into the keycard slot,";
-			mes "the door swings open";
+	//if (countitem(7509) < 1) {
+	//	mes "^3355FFYou encounter";
+	//	mes "a mechanical device.";
+	//	mes "It looks like it can be";
+	//	mes "operated by inserting the";
+	//	mes "correct keycard into the slot.^000000";
+	//	close;
+	//}	else {
+	//	mes "^3355FFYou encounter";
+	//	mes "a mechanical device.";
+	//	mes "It looks like it can be";
+	//	mes "operated by inserting the";
+	//	mes "correct keycard into the slot.^000000";
+	//	next;
+	//	input .@KHInput$;
+	//	if (.@KHInput$ == "Luxurious Keycard") {
+	//		mes "^3355FFAs you insert the";
+	//		mes "Luxurious Keycard";
+	//		mes "into the keycard slot,";
+			mes "The door swings open";
 			mes "to reveal a long flight";
 			mes "of descending stairs.^000000";
 			next;
@@ -3789,15 +3815,14 @@ kh_dun01,44,203,0	script	Entrance Device#khd2::KHAccess	HIDDEN_NPC,{
 				mes "time limit has elapsed.^000000";
 				close;
 			}
-		}
-		else {
-			mes "^3355FFYou try to push the";
-			mes "door open with all";
-			mes "your might, but fail";
-			mes "to make it budge.^000000";
-			close;
-		}
-	}
+	//	} else {
+	//		mes "^3355FFYou try to push the";
+	//		mes "door open with all";
+	//		mes "your might, but fail";
+	//		mes "to make it budge.^000000";
+	//		close;
+	//	}
+	//}
 }
 
 kh_dun01,36,195,0	duplicate(KHAccess)	Entrance Device#khd1	HIDDEN_NPC

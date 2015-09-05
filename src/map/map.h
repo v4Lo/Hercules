@@ -32,7 +32,7 @@ enum E_MAPSERVER_ST {
 #define LOOTITEM_SIZE 10
 #define MAX_MOBSKILL 50
 #define MAX_MOB_LIST_PER_MAP 100
-#define MAX_EVENTQUEUE 2
+#define MAX_EVENTQUEUE 50
 #define MAX_EVENTTIMER 32
 #define NATURAL_HEAL_INTERVAL 500
 #define MIN_FLOORITEM 2
@@ -62,6 +62,9 @@ enum MOBID {
 	MOBID_TREAS49 = 1946,
 	MOBID_SILVERSNIPER = 2042,
 	MOBID_MAGICDECOY_WIND = 2046,
+	MOBID_BG_GUARDIANSTONE1 = 2105,
+	MOBID_BG_GUARDIANSTONE2 = 2106,
+	MOBID_BG_EMPERIUM = 2107,
 };
 
 // For filtering and quick checking.
@@ -358,6 +361,8 @@ struct flooritem_data {
 	int first_get_charid,second_get_charid,third_get_charid;
 	int64 first_get_tick,second_get_tick,third_get_tick;
 	struct item item_data;
+	bool no_bsgreed; // [Zephyrus] @flooritem
+	bool mvp;
 };
 
 enum status_point_types {
@@ -670,6 +675,7 @@ struct map_data {
 		unsigned noknockback : 1;
 		unsigned notomb : 1;
 		unsigned nocashshop : 1;
+		unsigned enableec : 1;
 	} flag;
 	struct point save;
 	struct npc_data *npc[MAX_NPC_PER_MAP];
@@ -956,6 +962,7 @@ END_ZEROED_BLOCK;
 	int (*removemobs_timer) (int tid, int64 tick, int id, intptr_t data);
 	void (*clearflooritem) (struct block_list* bl);
 	int (*addflooritem) (struct item *item_data,int amount,int16 m,int16 x,int16 y,int first_charid,int second_charid,int third_charid,int flags);
+	int (*addflooritem_area) (struct block_list* bl, int m, int x, int y, int nameid, int amount);
 	// player to map session
 	void (*addnickdb) (int charid, const char* nick);
 	void (*delnickdb) (int charid, const char* nick);

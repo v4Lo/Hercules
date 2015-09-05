@@ -16,7 +16,7 @@
 // Change this to increase the table size in your mob_db to accommodate a larger mob database.
 // Be sure to note that IDs 4001 to 4048 are reserved for advanced/baby/expanded classes.
 // Notice that the last 1000 entries are used for player clones, so always set this to desired value +1000
-#define MAX_MOB_DB 5000
+#define MAX_MOB_DB 10000
 
 //The number of drops all mobs have and the max drop-slot that the steal skill will attempt to steal from.
 #define MAX_MOB_DROP 10
@@ -184,6 +184,9 @@ struct mob_data {
 	unsigned int tdmg; //Stores total damage given to the mob, for exp calculations. [Skotlex]
 	int level;
 	int target_id,attacked_id;
+
+	int attacked_skill_id; // for mob change yes / no
+
 	int areanpc_id; //Required in OnTouchNPC (to avoid multiple area touchs)
 	unsigned int bg_id; // BattleGround System
 
@@ -265,6 +268,7 @@ struct item_drop {
 struct item_drop_list {
 	int16 m, x, y;                       // coordinates
 	int first_charid, second_charid, third_charid; // charid's of players with higher pickup priority
+	bool mvp;
 	struct item_drop* item;            // linked list of drops
 };
 
@@ -272,6 +276,7 @@ struct item_drop_list {
 #define mob_stop_walking(md, type) (unit->stop_walking(&(md)->bl, (type)))
 #define mob_stop_attack(md)        (unit->stop_attack(&(md)->bl))
 
+#define mob_is_bgnoheal(md) ( ((md)->class_ <= MOBID_BG_EMPERIUM && (md)->class_ >= MOBID_BG_GUARDIANSTONE1))
 #define mob_is_battleground(md) (map->list[(md)->bl.m].flag.battleground && ((md)->class_ == MOBID_BARRICADE2 || ((md)->class_ >= MOBID_FOOD_STOR && (md)->class_ <= MOBID_PINK_CRYST)))
 #define mob_is_gvg(md) (map->list[(md)->bl.m].flag.gvg_castle && ( (md)->class_ == MOBID_EMPERIUM || (md)->class_ == MOBID_BARRICADE1 || (md)->class_ == MOBID_GUARIDAN_STONE1 || (md)->class_ == MOBID_GUARIDAN_STONE2))
 #define mob_is_treasure(md) (((md)->class_ >= MOBID_TREAS01 && (md)->class_ <= MOBID_TREAS40) || ((md)->class_ >= MOBID_TREAS41 && (md)->class_ <= MOBID_TREAS49))
@@ -344,7 +349,7 @@ struct mob_interface {
 	int (*deleteslave) (struct mob_data *md);
 	int (*respawn) (int tid, int64 tick, int id, intptr_t data);
 	void (*log_damage) (struct mob_data *md, struct block_list *src, int damage);
-	void (*damage) (struct mob_data *md, struct block_list *src, int damage);
+	void (*damage) (struct mob_data *md, struct block_list *src, int damage, int skill_id);
 	int (*dead) (struct mob_data *md, struct block_list *src, int type);
 	void (*revive) (struct mob_data *md, unsigned int hp);
 	int (*guardian_guildchange) (struct mob_data *md);

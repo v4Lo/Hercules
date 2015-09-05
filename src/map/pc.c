@@ -658,7 +658,7 @@ int pc_setnewpc(struct map_session_data *sd, int account_id, int char_id, int lo
 
 int pc_equippoint(struct map_session_data *sd,int n)
 {
-	int ep = 0;
+	int ep = 0, char_id = 0;
 
 	nullpo_ret(sd);
 
@@ -683,6 +683,14 @@ int pc_equippoint(struct map_session_data *sd,int n)
 			if( ep == EQP_SHADOW_WEAPON )
 				return EQP_SHADOW_ARMS;
 		}
+	}
+	if (battle_config.reserved_costume_id &&
+		sd->status.inventory[n].card[0] == CARD0_CREATE &&
+		(char_id = MakeDWord(sd->status.inventory[n].card[2], sd->status.inventory[n].card[3])) == battle_config.reserved_costume_id)
+	{ // Costume Item - Converted
+		if (ep&EQP_HEAD_TOP) { ep &= ~EQP_HEAD_TOP; ep |= EQP_COSTUME_HEAD_TOP; }
+		if (ep&EQP_HEAD_LOW) { ep &= ~EQP_HEAD_LOW; ep |= EQP_COSTUME_HEAD_LOW; }
+		if (ep&EQP_HEAD_MID) { ep &= ~EQP_HEAD_MID; ep |= EQP_COSTUME_HEAD_MID; }
 	}
 	return ep;
 }
@@ -981,11 +989,17 @@ int pc_isequip(struct map_session_data *sd,int n)
 		return 0;
 	}
 
-	if ( battle_config.unequip_restricted_equipment & 1 ) {
+	if (battle_config.unequip_restricted_equipment & 1) {
 		int i;
-		for ( i = 0; i < map->list[sd->bl.m].zone->disabled_items_count; i++ )
-			if ( map->list[sd->bl.m].zone->disabled_items[i] == sd->status.inventory[n].nameid )
+		for (i = 0; i < map->list[sd->bl.m].zone->disabled_items_count; i++) {
+			if (map->list[sd->bl.m].zone->disabled_items[i] == sd->status.inventory[n].nameid)
 				return 0;
+			if (map_flag_vs(sd->bl.m)) {
+				if (battle_config.reserved_costume_id && sd->status.inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->status.inventory[n].card[2], sd->status.inventory[n].card[3]) == battle_config.reserved_costume_id) {
+					return 0;
+				}
+			}
+		}
 	}
 
 	if ( battle_config.unequip_restricted_equipment & 2 ) {
@@ -1009,6 +1023,20 @@ bool pc_authok(struct map_session_data *sd, int login_id2, time_t expiration_tim
 	int i;
 	int64 tick = timer->gettick();
 	uint32 ip = sockt->session[sd->fd]->client_addr;
+
+	char* data;
+
+	if (SQL_ERROR == SQL->Query(map->mysql_handle, "SELECT `cp_account_id` FROM `cp_login_login` WHERE `account_id`=%d", sd->status.account_id))
+		Sql_ShowDebug(map->mysql_handle);
+
+	if (SQL_SUCCESS == SQL->NextRow(map->mysql_handle)) {
+		SQL->GetData(map->mysql_handle, 0, &data, NULL); sd->master_account_id = atoi(data);
+	}
+	else {
+		sd->master_account_id = -1;
+	}
+
+	SQL->FreeResult(map->mysql_handle);
 
 	sd->login_id2 = login_id2;
 
@@ -4409,14 +4437,42 @@ int pc_getzeny(struct map_session_data *sd,int zeny, enum e_log_pick_type type, 
  * @return the inventory index of the first instance of the requested item.
  * @retval INDEX_NOT_FOUND if the item wasn't found.
  */
+int pc_search_inventory_old(struct map_session_data *sd, int item_id) {
+	int i;
+	nullpo_retr(INDEX_NOT_FOUND, sd);
+
+	ARR_FIND(0, MAX_INVENTORY, i, sd->status.inventory[i].nameid == item_id && (sd->status.inventory[i].amount > 0 || item_id == 0));
+
+	ShowWarning("Consumed %d", i);
+
+	return (i < MAX_INVENTORY) ? i : INDEX_NOT_FOUND;
+}
+
 int pc_search_inventory(struct map_session_data *sd, int item_id) {
 	int i;
 	nullpo_retr(INDEX_NOT_FOUND, sd);
 
-	ARR_FIND( 0, MAX_INVENTORY, i, sd->status.inventory[i].nameid == item_id && (sd->status.inventory[i].amount > 0 || item_id == 0) );
-	return ( i < MAX_INVENTORY ) ? i : INDEX_NOT_FOUND;
-}
+	int normal_i = MAX_INVENTORY;
 
+	for (i = 0; i < MAX_INVENTORY; i++) {
+		if (sd->status.inventory[i].nameid == item_id && (sd->status.inventory[i].amount > 0 || item_id == 0))
+		{
+			if (sd->status.inventory[i].card[0] == CARD0_CREATE && MakeDWord(sd->status.inventory[i].card[2], sd->status.inventory[i].card[3]) == BG_CHARID) {
+				if (map->list[sd->bl.m].flag.battleground) {
+					return i;
+				}
+			}
+			else {
+				if (!map->list[sd->bl.m].flag.battleground) {
+					return i;
+				}
+				normal_i = i;
+			}
+		}
+	}
+	i = normal_i;
+	return (i < MAX_INVENTORY) ? i : INDEX_NOT_FOUND;
+}
 /*==========================================
  * Attempt to add a new item to inventory.
  * Return:
@@ -4450,7 +4506,11 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,e_l
 		return 7;
 	}
 
-	w = data->weight*amount;
+	if (battle_config.reserved_costume_id && item_data->card[0] == CARD0_CREATE && MakeDWord(item_data->card[2], item_data->card[3]) == battle_config.reserved_costume_id)
+		w = 0;
+	else
+		w = data->weight*amount;
+
 	if(sd->weight + w > sd->max_weight)
 		return 2;
 
@@ -4552,13 +4612,23 @@ int pc_delitem(struct map_session_data *sd,int n,int amount,int type, short reas
 {
 	nullpo_retr(1, sd);
 
+	struct item_data *data;
+	unsigned int w;
+
 	if(sd->status.inventory[n].nameid==0 || amount <= 0 || sd->status.inventory[n].amount<amount || sd->inventory_data[n] == NULL)
 		return 1;
 
-	logs->pick_pc(sd, log_type, -amount, &sd->status.inventory[n],sd->inventory_data[n]);
+	data = sd->inventory_data[n];
+
+	logs->pick_pc(sd, log_type, -amount, &sd->status.inventory[n], data);
 
 	sd->status.inventory[n].amount -= amount;
-	sd->weight -= sd->inventory_data[n]->weight*amount ;
+	if (battle_config.reserved_costume_id && sd->status.inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->status.inventory[n].card[2], sd->status.inventory[n].card[3]) == battle_config.reserved_costume_id)
+		w = 0;
+	else
+		w = data->weight*amount;
+
+	sd->weight -= w;
 	if( sd->status.inventory[n].amount <= 0 ){
 		if(sd->status.inventory[n].equip)
 			pc->unequipitem(sd, n, PCUNEQUIPITEM_RECALC|PCUNEQUIPITEM_FORCE);
@@ -4627,7 +4697,6 @@ int pc_takeitem(struct map_session_data *sd,struct flooritem_data *fitem)
 	int flag=0;
 	int64 tick = timer->gettick();
 	struct party_data *p=NULL;
-
 	nullpo_ret(sd);
 	nullpo_ret(fitem);
 
@@ -4640,30 +4709,74 @@ int pc_takeitem(struct map_session_data *sd,struct flooritem_data *fitem)
 	if (sd->status.party_id)
 		p = party->search(sd->status.party_id);
 
-	if (fitem->first_get_charid > 0 && fitem->first_get_charid != sd->status.char_id) {
-		struct map_session_data *first_sd = map->charid2sd(fitem->first_get_charid);
-		if (DIFF_TICK(tick,fitem->first_get_tick) < 0) {
-			if (!(p && p->party.item&1 &&
-				first_sd && first_sd->status.party_id == sd->status.party_id
-			))
-				return 0;
-		} else if (fitem->second_get_charid > 0 && fitem->second_get_charid != sd->status.char_id) {
-			struct map_session_data *second_sd = map->charid2sd(fitem->second_get_charid);
-			if (DIFF_TICK(tick, fitem->second_get_tick) < 0) {
-				if (!(p && p->party.item&1 &&
-					((first_sd && first_sd->status.party_id == sd->status.party_id) ||
-					(second_sd && second_sd->status.party_id == sd->status.party_id))
-				))
-					return 0;
-			} else if (fitem->third_get_charid > 0 && fitem->third_get_charid != sd->status.char_id) {
-				struct map_session_data *third_sd = map->charid2sd(fitem->third_get_charid);
-				if (DIFF_TICK(tick,fitem->third_get_tick) < 0) {
-					if (!(p && p->party.item&1 &&
-						((first_sd && first_sd->status.party_id == sd->status.party_id) ||
-						(second_sd && second_sd->status.party_id == sd->status.party_id) ||
-						(third_sd && third_sd->status.party_id == sd->status.party_id))
-					))
+	if (!(fitem->mvp)) {
+		struct map_session_data* sds[] = { NULL, NULL, NULL };
+		int i, j;
+		bool found = false;
+		if (fitem->first_get_charid > 0 && fitem->first_get_charid != sd->status.char_id) {
+			if (DIFF_TICK(tick, fitem->first_get_tick) < 0) {
+				sds[0] = map->charid2sd(fitem->first_get_charid);
+			}
+			else if (fitem->second_get_charid > 0 && fitem->second_get_charid != sd->status.char_id) {
+				if (DIFF_TICK(tick, fitem->second_get_tick) < 0) {
+					sds[1] = map->charid2sd(fitem->second_get_charid);
+				}
+				else if (fitem->third_get_charid > 0 && fitem->third_get_charid != sd->status.char_id) {
+					if (DIFF_TICK(tick, fitem->third_get_tick) < 0) {
+						sds[2] = map->charid2sd(fitem->third_get_charid);
+					}
+				}
+			}
+		}
+		for (j = 0; j < 3 && sds[j] != NULL; j++) {
+			// check party
+			if (!(p && p->party.item & 1 && sds[j]->status.party_id == sd->status.party_id
+				)) {
+				// check guild
+				struct guild *g = NULL;
+				g = sds[j]->guild;
+				if (!(g && sds[j]->status.guild_id == sd->status.guild_id)) {
+					// check friends
+					for (i = 0; i < MAX_FRIENDS; i++) {
+						if (sds[j]->status.friends[i].char_id == sd->status.char_id) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
 						return 0;
+				}
+			}
+		}
+	}
+	else {
+		if (fitem->first_get_charid > 0 && fitem->first_get_charid != sd->status.char_id) {
+			struct map_session_data *first_sd = map->charid2sd(fitem->first_get_charid);
+			if (DIFF_TICK(tick, fitem->first_get_tick) < 0) {
+				if (!(p && p->party.item & 1 &&
+					first_sd && first_sd->status.party_id == sd->status.party_id
+					))
+					return 0;
+			}
+			else if (fitem->second_get_charid > 0 && fitem->second_get_charid != sd->status.char_id) {
+				struct map_session_data *second_sd = map->charid2sd(fitem->second_get_charid);
+				if (DIFF_TICK(tick, fitem->second_get_tick) < 0) {
+					if (!(p && p->party.item & 1 &&
+						((first_sd && first_sd->status.party_id == sd->status.party_id) ||
+						(second_sd && second_sd->status.party_id == sd->status.party_id))
+						))
+						return 0;
+				}
+				else if (fitem->third_get_charid > 0 && fitem->third_get_charid != sd->status.char_id) {
+					struct map_session_data *third_sd = map->charid2sd(fitem->third_get_charid);
+					if (DIFF_TICK(tick, fitem->third_get_tick) < 0) {
+						if (!(p && p->party.item & 1 &&
+							((first_sd && first_sd->status.party_id == sd->status.party_id) ||
+							(second_sd && second_sd->status.party_id == sd->status.party_id) ||
+							(third_sd && third_sd->status.party_id == sd->status.party_id))
+							))
+							return 0;
+					}
 				}
 			}
 		}
@@ -4895,6 +5008,9 @@ int pc_useitem(struct map_session_data *sd,int n) {
 	if( !pc->isUseitem(sd,n) )
 		return 0;
 
+	if (sd->state.only_walk)
+		return 0;
+
 	// Store information for later use before it is lost (via pc->delitem) [Paradox924X]
 	nameid = sd->inventory_data[n]->nameid;
 
@@ -4982,7 +5098,20 @@ int pc_useitem(struct map_session_data *sd,int n) {
 	//Dead Branch & Bloody Branch & Porings Box
 	if( nameid == ITEMID_BRANCH_OF_DEAD_TREE || nameid == ITEMID_BLOODY_DEAD_BRANCH || nameid == ITEMID_PORING_BOX )
 		logs->branch(sd);
-	
+
+	// "Battleground's items" can only be used on maps with 'bg_consume' mapflag
+	if (sd->status.inventory[n].card[0] == CARD0_CREATE &&
+		MakeDWord(sd->status.inventory[n].card[2], sd->status.inventory[n].card[3]) == BG_CHARID &&
+		!map->list[sd->bl.m].flag.battleground
+		)
+	return 0;
+	// poison bottles
+	if (sd->status.inventory[n].nameid == 678 && (sd->class_ != MAPID_ASSASSIN_CROSS)
+		&& sd->status.inventory[n].card[0] == CARD0_CREATE &&
+		MakeDWord(sd->status.inventory[n].card[2], sd->status.inventory[n].card[3]) == BG_CHARID
+		)
+	return 0;
+
 	sd->itemid = sd->status.inventory[n].nameid;
 	sd->itemindex = n;
 	if(sd->catch_target_class != -1) //Abort pet catching.
@@ -5049,6 +5178,12 @@ int pc_cart_additem(struct map_session_data *sd,struct item *item_data,int amoun
 		// Check item trade restrictions
 		clif->message (sd->fd, msg_sd(sd,264));
 		return 1;/* TODO: there is no official response to this? */
+	}
+
+	if (item_data->card[0] == CARD0_CREATE && (int)MakeDWord(item_data->card[2], item_data->card[3]) == BG_CHARID && (BG_TRADE & 16)>0)
+	{	// "Battleground's Items"
+		clif->message(sd->fd, msg_txt(264));
+		return 1;
 	}
 
 	if( (w = data->weight*amount) + sd->cart_weight > sd->cart_weight_max )
@@ -5447,11 +5582,12 @@ int pc_setpos(struct map_session_data* sd, unsigned short map_index, int x, int 
 	if( sd->state.changemap ) { // Misc map-changing settings
 		int i;
 		sd->state.pmap = sd->bl.m;
+		sd->state.only_walk = 0;
 		
 		for( i = 0; i < sd->queues_count; i++ ) {
 			struct hQueue *queue;
-			if( (queue = script->queue(sd->queues[i])) && queue->onMapChange[0] != '\0' ) {
-				pc->setregstr(sd, script->add_str("QMapChangeTo"), map->list[m].name);
+			if ((queue = script->queue(sd->queues[i])) && queue->onMapChange[0] != '\0') {
+				pc->setregstr(sd, script->add_str("@QMapChangeTo$"), map->list[m].name);
 				npc->event(sd, queue->onMapChange, 0);
 			}
 		}
@@ -5466,7 +5602,7 @@ int pc_setpos(struct map_session_data* sd, unsigned short map_index, int x, int 
 			status_change_end(&sd->bl, SC_SUN_COMFORT, INVALID_TIMER);
 			status_change_end(&sd->bl, SC_MOON_COMFORT, INVALID_TIMER);
 			status_change_end(&sd->bl, SC_STAR_COMFORT, INVALID_TIMER);
-			status_change_end(&sd->bl, SC_MIRACLE, INVALID_TIMER);
+			//status_change_end(&sd->bl, SC_MIRACLE, INVALID_TIMER); //Steve meint das geht nicht weg (außer zone change change)
 			status_change_end(&sd->bl, SC_NEUTRALBARRIER_MASTER, INVALID_TIMER);//Will later check if this is needed. [Rytech]
 			status_change_end(&sd->bl, SC_NEUTRALBARRIER, INVALID_TIMER);
 			status_change_end(&sd->bl, SC_STEALTHFIELD_MASTER, INVALID_TIMER);
@@ -5480,6 +5616,9 @@ int pc_setpos(struct map_session_data* sd, unsigned short map_index, int x, int 
 			status_change_end(&sd->bl, SC_PROPERTYWALK, INVALID_TIMER);
 			status_change_end(&sd->bl, SC_CLOAKING, INVALID_TIMER);
 			status_change_end(&sd->bl, SC_CLOAKINGEXCEED, INVALID_TIMER);
+			if (!map->list[m].flag.gvg_castle) {
+				status_change_end(&sd->bl, SC_EXPLOSIONSPIRITS, INVALID_TIMER); //Valo
+			}
 		}
 		for( i = 0; i < EQI_MAX; i++ ) {
 			if( sd->equip_index[ i ] >= 0 )
@@ -5613,7 +5752,7 @@ int pc_randomwarp(struct map_session_data *sd, clr_type type) {
 	do {
 		x=rnd()%(map->list[m].xs-2)+1;
 		y=rnd()%(map->list[m].ys-2)+1;
-	} while( map->getcell(m,x,y,CELL_CHKNOPASS) && (i++) < 1000 );
+	} while ((map->getcell(m, x, y, CELL_CHKNOPASS) || map->getcell(m, x, y, CELL_CHKNPC)) && (i++) < 1000);
 
 	if (i < 1000)
 		return pc->setpos(sd,map_id2index(sd->bl.m),x,y,type);
@@ -6539,6 +6678,10 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 		sc_start(NULL,&sd->bl,status->skill2sc(AL_INCAGI),100,10,600000);
 		sc_start(NULL,&sd->bl,status->skill2sc(AL_BLESSING),100,10,600000);
 	}
+	else if (sd->status.base_level < 50) {
+		sc_start(NULL, &sd->bl, status->skill2sc(AL_INCAGI), 100, 10, 600000);
+		sc_start(NULL, &sd->bl, status->skill2sc(AL_BLESSING), 100, 10, 600000);
+	}
 	clif->misceffect(&sd->bl,0);
 	npc->script_event(sd, NPCE_BASELVUP); //LORDALFA - LVLUPEVENT
 
@@ -6704,10 +6847,28 @@ bool pc_gainexp(struct map_session_data *sd, struct block_list *src, unsigned in
 		clif->displayexp(sd, job_exp,  SP_JOBEXP, is_quest);
 #endif
 	
+	if (sd->exp_counter.nulltick <= 0) {
+		sd->exp_counter.nulltick = timer->gettick();
+	}
+	sd->exp_counter.bexp += base_exp;
+	if (nextj > 0) {
+		sd->exp_counter.jexp += job_exp;
+	}
+
+
 	if(sd->state.showexp) {
-		char output[256];
-		sprintf(output,
-			"Experience Gained Base:%u (%.2f%%) Job:%u (%.2f%%)",base_exp,nextbp*(float)100,job_exp,nextjp*(float)100);
+		char output[CHAT_SIZE_MAX];
+
+		int64 time = timer->gettick() - sd->exp_counter.nulltick;
+		int64 seconds = time / 1000;
+		if (seconds > 0 && sd->exp_counter.bexp > 0 && sd->exp_counter.jexp > 0 ) {
+			int64 bexph = (int64)((double)sd->exp_counter.bexp / ((double)seconds / 3600.0));
+			int64 jexph = (int64)((double)sd->exp_counter.jexp / ((double)seconds / 3600.0));
+			sprintf(output, "Experience Gained Base:%u (%.2f%%) (%" PRId64 " / h) Job:%u (%.2f%%) (%" PRId64 " / h)", base_exp, nextbp*(float)100, bexph, job_exp, nextjp*(float)100, jexph);
+		}
+		else {
+			sprintf(output, "Experience Gained Base:%u (%.2f%%) Job:%u (%.2f%%)", base_exp, nextbp*(float)100, job_exp, nextjp*(float)100);
+		}
 		clif_disp_onlyself(sd,output,strlen(output));
 	}
 
@@ -7562,7 +7723,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src) {
 	
 	for( i = 0; i < sd->queues_count; i++ ) {
 		struct hQueue *queue;
-		if( (queue = script->queue(sd->queues[i])) && queue->onDeath[0] != '\0' )
+		if ((queue = script->queue(sd->queues[i])) && queue->onDeath[0] != '\0')
 			npc->event(sd, queue->onDeath, 0);
 	}
 	
@@ -8899,6 +9060,10 @@ bool pc_can_attack( struct map_session_data *sd, int target_id ) {
 		sd->sc.data[SC_FALLENEMPIRE] )
 			return false;
 
+	if (sd->state.monster_ignore > 0) {
+		return false;
+	}
+
 	return true;
 }
 
@@ -8926,6 +9091,8 @@ int pc_candrop(struct map_session_data *sd, struct item *item)
 	if( item && (item->expire_time || (item->bound && !pc_can_give_bound_items(sd))) )
 		return 0;
 	if( !pc_can_give_items(sd) ) //check if this GM level can drop items
+		return 0;
+	if (item->card[0] == CARD0_CREATE && (int)MakeDWord(item->card[2], item->card[3]) == BG_CHARID && (BG_TRADE & 1)>0)
 		return 0;
 	return (itemdb_isdropable(item, pc_get_group_level(sd)));
 }
@@ -9312,6 +9479,8 @@ int pc_checkcombo(struct map_session_data *sd, struct item_data *data ) {
 				if( k == EQI_HAND_R   &&  sd->equip_index[EQI_HAND_L] == index ) continue;
 				if( k == EQI_HEAD_MID &&  sd->equip_index[EQI_HEAD_LOW] == index ) continue;
 				if( k == EQI_HEAD_TOP && (sd->equip_index[EQI_HEAD_MID] == index || sd->equip_index[EQI_HEAD_LOW] == index) ) continue;
+				if ((int)MakeDWord(sd->status.inventory[index].card[2], sd->status.inventory[index].card[3]) == battle_config.reserved_costume_id)
+					continue;
 
 				if(!sd->inventory_data[index])
 					continue;
@@ -9969,6 +10138,12 @@ int pc_checkitem(struct map_session_data *sd)
 					pc->unequipitem(sd, i, PCUNEQUIPITEM_FORCE);
 					calc_flag = 1;
 				}
+				if (map_flag_vs(sd->bl.m)) {
+					if (battle_config.reserved_costume_id && sd->status.inventory[i].card[0] == CARD0_CREATE && MakeDWord(sd->status.inventory[i].card[2], sd->status.inventory[i].card[3]) == battle_config.reserved_costume_id) {
+						pc_unequipitem(sd, i, 2);
+						calc_flag = 1;
+					}
+				}
 			}
 		}
 
@@ -10197,8 +10372,10 @@ void pc_bleeding (struct map_session_data *sd, unsigned int diff_tick)
 		}
 	}
 
-	if (hp > 0 || sp > 0)
+	if (hp > 0 || sp > 0) {
+		int skill_id = -1;
 		status_zap(&sd->bl, hp, sp);
+	}
 
 	return;
 }
@@ -11174,37 +11351,37 @@ void pc_autotrade_load(void)
  * Loads vending data and sets it up, is triggered when char server data that pc_autotrade_load requested arrives
  **/
 void pc_autotrade_start(struct map_session_data *sd) {
-	unsigned int count = 0;
-	int i;
+	int i = 0, count = 0;
 	char *data;
 
-	if (SQL_ERROR == SQL->Query(map->mysql_handle, "SELECT `itemkey`,`amount`,`price` FROM `%s` WHERE `char_id` = '%d'",map->autotrade_data_db,sd->status.char_id))
+	if (SQL_ERROR == SQL->Query(map->mysql_handle, "SELECT `itemkey`,`amount`,`price`,`vending_index` FROM `%s` WHERE `char_id` = '%d'",map->autotrade_data_db,sd->status.char_id))
 		Sql_ShowDebug(map->mysql_handle);
 
 	while( SQL_SUCCESS == SQL->NextRow(map->mysql_handle) ) {
-		int itemkey, amount, price;
+		int itemkey, amount, price, vending_index;
 		
 		SQL->GetData(map->mysql_handle, 0, &data, NULL); itemkey = atoi(data);
 		SQL->GetData(map->mysql_handle, 1, &data, NULL); amount = atoi(data);
 		SQL->GetData(map->mysql_handle, 2, &data, NULL); price = atoi(data);
+		SQL->GetData(map->mysql_handle, 3, &data, NULL); vending_index = atoi(data);
 
 		ARR_FIND(0, MAX_CART, i, sd->status.cart[i].id == itemkey);
 				
-		if( i != MAX_CART && itemdb_cantrade(&sd->status.cart[i], 0, 0) ) {
+		if (i != MAX_CART && vending_index < MAX_VENDING && itemdb_cantrade(&sd->status.cart[i], 0, 0)) {
 			if( amount > sd->status.cart[i].amount )
 				amount = sd->status.cart[i].amount;
 			
 			if( amount ) {
-				sd->vending[count].index = i;
-				sd->vending[count].amount = amount;
-				sd->vending[count].value = cap_value(price, 0, (unsigned int)battle_config.vending_max_value);
-
+				sd->vending[vending_index].index = i;
+				sd->vending[vending_index].amount = amount;
+				sd->vending[vending_index].value = cap_value(price, 0, (unsigned int)battle_config.vending_max_value);
 				count++;
 			}
 		}
 	}
-		
-	if( !count ) {
+	SQL->FreeResult(map->mysql_handle);
+
+	if (i == MAX_CART) {
 		pc->autotrade_update(sd,PAUC_REMOVE);
 		map->quit(sd);
 	} else {
@@ -11254,12 +11431,13 @@ void pc_autotrade_update(struct map_session_data *sd, enum e_pc_autotrade_update
 				if( sd->vending[i].amount == 0 )
 					continue;
 				
-				if (SQL_ERROR == SQL->Query(map->mysql_handle, "INSERT INTO `%s` (`char_id`,`itemkey`,`amount`,`price`) VALUES ('%d','%d','%d','%d')",
+				if (SQL_ERROR == SQL->Query(map->mysql_handle, "INSERT INTO `%s` (`char_id`,`itemkey`,`amount`,`price`,`vending_index`) VALUES ('%d','%d','%d','%d','%d')",
 											map->autotrade_data_db,
 											sd->status.char_id,
 											sd->status.cart[sd->vending[i].index].id,
 											sd->vending[i].amount,
-											sd->vending[i].value
+											sd->vending[i].value,
+											i
 											))
 					Sql_ShowDebug(map->mysql_handle);
 			}

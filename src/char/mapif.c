@@ -165,8 +165,12 @@ void mapif_send_quests(int fd, int char_id, struct quest *tmp_questlog, int num_
 int mapif_parse_quest_load(int fd);
 int mapif_load_guild_storage(int fd,int account_id,int guild_id, char flag);
 int mapif_save_guild_storage_ack(int fd, int account_id, int guild_id, int fail);
+int mapif_load_master_storage(int fd, int account_id, int master, char flag);
+int mapif_save_master_storage_ack(int fd, int account_id, int master, int fail);
 int mapif_parse_LoadGuildStorage(int fd);
 int mapif_parse_SaveGuildStorage(int fd);
+int mapif_parse_SaveMasterStorage(int fd);
+int mapif_parse_LoadMasterStorage(int fd);
 int mapif_itembound_ack(int fd, int aid, int guild_id);
 int mapif_parse_ItemBoundRetrieve_sub(int fd);
 void mapif_parse_ItemBoundRetrieve(int fd);
@@ -339,8 +343,12 @@ void mapif_defaults(void) {
 	mapif->parse_quest_load = mapif_parse_quest_load;
 	mapif->load_guild_storage = mapif_load_guild_storage;
 	mapif->save_guild_storage_ack = mapif_save_guild_storage_ack;
+	mapif->load_master_storage = mapif_load_master_storage;
+	mapif->save_master_storage_ack = mapif_save_master_storage_ack;
 	mapif->parse_LoadGuildStorage = mapif_parse_LoadGuildStorage;
 	mapif->parse_SaveGuildStorage = mapif_parse_SaveGuildStorage;
+	mapif->parse_LoadMasterStorage = mapif_parse_LoadMasterStorage;
+	mapif->parse_SaveMasterStorage = mapif_parse_SaveMasterStorage;
 	mapif->itembound_ack = mapif_itembound_ack;
 	mapif->parse_ItemBoundRetrieve_sub = mapif_parse_ItemBoundRetrieve_sub;
 	mapif->parse_ItemBoundRetrieve = mapif_parse_ItemBoundRetrieve;

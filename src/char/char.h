@@ -62,6 +62,7 @@ enum {
 	TABLE_CART,
 	TABLE_STORAGE,
 	TABLE_GUILD_STORAGE,
+	TABLE_MASTER_STORAGE,
 };
 
 struct char_auth_node {
@@ -283,6 +284,7 @@ extern char guild_member_db[256];
 extern char guild_position_db[256];
 extern char guild_skill_db[256];
 extern char guild_storage_db[256];
+extern char master_storage_db[256];
 extern char party_db[256];
 extern char pet_db[256];
 extern char mail_db[256];

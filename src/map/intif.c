@@ -429,6 +429,31 @@ int intif_send_guild_storage(int account_id,struct guild_storage *gstor)
 	return 0;
 }
 
+int intif_request_master_storage(int account_id, int master_id)
+{
+	if (intif->CheckForCharServer())
+		return 0;
+	WFIFOHEAD(inter_fd, 10);
+	WFIFOW(inter_fd, 0) = 0x301A;
+	WFIFOL(inter_fd, 2) = account_id;
+	WFIFOL(inter_fd, 6) = master_id;
+	WFIFOSET(inter_fd, 10);
+	return 0;
+}
+int intif_send_master_storage(int account_id, struct master_storage *mstor)
+{
+	if (intif->CheckForCharServer())
+		return 0;
+	WFIFOHEAD(inter_fd, sizeof(struct master_storage) + 12);
+	WFIFOW(inter_fd, 0) = 0x301B;
+	WFIFOW(inter_fd, 2) = (unsigned short)sizeof(struct master_storage) + 12;
+	WFIFOL(inter_fd, 4) = account_id;
+	WFIFOL(inter_fd, 8) = mstor->master_id;
+	memcpy(WFIFOP(inter_fd, 12), mstor, sizeof(struct master_storage));
+	WFIFOSET(inter_fd, WFIFOW(inter_fd, 2));
+	return 0;
+}
+
 // Party creation request
 int intif_create_party(struct party_member *member,char *name,int item,int item2)
 {
@@ -1129,6 +1154,53 @@ void intif_parse_LoadGuildStorage(int fd)
 void intif_parse_SaveGuildStorage(int fd)
 {
 	gstorage->saved(/*RFIFOL(fd,2), */RFIFOL(fd,6));
+}
+
+void intif_parse_LoadMasterStorage(int fd)
+{
+	struct master_storage *mstor;
+	struct map_session_data *sd;
+	int master_id, flag;
+
+	master_id = RFIFOL(fd, 8);
+	flag = RFIFOL(fd, 12);
+	if (master_id <= 0)
+		return;
+	sd = map->id2sd(RFIFOL(fd, 4));
+	if (flag){ //If flag != 0, we attach a player and open the storage
+		if (sd == NULL){
+			ShowError("intif_parse_LoadMasterStorage: user not found %d\n", RFIFOL(fd, 4));
+			return;
+		}
+	}
+	mstor = mstorage->ensure(master_id);
+	if (!mstor) {
+		ShowWarning("intif_parse_LoadMasterStorage: error guild_id %d not exist\n", master_id);
+		return;
+	}
+	if (mstor->storage_status == 1) { // Already open.. lets ignore this update
+		ShowWarning("intif_parse_LoadMasterStorage: storage received for a client already open (User %d:%d)\n", flag ? sd->status.account_id : 0, flag ? sd->status.char_id : 0);
+		return;
+	}
+	if (mstor->dirty) { // Already have storage, and it has been modified and not saved yet! Exploit! [Skotlex]
+		ShowWarning("intif_parse_LoadMasterStorage: received storage for an already modified non-saved storage! (User %d:%d)\n", flag ? sd->status.account_id : 0, flag ? sd->status.char_id : 0);
+		return;
+	}
+	if (RFIFOW(fd, 2) - 13 != sizeof(struct master_storage)) {
+		ShowError("intif_parse_LoadMasterStorage: data size mismatch %d != %"PRIuS"\n", RFIFOW(fd, 2) - 13, sizeof(struct master_storage));
+		mstor->storage_status = 0;
+		return;
+	}
+
+	memcpy(mstor, RFIFOP(fd, 13), sizeof(struct master_storage));
+	if (flag)
+		mstorage->open(sd);
+}
+
+// ACK guild_storage saved
+void intif_parse_SaveMasterStorage(int fd)
+{
+	mstorage->saved(/*RFIFOL(fd,2), */RFIFOL(fd, 6));
 }
 
 // ACK party creation
@@ -2228,6 +2300,8 @@ int intif_parse(int fd)
 		case 0x3807: intif->pMessageToFD(fd); break;
 		case 0x3818: intif->pLoadGuildStorage(fd); break;
 		case 0x3819: intif->pSaveGuildStorage(fd); break;
+		case 0x381A: intif->pLoadMasterStorage(fd); break;
+		case 0x381B: intif->pSaveMasterStorage(fd); break;
 		case 0x3820: intif->pPartyCreated(fd); break;
 		case 0x3821: intif->pPartyInfo(fd); break;
 		case 0x3822: intif->pPartyMemberAdded(fd); break;
@@ -2313,7 +2387,7 @@ int intif_parse(int fd)
 void intif_defaults(void) {
 	const int packet_len_table [INTIF_PACKET_LEN_TABLE_SIZE] = {
 		-1,-1,27,-1, -1, 0,37,-1,  0, 0, 0, 0,  0, 0,  0, 0, //0x3800-0x380f
-		 0, 0, 0, 0,  0, 0, 0, 0, -1,11, 0, 0,  0, 0,  0, 0, //0x3810
+		 0, 0, 0, 0,  0, 0, 0, 0, -1,11, -1, 11		,  0, 0,  0, 0, //0x3810
 		39,-1,15,15, 14,19, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0, //0x3820
 		10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1, //0x3830
 		-1, 0, 0,14,  0, 0, 0, 0, -1,74,-1,11, 11,-1,  0, 0, //0x3840
@@ -2341,6 +2415,8 @@ void intif_defaults(void) {
 	intif->request_registry = intif_request_registry;
 	intif->request_guild_storage = intif_request_guild_storage;
 	intif->send_guild_storage = intif_send_guild_storage;
+	intif->request_master_storage = intif_request_master_storage;
+	intif->send_master_storage = intif_send_master_storage;
 	intif->create_party = intif_create_party;
 	intif->request_partyinfo = intif_request_partyinfo;
 	intif->party_addmember = intif_party_addmember;
@@ -2417,6 +2493,8 @@ void intif_defaults(void) {
 	intif->pMessageToFD = intif_parse_MessageToFD;
 	intif->pLoadGuildStorage = intif_parse_LoadGuildStorage;
 	intif->pSaveGuildStorage = intif_parse_SaveGuildStorage;
+	intif->pLoadMasterStorage = intif_parse_LoadMasterStorage;
+	intif->pSaveMasterStorage = intif_parse_SaveMasterStorage;
 	intif->pPartyCreated = intif_parse_PartyCreated;
 	intif->pPartyInfo = intif_parse_PartyInfo;
 	intif->pPartyMemberAdded = intif_parse_PartyMemberAdded;

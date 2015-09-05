@@ -642,8 +642,8 @@ ve_fild04
 ve_fild05
 ve_fild06
 ve_fild07
-poring_c01
-poring_c02
+//poring_c01
+//poring_c02
 que_ng
 nameless_i
 nameless_n
@@ -703,8 +703,13 @@ aru_gld
 bat_room
 bat_a01
 bat_a02
+bat_a03
+bat_a04
 bat_b01
 bat_b02
+bat_b03
+bat_b04
+bat_b05
 que_qsch01
 que_qsch02
 que_qsch03
@@ -1003,3 +1008,45 @@ c_tower3_
 //
 //mymap	1250
 //mymap-2
+
+//PvP Rooms
+payon_mem
+
+
+//
+2008rwc_01
+2008rwc_02
+2008rwc_03
+2008rwc_04
+2009rwc_01
+2009rwc_02
+2009rwc_03
+2009rwc_04
+2009rwc_f01
+
+// eamod bg
+schg_cas06
+schg_cas07
+schg_cas08
+arug_cas06
+arug_cas07
+arug_cas08
+rush_cas01
+rush_cas02
+rush_cas03
+rush_cas04
+bat_c04
+bat_c05
+bat_c06
+bat_c07
+bat_c08
+region_8
+
+// eu rwc 2013
+guild_vs01
+guild_vs02
+guild_vs03
+guild_vs04
+
+//event
+1@epc1

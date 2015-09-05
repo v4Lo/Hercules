@@ -140,6 +140,64 @@ int inter_storage_guild_storage_fromsql(int guild_id, struct guild_storage* p)
 	return 0;
 }
 
+/// Save master_storage data to sql
+int inter_storage_master_storage_tosql(int master_id, struct master_storage* p)
+{
+	nullpo_ret(p);
+	chr->memitemdata_to_sql(p->items, MAX_MASTER_STORAGE, master_id, TABLE_MASTER_STORAGE);
+	ShowInfo("master storage save to DB - id: %d\n", master_id);
+	return 0;
+}
+
+/// Load master_storage data to mem
+int inter_storage_master_storage_fromsql(int master_id, struct master_storage* p)
+{
+	StringBuf buf;
+	char* data;
+	int i;
+	int j;
+
+	nullpo_ret(p);
+	memset(p, 0, sizeof(struct master_storage)); //clean up memory
+	p->storage_amount = 0;
+	p->master_id = master_id;
+
+	// storage {`master_account_id`/`id`/`nameid`/`amount`/`equip`/`identify`/`refine`/`attribute`/`card0`/`card1`/`card2`/`card3`}
+	StrBuf->Init(&buf);
+	StrBuf->AppendStr(&buf, "SELECT `id`,`nameid`,`amount`,`equip`,`identify`,`refine`,`attribute`,`bound`,`unique_id`");
+	for (j = 0; j < MAX_SLOTS; ++j)
+		StrBuf->Printf(&buf, ",`card%d`", j);
+	StrBuf->Printf(&buf, " FROM `%s` WHERE `master_account_id`='%d' ORDER BY `nameid`", master_storage_db, master_id);
+
+	if (SQL_ERROR == SQL->QueryStr(inter->sql_handle, StrBuf->Value(&buf)))
+		Sql_ShowDebug(inter->sql_handle);
+
+	StrBuf->Destroy(&buf);
+
+	for (i = 0; i < MAX_MASTER_STORAGE && SQL_SUCCESS == SQL->NextRow(inter->sql_handle); ++i) {
+		struct item *item = &p->items[i];
+		SQL->GetData(inter->sql_handle, 0, &data, NULL); item->id = atoi(data);
+		SQL->GetData(inter->sql_handle, 1, &data, NULL); item->nameid = atoi(data);
+		SQL->GetData(inter->sql_handle, 2, &data, NULL); item->amount = atoi(data);
+		SQL->GetData(inter->sql_handle, 3, &data, NULL); item->equip = atoi(data);
+		SQL->GetData(inter->sql_handle, 4, &data, NULL); item->identify = atoi(data);
+		SQL->GetData(inter->sql_handle, 5, &data, NULL); item->refine = atoi(data);
+		SQL->GetData(inter->sql_handle, 6, &data, NULL); item->attribute = atoi(data);
+		SQL->GetData(inter->sql_handle, 7, &data, NULL); item->bound = atoi(data);
+		SQL->GetData(inter->sql_handle, 8, &data, NULL); item->unique_id = strtoull(data, NULL, 10);
+		item->expire_time = 0;
+
+		for (j = 0; j < MAX_SLOTS; ++j) {
+			SQL->GetData(inter->sql_handle, 9 + j, &data, NULL); item->card[j] = atoi(data);
+		}
+	}
+	p->storage_amount = i;
+	SQL->FreeResult(inter->sql_handle);
+
+	ShowInfo("master storage load complete from DB - id: %d (total: %d)\n", master_id, p->storage_amount);
+	return 0;
+}
+
 //---------------------------------------------------------
 // storage data initialize
 int inter_storage_sql_init(void)
@@ -162,6 +220,12 @@ int inter_storage_delete(int account_id)
 int inter_storage_guild_storage_delete(int guild_id)
 {
 	if( SQL_ERROR == SQL->Query(inter->sql_handle, "DELETE FROM `%s` WHERE `guild_id`='%d'", guild_storage_db, guild_id) )
+		Sql_ShowDebug(inter->sql_handle);
+	return 0;
+}
+int inter_storage_master_storage_delete(int master_id)
+{
+	if (SQL_ERROR == SQL->Query(inter->sql_handle, "DELETE FROM `%s` WHERE `master_account_id`='%d'", master_storage_db, master_id))
 		Sql_ShowDebug(inter->sql_handle);
 	return 0;
 }
@@ -206,6 +270,45 @@ int mapif_save_guild_storage_ack(int fd, int account_id, int guild_id, int fail)
 	return 0;
 }
 
+int mapif_load_master_storage(int fd, int account_id, int master_id, char flag)
+{
+	if (SQL_ERROR == SQL->Query(inter->sql_handle, "SELECT `cp_account_id` FROM `%s` WHERE `cp_account_id`='%d'", "cp_login_login", master_id))
+		Sql_ShowDebug(inter->sql_handle);
+	else if (SQL->NumRows(inter->sql_handle) > 0)
+	{// guild exists
+		WFIFOHEAD(fd, sizeof(struct master_storage) + 13);
+		WFIFOW(fd, 0) = 0x381A;
+		WFIFOW(fd, 2) = sizeof(struct master_storage) + 13;
+		WFIFOL(fd, 4) = account_id;
+		WFIFOL(fd, 8) = master_id;
+		WFIFOB(fd, 12) = flag; //1 open storage, 0 don't open
+		inter_storage->master_storage_fromsql(master_id, (struct master_storage*)WFIFOP(fd, 13));
+		WFIFOSET(fd, WFIFOW(fd, 2));
+		SQL->FreeResult(inter->sql_handle);
+		return 0;
+	}
+	// guild does not exist
+	ShowWarning("Requested master storage for non-existant ID %d.", master_id);
+	SQL->FreeResult(inter->sql_handle);
+	WFIFOHEAD(fd, 12);
+	WFIFOW(fd, 0) = 0x3818;
+	WFIFOW(fd, 2) = 12;
+	WFIFOL(fd, 4) = account_id;
+	WFIFOL(fd, 8) = -1;
+	WFIFOSET(fd, 12);
+	return 0;
+}
+int mapif_save_master_storage_ack(int fd, int account_id, int master_id, int fail)
+{
+	WFIFOHEAD(fd, 11);
+	WFIFOW(fd, 0) = 0x381B;
+	WFIFOL(fd, 2) = account_id;
+	WFIFOL(fd, 6) = master_id;
+	WFIFOB(fd, 10) = fail;
+	WFIFOSET(fd, 11);
+	return 0;
+}
+
 //---------------------------------------------------------
 // packet from map server
 
@@ -240,6 +343,42 @@ int mapif_parse_SaveGuildStorage(int fd)
 		SQL->FreeResult(inter->sql_handle);
 	}
 	mapif->save_guild_storage_ack(fd, RFIFOL(fd,4), guild_id, 1);
+	return 0;
+}
+
+int mapif_parse_LoadMasterStorage(int fd)
+{
+	RFIFOHEAD(fd);
+	mapif->load_master_storage(fd, RFIFOL(fd, 2), RFIFOL(fd, 6), 1);
+	return 0;
+}
+
+int mapif_parse_SaveMasterStorage(int fd)
+{
+	int master_id;
+	int len;
+
+	RFIFOHEAD(fd);
+	master_id = RFIFOL(fd, 8);
+	len = RFIFOW(fd, 2);
+
+	if (sizeof(struct master_storage) != len - 12) {
+		ShowError("inter storage: data size mismatch: %d != %"PRIuS"\n", len - 12, sizeof(struct master_storage));
+	}
+	else {
+		if (SQL_ERROR == SQL->Query(inter->sql_handle, "SELECT `cp_account_id` FROM `%s` WHERE `cp_account_id`='%d'", "cp_login_login", master_id)) {
+			Sql_ShowDebug(inter->sql_handle);
+		}
+		else if (SQL->NumRows(inter->sql_handle) > 0) {
+			// master id exists
+			SQL->FreeResult(inter->sql_handle);
+			inter_storage->master_storage_tosql(master_id, (struct master_storage*)RFIFOP(fd, 12));
+			mapif->save_master_storage_ack(fd, RFIFOL(fd, 4), master_id, 0);
+			return 0;
+		}
+		SQL->FreeResult(inter->sql_handle);
+	}
+	mapif->save_master_storage_ack(fd, RFIFOL(fd, 4), master_id, 1);
 	return 0;
 }
 
@@ -444,6 +583,8 @@ int inter_storage_parse_frommap(int fd)
 	switch(RFIFOW(fd,0)){
 		case 0x3018: mapif->parse_LoadGuildStorage(fd); break;
 		case 0x3019: mapif->parse_SaveGuildStorage(fd); break;
+		case 0x301A: mapif->parse_LoadMasterStorage(fd); break;
+		case 0x301B: mapif->parse_SaveMasterStorage(fd); break;
 #ifdef GP_BOUND_ITEMS
 		case 0x3056: mapif->parse_ItemBoundRetrieve(fd); break;
 #endif
@@ -461,9 +602,12 @@ void inter_storage_defaults(void)
 	inter_storage->fromsql = inter_storage_fromsql;
 	inter_storage->guild_storage_tosql = inter_storage_guild_storage_tosql;
 	inter_storage->guild_storage_fromsql = inter_storage_guild_storage_fromsql;
+	inter_storage->master_storage_tosql = inter_storage_master_storage_tosql;
+	inter_storage->master_storage_fromsql = inter_storage_master_storage_fromsql;
 	inter_storage->sql_init = inter_storage_sql_init;
 	inter_storage->sql_final = inter_storage_sql_final;
 	inter_storage->delete_ = inter_storage_delete;
 	inter_storage->guild_storage_delete = inter_storage_guild_storage_delete;
+	inter_storage->master_storage_delete = inter_storage_master_storage_delete; // TODO write cleanup method that deletes orphaned master account storage on startup
 	inter_storage->parse_frommap = inter_storage_parse_frommap;
 }

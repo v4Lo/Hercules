@@ -17,7 +17,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Sacred Altar#1::OutsideFlagsPA4	GUILD_FLAG,{
+-	script	Hong-Roo#1::OutsideFlagsPA4	GUILD_FLAG,{
 
 	.@GID = getcastledata("payg_cas04",1);
 
@@ -67,14 +67,14 @@ OnRecvCastlePy04:
 	end;
 }
 
-pay_gld,137,160,0	duplicate(OutsideFlagsPA4)	Sacred Altar#1-2	GUILD_FLAG
-pay_gld,143,160,0	duplicate(OutsideFlagsPA4)	Sacred Altar#2	GUILD_FLAG
-pay_gld,133,151,2	duplicate(OutsideFlagsPA4)	Sacred Altar#3	GUILD_FLAG
-pay_gld,153,166,1	duplicate(OutsideFlagsPA4)	Sacred Altar#4	GUILD_FLAG
+pay_gld,137,160,0	duplicate(OutsideFlagsPA4)	Hong-Roo#1-2	GUILD_FLAG
+pay_gld,143,160,0	duplicate(OutsideFlagsPA4)	Hong-Roo#2	GUILD_FLAG
+pay_gld,133,151,2	duplicate(OutsideFlagsPA4)	Hong-Roo#3	GUILD_FLAG
+pay_gld,153,166,1	duplicate(OutsideFlagsPA4)	Hong-Roo#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Sacred Altar#5::InsideFlagsPA4	GUILD_FLAG,{
+-	script	Hong-Roo#5::InsideFlagsPA4	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePy04:
@@ -82,17 +82,17 @@ OnRecvCastlePy04:
 	end;
 }
 
-payg_cas04,255,259,0	duplicate(InsideFlagsPA4)	Sacred Altar#5-2	GUILD_FLAG
-payg_cas04,248,259,0	duplicate(InsideFlagsPA4)	Sacred Altar#6	GUILD_FLAG
-payg_cas04,248,168,6	duplicate(InsideFlagsPA4)	Sacred Altar#7	GUILD_FLAG
-payg_cas04,248,160,6	duplicate(InsideFlagsPA4)	Sacred Altar#8	GUILD_FLAG
-payg_cas04,232,181,4	duplicate(InsideFlagsPA4)	Sacred Altar#9	GUILD_FLAG
-payg_cas04,239,181,4	duplicate(InsideFlagsPA4)	Sacred Altar#10	GUILD_FLAG
+payg_cas04,255,259,0	duplicate(InsideFlagsPA4)	Hong-Roo#5-2	GUILD_FLAG
+payg_cas04,248,259,0	duplicate(InsideFlagsPA4)	Hong-Roo#6	GUILD_FLAG
+payg_cas04,248,168,6	duplicate(InsideFlagsPA4)	Hong-Roo#7	GUILD_FLAG
+payg_cas04,248,160,6	duplicate(InsideFlagsPA4)	Hong-Roo#8	GUILD_FLAG
+payg_cas04,232,181,4	duplicate(InsideFlagsPA4)	Hong-Roo#9	GUILD_FLAG
+payg_cas04,239,181,4	duplicate(InsideFlagsPA4)	Hong-Roo#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-payon,118,322,4	duplicate(InsideFlagsPA4)	Sacred Altar#11	GUILD_FLAG
-payon,166,165,3	duplicate(InsideFlagsPA4)	Sacred Altar#12	GUILD_FLAG
+payon,118,322,4	duplicate(InsideFlagsPA4)	Hong-Roo#11	GUILD_FLAG
+payon,166,165,3	duplicate(InsideFlagsPA4)	Hong-Roo#12	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -127,7 +127,7 @@ payg_cas04,147,48,0	duplicate(Gld_Trea_Spawn)	Treasure#payg_cas04	-1
 
 // AGIT Manager
 //============================================================
-payg_cas04,271,29,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas04	-1
+//payg_cas04,271,29,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas04	-1
 
 // Guardians
 //============================================================

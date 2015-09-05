@@ -1655,10 +1655,10 @@ ama_in02,115,177,7	script	Soldier#ama10	8_M_JPNSOLDIER,{
 		mes "There are much better things to enjoy in town. Have a good time...";
 		close;
 	}
-	if (event_amatsu == 6) {
-		if (countitem(7160) > 0) {
+	//if (event_amatsu == 6) {
+		//if (countitem(7160) > 0) {
 			mes "[Jyuro]";
-			mes "You have the ticket...";
+		//	mes "You have the ticket...";
 			mes "Do you want me to send you now, or do you need a little instruction?";
 			next;
 			if (select("I will go in:Instruction, please") == 1) {
@@ -1700,13 +1700,13 @@ ama_in02,115,177,7	script	Soldier#ama10	8_M_JPNSOLDIER,{
 			close2;
 			warp "ama_dun01",229,10;
 			end;
-		}
+		//}
 		mes "[Jyuro]";
 		mes "I'm sorry.";
 		mes "You need a Transit Permit to go in.";
 		mes "Please, go back.";
 		close;
-	}
+	//}
 	mes "[Jyuro]";
 	mes "What gate are you talking about?";
 	mes "A gate? On the top floor of the building??? Surely, you must been be mistaken.";

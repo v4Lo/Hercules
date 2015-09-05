@@ -2222,6 +2222,37 @@ OnEnable:
 	monster "thana_boss",141,218,"Thanatos Phantom",1708,1,"#sommon_thanatos::OnMyMobDead";
 	end;
 OnMyMobDead:
+	if ( getmonsterinfo( killedrid, MOB_MVPEXP ) > 0 ) {
+		getitem 25000, 1;
+		getitem 25000, 1;
+		if(rand(2) == 0){
+			getitem 25000, 1;
+		}
+		
+		.@ckrid = killedrid;
+		//.@krid = getcharid(3);
+		if ( getcharid(1) ) {
+			getmapxy(.@map1$,.@x1,.@y1,0);
+			getpartymember getcharid(1), 1;
+			getpartymember getcharid(1), 2;
+			for ( .@i = 0; .@i < $@partymembercount; .@i++ ) {
+				if ( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i] ) ) {
+					attachrid $@partymemberaid[.@i];
+					getmapxy(.@map2$,.@x2,.@y2,0);
+					if ((.@map1$ == .@map2$) && (distance(.@x1,.@y1,.@x2,.@y2) <= 30)) {
+						setd ("kill_"+.@ckrid, getd("kill_"+.@ckrid)+1);
+						dispbottom "You killed ["+ getmonsterinfo(.@ckrid, MOB_NAME) +"]";
+						dispbottom ""+ getd("kill_"+.@ckrid) +" total kill"+( getd("kill_"+.@ckrid) == 1 ? "":"s")+".";
+					}
+				}
+			}
+		} else {
+			setd ("kill_"+killedrid, getd("kill_"+killedrid)+1);
+			dispbottom "You killed ["+  getmonsterinfo(killedrid, MOB_NAME) +"]"; 
+			dispbottom ""+ getd("kill_"+killedrid) +" total kill"+( getd("kill_"+killedrid) == 1 ? "":"s")+".";
+		}
+		//attachrid .@krid;
+	}
 	if (mobcount("thana_boss","#sommon_thanatos::OnMyMobDead") < 1) {
 		mapannounce "thana_boss","RAWWWWWWWWWWR........ This can't be.........................",bc_map,"0xff0000"; //FW_NORMAL 12 0 0
 		donpcevent "#cooltime_thana::OnEnable";

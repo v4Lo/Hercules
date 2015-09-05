@@ -157,7 +157,7 @@ struct map_session_data {
 		unsigned int arrow_atk : 1;
 		unsigned int gangsterparadise : 1;
 		unsigned int rest : 1;
-		unsigned int storage_flag : 2; // @see enum storage_flag
+		unsigned int storage_flag : 2; //  @see enum storage_flag 0: closed, 1: Normal Storage open, 2: guild storage open, 3: master storage open [Skotlex]
 		unsigned int snovice_dead_flag : 1; //Explosion spirits on death: 0 off, 1 used.
 		unsigned int abra_flag : 2; // Abracadabra bugfix by Aru
 		unsigned int autocast : 1; // Autospell flag [Inkfish]
@@ -204,6 +204,7 @@ struct map_session_data {
 		unsigned int itemcheck : 1;
 		unsigned int standalone : 1;/* [Ind/Hercules <3] */
 		unsigned int loggingout : 1;
+		unsigned int only_walk : 1;
 		unsigned int warp_clean : 1;
 	} state;
 	struct {
@@ -220,6 +221,8 @@ struct map_session_data {
 	} special_state;
 	int login_id1, login_id2;
 	unsigned short class_; //This is the internal job ID used by the map server to simplify comparisons/queries/etc. [Skotlex]
+
+	int master_account_id;
 
 	/// Groups & permissions
 	int group_id;
@@ -244,6 +247,7 @@ struct map_session_data {
 	int npc_timer_id; //For player attached npc timers. [Skotlex]
 	unsigned int chatID;
 	int64 idletime;
+	int64 idlewalk;
 	struct {
 		int npc_id;
 		int64 timeout;
@@ -476,6 +480,8 @@ END_ZEROED_BLOCK;
 	const char* debug_func;
 
 	unsigned int bg_id;
+	unsigned short bg_kills;
+	struct battleground_data *bmaster_flag;
 
 	/**
 	 * For the Secure NPC Timeout option (check config/Secure.h) [RR]
@@ -574,6 +580,18 @@ END_ZEROED_BLOCK;
 	const char* delunit_prevfile;
 	int delunit_prevline;
 
+	struct {
+		int64 skill_tick;
+		int skill_counter;
+		int64 item_tick;
+		int item_counter;
+	} limit;
+
+	struct {
+		int64 bexp;
+		int64 jexp;
+		int64 nulltick;
+	} exp_counter;
 };
 
 #define EQP_WEAPON EQP_HAND_R

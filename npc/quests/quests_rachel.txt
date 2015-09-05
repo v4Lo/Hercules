@@ -3691,6 +3691,37 @@ OnStopTimer:
 	end;
 
 OnMyMobDead:
+	if ( getmonsterinfo( killedrid, MOB_MVPEXP ) > 0 ) {
+		getitem 25000, 1;
+		getitem 25000, 1;
+		if(rand(2) == 0){
+			getitem 25000, 1;
+		}
+		
+		.@ckrid = killedrid;
+		//.@krid = getcharid(3);
+		if ( getcharid(1) ) {
+			getmapxy(.@map1$,.@x1,.@y1,0);
+			getpartymember getcharid(1), 1;
+			getpartymember getcharid(1), 2;
+			for ( .@i = 0; .@i < $@partymembercount; .@i++ ) {
+				if ( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i] ) ) {
+					attachrid $@partymemberaid[.@i];
+					getmapxy(.@map2$,.@x2,.@y2,0);
+					if ((.@map1$ == .@map2$) && (distance(.@x1,.@y1,.@x2,.@y2) <= 30)) {
+						setd ("kill_"+.@ckrid, getd("kill_"+.@ckrid)+1);
+						dispbottom "You killed ["+ getmonsterinfo(.@ckrid, MOB_NAME) +"]";
+						dispbottom ""+ getd("kill_"+.@ckrid) +" total kill"+( getd("kill_"+.@ckrid) == 1 ? "":"s")+".";
+					}
+				}
+			}
+		} else {
+			setd ("kill_"+killedrid, getd("kill_"+killedrid)+1);
+			dispbottom "You killed ["+  getmonsterinfo(killedrid, MOB_NAME) +"]"; 
+			dispbottom ""+ getd("kill_"+killedrid) +" total kill"+( getd("kill_"+killedrid) == 1 ? "":"s")+".";
+		}
+		//attachrid .@krid;
+	}
 	mapannounce "ice_dun03","Oh, Odin! Please protect this place from Thor's fierce fire!",bc_map,0xFF6633;
 	mapannounce "ice_dun03","Pzzzzz...Pzzzz...",bc_map,0x33FFFF;
 	donpcevent "ice_boss#on::OnStartTimer";
@@ -7270,6 +7301,7 @@ OnTouch:
 
 ra_temin,28,319,0	script	saint1#rachel	WARPNPC,4,2,{
 OnTouch:
+	if(ra_tem_q < 21) { warp "ra_san01",140,135; end; }
 	if ((ra_tem_q > 21) || (MISC_QUEST & 8192)) { warp "ra_san01",140,135; end; }
 
 	if (ra_tem_q == 21) {

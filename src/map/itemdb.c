@@ -534,6 +534,10 @@ int itemdb_cantrade_sub(struct item_data* item, int gmlv, int gmlv2) {
 	return (item && (!(item->flag.trade_restriction&ITR_NOTRADE) || gmlv >= item->gm_lv_trade_override || gmlv2 >= item->gm_lv_trade_override));
 }
 
+int itemdb_canmastertrade_sub(struct item_data* item, int gmlv, int gmlv2) {
+	return (item && (item->flag.trade_restriction&ITR_MASTEROVERRIDE || gmlv >= item->gm_lv_trade_override || gmlv2 >= item->gm_lv_trade_override));
+}
+
 int itemdb_canpartnertrade_sub(struct item_data* item, int gmlv, int gmlv2) {
 	return (item && (item->flag.trade_restriction&ITR_PARTNEROVERRIDE || gmlv >= item->gm_lv_trade_override || gmlv2 >= item->gm_lv_trade_override));
 }
@@ -1849,6 +1853,13 @@ int itemdb_readdb_libconfig_sub(config_setting_t *it, int n, const char *source)
 					id.flag.trade_restriction |= ITR_PARTNEROVERRIDE;
 			}
 
+			if ((tt = libconfig->setting_get_member(t, "masteroverride"))) {
+				
+				id.flag.trade_restriction &= ~ITR_MASTEROVERRIDE;
+				if (libconfig->setting_get_bool(tt))
+					id.flag.trade_restriction |= ITR_MASTEROVERRIDE;
+			}
+
 			if ((tt = libconfig->setting_get_member(t, "noselltonpc"))) {
 				id.flag.trade_restriction &= ~ITR_NOSELLTONPC;
 				if (libconfig->setting_get_bool(tt))
@@ -2044,7 +2055,7 @@ int itemdb_readdb_sql(const char *tablename) {
 *------------------------------------------*/
 uint64 itemdb_unique_id(struct map_session_data *sd) {
 
-	return ((uint64)sd->status.char_id << 32) | sd->status.uniqueitem_counter++;
+	return (((uint64)sd->status.char_id) << 32) | sd->status.uniqueitem_counter++;
 }
 
 /**
@@ -2380,6 +2391,7 @@ void itemdb_defaults(void) {
 	itemdb->isdropable_sub = itemdb_isdropable_sub;
 	itemdb->cantrade_sub = itemdb_cantrade_sub;
 	itemdb->canpartnertrade_sub = itemdb_canpartnertrade_sub;
+	itemdb->canmastertrade_sub = itemdb_canmastertrade_sub;
 	itemdb->cansell_sub = itemdb_cansell_sub;
 	itemdb->cancartstore_sub = itemdb_cancartstore_sub;
 	itemdb->canstore_sub = itemdb_canstore_sub;

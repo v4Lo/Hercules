@@ -39,7 +39,21 @@
 //============================================================
 
 valkyrie,48,86,4	script	Valkyrie#	4_F_VALKYRIE,{
-	if (ADVJOB != 0 || Upper == 1) {
+	// if (ADVJOB != 0 || Upper == 1) {
+		// mes "[Valkyrie]";
+		// mes "Welcome";
+		// mes "to Valhalla,";
+		// mes "the Hall of Honor.";
+		// next;
+		// mes "[Valkyrie]";
+		// mes "Please make";
+		// mes "yourself comfortable";
+		// mes "while you are here.";
+		// mes "Honor to the warriors!";
+		// close;
+	// }
+	//else 
+	if(onlyro_onereset == 1) {
 		mes "[Valkyrie]";
 		mes "Welcome";
 		mes "to Valhalla,";
@@ -52,7 +66,10 @@ valkyrie,48,86,4	script	Valkyrie#	4_F_VALKYRIE,{
 		mes "Honor to the warriors!";
 		close;
 	}
-	else if (BaseLevel > 98 && JobLevel > 49 && Class >= Job_Knight && Class <= Job_Crusader2) {
+	if(ADVJOB == 0 && Class >= Job_Lord_Knight && Class <= Job_Paladin2) {
+		ADVJOB = Class;
+	}
+	if ((BaseLevel > 98 && JobLevel > 49 && Class >= Job_Knight && Class <= Job_Crusader2) || ADVJOB > 0) {
 		mes "[Valkyrie]";
 		mes "Welcome";
 		mes "to Valhalla,";
@@ -64,6 +81,11 @@ valkyrie,48,86,4	script	Valkyrie#	4_F_VALKYRIE,{
 		mes "begin an entirely new life.";
 		mes "Honor to the warriors!";
 		next;
+		if(ADVJOB > 0) {
+			if(select("My present life is too precious.:I am ready once again. ^FF0000(Reset to 1/1)") == 1) {
+				close;
+			}
+		}
 		if (Weight > 0 || Zeny > 0 || checkcart() || checkfalcon() || checkmount()) {
 			mes "[Valkyrie]";
 			mes "There are a few things you must";
@@ -143,24 +165,30 @@ valkyrie,48,86,4	script	Valkyrie#	4_F_VALKYRIE,{
 			mes "One...";
 			mes "Two......";
 			mes "And Three.";
-			ADVJOB = Class+Job_Novice_High; //memo the target 3rd Job ID
-			if(ADVJOB == Job_Lord_Knight2) ADVJOB = Job_Lord_Knight;
-			if(ADVJOB == Job_Paladin2) ADVJOB = Job_Paladin;
+			if(ADVJOB == 0) {
+				ADVJOB = Class+Job_Novice_High; //memo the target 3rd Job ID
+				if(ADVJOB == Job_Lord_Knight2) ADVJOB = Job_Lord_Knight;
+				if(ADVJOB == Job_Paladin2) ADVJOB = Job_Paladin;
+			}
 			jobchange Job_Novice_High;
 			resetlvl(1);
 			MISC_QUEST |= 1024; //<-reset Skill Reset Event
 			skill 142,1,0;
 			skill 143,1,0;
-			completequest 1000;
-			next;
-			mes "[Valkyrie]";
-			mes "Congratulations.";
-			mes "You are now reborn";
-			mes "into a brand new life.";
-			mes "Please take these small gifts";
-			mes "in preparation for your new adventures.";
-			getitem 1202,1; //Knife_
-			getitem 2302,1; //Cotton_Shirt_
+			if(questprogress(1000) != 2) {
+				completequest 1000;	
+				next;
+				mes "[Valkyrie]";
+				mes "Congratulations.";
+				mes "You are now reborn";
+				mes "into a brand new life.";
+				mes "Please take these small gifts";
+				mes "in preparation for your new adventures.";
+				getitem 1202,1; //Knife_
+				getitem 2302,1; //Cotton_Shirt_
+			} else {
+				onlyro_onereset = 1;
+			}
 			next;
 			mes "[Valkyrie]";
 			mes "I wish that the release the goddess Urd has granted you proves to be a blessing. I hope that the memories Verdandi has recorded will always honor you.";
@@ -354,7 +382,7 @@ valkyrie,44,33,5	script	Teleporter	4_F_TELEPORTER,{
 	if (Upper != 1) {
 		.@karma_d = rand(1,10);
 		if (.@karma_d > 4) {
-			mes "[Teleporter]";
+			mes "[Teleporter]"; 
 			mes "Congratulations.";
 			mes "Honor to the warriors!";
 			close;

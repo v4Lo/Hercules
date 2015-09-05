@@ -435,6 +435,12 @@ prt_in,88,101,4	script	Chivalry Captain#knt	1_M_KNIGHTMASTER,{
 		mes "live with honor.";
 		next;
 		getitem 656,7; //Awakening_Potion
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 1197, 1; //waffe
 		mes "[Captain Herman]";
 		mes "Oh...";
 		mes "We have prepared a small gift to congratulate you on your job change. Please use it when you are in battle as you honorably protect others.";

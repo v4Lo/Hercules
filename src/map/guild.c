@@ -204,7 +204,7 @@ struct map_session_data* guild_getavailablesd(struct guild* g)
 
 	nullpo_retr(NULL, g);
 
-	ARR_FIND( 0, g->max_member, i, g->member[i].sd != NULL );
+	ARR_FIND( 0, g->max_member, i, g->member[i].sd != NULL && g->member[i].sd->guild != NULL && g->member[i].sd->fd != 0 );
 	return( i < g->max_member ) ? g->member[i].sd : NULL;
 }
 
@@ -1263,7 +1263,7 @@ unsigned int guild_payexp(struct map_session_data *sd,unsigned int exp) {
 		return 0;
 	
 
-	if (per < 100)
+	if (per < 99) // 99 = 100%
 		exp = exp * per / 100;
 	//Otherwise tax everything.
 	

@@ -20,6 +20,9 @@ struct map_session_data;
 #define MAX_BG_MEMBERS 30
 #define BG_DELAY_VAR_LENGTH 30
 
+#define BG_CHARID 999997 // char named "Battleground"
+#define BG_TRADE 463 // trade mask of BG consumables
+
 /**
  * Enumerations
  **/
@@ -42,21 +45,35 @@ struct battleground_member_data {
 	struct map_session_data *sd;
 	unsigned afk : 1;
 	struct point source;/* where did i come from before i join? */
+	bool ranked;
 };
 
 struct battleground_data {
 	unsigned int bg_id;
-	unsigned char count;
+	time_t creation_tick; // Creation of this Team
+	int count;
 	struct battleground_member_data members[MAX_BG_MEMBERS];
+	// Team Leader and BG Skills features
+	int leader_char_id;
+	int skill_block_timer[MAX_GUILDSKILL];
+	unsigned int color;
+	// Fake Guild Link
+	struct guild *g;
 	// BG Cementery
 	unsigned short mapindex, x, y;
-	// Logout Event
+	bool reveal_pos, reveal_flag;
+	// Script Events
 	char logout_event[EVENT_NAME_LENGTH];
 	char die_event[EVENT_NAME_LENGTH];
+	// Score Board
+	int team_score;
 	/* HPM Custom Struct */
 	struct HPluginData **hdata;
 	unsigned int hdatac;
 };
+
+extern struct guild bg_guild[];
+extern const unsigned int bg_colors[];
 
 struct bg_arena {
 	char name[NAME_LENGTH];
@@ -108,13 +125,13 @@ struct battleground_interface {
 	void (*queue_check) (struct bg_arena *arena);
 	struct battleground_data* (*team_search) (int bg_id);
 	struct map_session_data* (*getavailablesd) (struct battleground_data *bgd);
-	bool (*team_delete) (int bg_id);
+	bool (*team_delete) (int bg_id, bool remove);
 	bool (*team_warp) (int bg_id, unsigned short map_index, short x, short y);
 	void (*send_dot_remove) (struct map_session_data *sd);
 	bool (*team_join) (int bg_id, struct map_session_data *sd);
 	int (*team_leave) (struct map_session_data *sd, enum bg_team_leave_type flag);
 	bool (*member_respawn) (struct map_session_data *sd);
-	int (*create) (unsigned short map_index, short rx, short ry, const char *ev, const char *dev);
+	int(*create) (unsigned short map_index, short rx, short ry, int guild_index, const char *ev, const char *dev);
 	int (*team_get_id) (struct block_list *bl);
 	bool (*send_message) (struct map_session_data *sd, const char *mes, int len);
 	int (*send_xy_timer_sub) (DBKey key, DBData *data, va_list ap);
@@ -125,6 +142,13 @@ struct battleground_interface {
 	enum bg_queue_types (*str2teamtype) (const char *str);
 	/* */
 	void (*config_read) (void);
+	void(*team_getitem) (int bg_id, int nameid, int amount);
+	void(*team_rewards) (int bg_id, int nameid, int amount, int kafrapoints, int quest_id, const int64 *var, int add_value, int bg_arena, int bg_result);
+	int(*checkskill) (struct battleground_data *bg, int id);
+	void(*block_skill_status) (struct battleground_data *bg, int skillnum);
+	void (*block_skill_start) (struct battleground_data *bg, int skillnum, int time);
+	void(*reload)(void);
+	struct guild* (*guild_get)(int bg_id);
 };
 
 #ifdef HERCULES_CORE

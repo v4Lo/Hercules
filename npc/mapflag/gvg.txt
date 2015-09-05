@@ -15,9 +15,9 @@
 //============================================================
 
 // GvG Arenas =============
-guild_vs1	mapflag	gvg
-guild_vs2	mapflag	gvg
-guild_vs3	mapflag	gvg
+//guild_vs1	mapflag	gvg
+//guild_vs2	mapflag	gvg
+//guild_vs3	mapflag	gvg
 guild_vs4	mapflag	gvg
 guild_vs5	mapflag	gvg
 
@@ -52,6 +52,37 @@ arug_cas02	mapflag	gvg_castle
 arug_cas03	mapflag	gvg_castle
 arug_cas04	mapflag	gvg_castle
 arug_cas05	mapflag	gvg_castle
+
+aldeg_cas01	mapflag	loadevent
+aldeg_cas02	mapflag	loadevent
+aldeg_cas03	mapflag	loadevent
+aldeg_cas04	mapflag	loadevent
+aldeg_cas05	mapflag	loadevent
+gefg_cas01	mapflag	loadevent
+gefg_cas02	mapflag	loadevent
+gefg_cas03	mapflag	loadevent
+gefg_cas04	mapflag	loadevent
+gefg_cas05	mapflag	loadevent
+payg_cas01	mapflag	loadevent
+payg_cas02	mapflag	loadevent
+payg_cas03	mapflag	loadevent
+payg_cas04	mapflag	loadevent
+payg_cas05	mapflag	loadevent
+prtg_cas01	mapflag	loadevent
+prtg_cas02	mapflag	loadevent
+prtg_cas03	mapflag	loadevent
+prtg_cas04	mapflag	loadevent
+prtg_cas05	mapflag	loadevent
+schg_cas01	mapflag	loadevent
+schg_cas02	mapflag	loadevent
+schg_cas03	mapflag	loadevent
+schg_cas04	mapflag	loadevent
+schg_cas05	mapflag	loadevent
+arug_cas01	mapflag	loadevent
+arug_cas02	mapflag	loadevent
+arug_cas03	mapflag	loadevent
+arug_cas04	mapflag	loadevent
+arug_cas05	mapflag	loadevent
 
 //Uncomment to disable monsters teleporting (prevents them from "escaping" when rude attacked)
 //aldeg_cas01	mapflag	monster_noteleport

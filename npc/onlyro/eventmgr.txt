@@ -1,0 +1,92 @@
+-	script	EventManager	-1,{
+	end;
+OnWhisperGlobal:
+	if (getgmlevel() < 9) end;
+	//geffen monster invasion
+	if (@whispervar0$ == "easter2015") {
+		if (@whispervar1$ == "1") {
+			if(.wavestate <= 1) {
+				.wavestate = 2;;
+				announce "Adventurers! Demon Monsters have conquered Geffen. We need your help to reconquer it!", bc_all;
+			}
+			.wavecount += 200;
+			monster "geffen",0,0,"Giearth", 1121,100,"EventManager::OnWave";
+			monster "geffen",0,0,"Magnolia", 1138,100,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "2") {
+			if(.wavestate <= 2) {
+				.wavestate = 3;
+				mapannounce "geffen","Well done! We defeated the 1st wave! But be careful, the next one will be here soon!",bc_all;
+			}
+			.wavecount += 200;
+			monster "geffen",0,0,"Sohee", 1170,100,"EventManager::OnWave";
+			monster "geffen",0,0,"Dokebi", 1110,100,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "3") {
+			if(.wavestate <= 3) {
+				.wavestate = 4;
+				mapannounce "geffen","Oh no! We just defeated the 2nd wave as the next one already approaches!",bc_all;
+			}
+			.wavecount += 222;
+			monster "geffen",0,0,"Ghostring", 1120,2,"EventManager::OnWave";
+			monster "geffen",0,0,"Giant Whisper", 1186,20,"EventManager::OnWave";
+			monster "geffen",0,0,"Whisper", 1927,100,"EventManager::OnWave";
+			monster "geffen",0,0,"Flame Skull", 1869, 100,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "4") {
+			if(.wavestate <= 4) {
+				.wavestate = 5;
+				mapannounce "geffen","Wow, this one was tough! They sent their miniboss! What will they bring up next?",bc_all;
+			}
+			.wavecount += 215;
+			monster "geffen",0,0,"Baphomet Jr.", 1101,70,"EventManager::OnWave";
+			monster "geffen",0,0,"Deviruchi", 1109,130,"EventManager::OnWave";
+			monster "geffen",0,0,"Dark Illusion", 1302,15,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "5") {
+			if(.wavestate <= 5) {
+				.wavestate = 6;
+				mapannounce "geffen","Well, those little ones were defeated easily! C'mon demons, bring it on!",bc_all;
+			}
+			.wavecount += 3;
+			monster "geffen",0,0,"Baphomet", 1039,1,"EventManager::OnWave";
+			monster "geffen",0,0,"Dark Lord", 1272,1,"EventManager::OnWave";
+			monster "geffen",0,0,"Doppelganger", 1046,1,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "6") {
+			if(.wavestate <= 6) {
+				.wavestate = 7;
+				mapannounce "geffen","Uff, they sent their boss .. this one was unexpected! Now can there be anything harder?",bc_all;
+			}
+			.wavecount += 1;
+			monster "geffen",0,0,"Beelzebub", 1873,1,"EventManager::OnWave";
+		} else
+		if (@whispervar1$ == "7") {
+			if(.wavestate <= 7) {
+				.wavestate = 8;
+				announce "Well done, Midgardians! You defeated the demons and reconquered Geffen! Thank you for your help!",bc_all;
+			}
+		} else
+		if (@whispervar1$ == "amount") {
+			announce "" + .wavecount + " monsters are left (only player kills count)", bc_self|bc_blue;
+		} else
+		if (@whispervar1$ == "reset") {
+			announce "wavestate reset, announcements will be displayed again", bc_self|bc_blue;
+			.wavestate = 0;
+		} else
+		if(@whispervar1$ == "kill") {
+			killmonster "geffen", "EventManager::OnWave";
+			.wavecount = 0;
+			announce "All event monsters killed", bc_self|bc_blue;
+		} else {
+			announce "unrecognized #command: 1-7, kill, amount, reset allowed", bc_self|bc_blue;
+		}
+	// more events here
+	} else {
+		announce "unrecognized command: easter2015 allowed", bc_self|bc_blue;
+	}
+	end;
+OnWave:
+	.wavecount--;
+	end;
+}

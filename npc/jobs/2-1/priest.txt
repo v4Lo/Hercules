@@ -517,13 +517,17 @@ prt_church,16,41,4	script	High Bishop#prst	1_M_PASTOR,{
 		mes "Now you are born again as a Priest. I congratulate you, and hope you will greatly help other people for the rest of your life.";
 		next;
 		mes "[Bishop Paul]";
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
 		if (.@joblvl < 50) {
 			getitem 1550,1; //Book
-			mes "This book is for you. I hope it will aid you in spreading God's message on earth.";
+			mes "This is for you. I hope it will aid you in spreading God's message on earth.";
 		}
 		else {
 			getitem 1551,1; //Bible
-			mes "In commemoration of your job change, I am giving you a bible. This will lighten your way to the path of righteousness.";
+			mes "In commemoration of your job change, I am giving you this. This will lighten your way to the path of righteousness.";
 		}
 		next;
 		mes "[Bishop Paul]";

@@ -69,23 +69,50 @@ aldebaran,223,222,4	script	Mr. Claus	4_M_SANTA,{
 // Inside Lutie
 //============================================================
 xmas_in,100,96,4	script	Santa Claus	4_M_SANTA,{
-	mes "[Santa Claus]";
-	mes "Ho Ho Ho~";
-	mes "Meeeerry Christmas !!";
-	next;
-	mes "^3355FFIt's...^000000";
-	mes "^3355FFIt's the original Santa Claus!^000000";
-	next;
-	mes "[Santa Claus]";
-	mes "Ho Ho Ho~";
-	mes "I'm Santa Claus, and I bring gifts to every good boy and girl on Christmas!";
-	next;
-	mes "[Santa Claus]";
-	mes "If you want to leave Lutie, go outside town and head south to the first field that you see. You'll be able to find a magical warp that will take you to Al de Baran.";
-	next;
-	mes "[Santa Claus]";
-	mes "Ho ho ho~";
-	mes "Meeeeeeerry Christmas!";
+	if(onlyro_talkedsanta == 1) {
+		mes "[Santa Claus]";
+		mes "You again?";
+		mes "Let me give you a gift!";
+		next;
+		mes "[Santa Claus]";
+		mes "Ho ho ho~";
+		mes "Meeeeeeerry Christmas!";
+		switch(rand(1,4)) {
+			case 1:
+				getitem 528,1;
+				break;
+			case 2:
+				getitem 529,5;
+				break;
+			case 3:
+				getitem 539,1;
+				break;
+			case 4:
+				getitem 539,2;
+				break;
+		}
+		onlyro_talkedsanta = 2;
+	} else {
+		mes "[Santa Claus]";
+		mes "Ho Ho Ho~";
+		mes "Meeeerry Christmas !!";
+		next;
+		mes "^3355FFIt's...^000000";
+		mes "^3355FFIt's the original Santa Claus!^000000";
+		next;
+		mes "[Santa Claus]";
+		mes "Ho Ho Ho~";
+		mes "I'm Santa Claus, and I bring gifts to every good boy and girl on Christmas!";
+		next;
+		mes "[Santa Claus]";
+		mes "If you want to leave Lutie, go outside town and head south to the first field that you see. You'll be able to find a magical warp that will take you to Al de Baran.";
+		next;
+		mes "[Santa Claus]";
+		mes "Ho ho ho~";
+		mes "Meeeeeeerry Christmas!";
+		if(onlyro_talkedsanta == 0) onlyro_talkedsanta = 1;
+		if(xmas_npc < 1) xmas_npc = 1;
+	}
 	close;
 }
 

@@ -16,7 +16,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Fadhgridh#1::OutsideFlagsPR3	GUILD_FLAG,{
+-	script	Lazreagues#1::OutsideFlagsPR3	GUILD_FLAG,{
 
 	.@GID = getcastledata("prtg_cas03",1);
 
@@ -66,14 +66,14 @@ OnRecvCastlePt03:
 	end;
 }
 
-prt_gld,147,140,4	duplicate(OutsideFlagsPR3)	Fadhgridh#1-2	GUILD_FLAG
-prt_gld,147,136,4	duplicate(OutsideFlagsPR3)	Fadhgridh#2	GUILD_FLAG
-prt_gld,158,140,4	duplicate(OutsideFlagsPR3)	Fadhgridh#3	GUILD_FLAG
-prt_gld,158,136,4	duplicate(OutsideFlagsPR3)	Fadhgridh#4	GUILD_FLAG
+prt_gld,147,140,4	duplicate(OutsideFlagsPR3)	Lazreagues#1-2	GUILD_FLAG
+prt_gld,147,136,4	duplicate(OutsideFlagsPR3)	Lazreagues#2	GUILD_FLAG
+prt_gld,158,140,4	duplicate(OutsideFlagsPR3)	Lazreagues#3	GUILD_FLAG
+prt_gld,158,136,4	duplicate(OutsideFlagsPR3)	Lazreagues#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Fadhgridh#5::InsideFlagsPR3	GUILD_FLAG,{
+-	script	Lazreagues#5::InsideFlagsPR3	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePt03:
@@ -81,20 +81,20 @@ OnRecvCastlePt03:
 	end;
 }
 
-prtg_cas03,168,28,4	duplicate(InsideFlagsPR3)	Fadhgridh#5-2	GUILD_FLAG
-prtg_cas03,182,28,4	duplicate(InsideFlagsPR3)	Fadhgridh#6	GUILD_FLAG
-prtg_cas03,43,50,4	duplicate(InsideFlagsPR3)	Fadhgridh#7	GUILD_FLAG
-prtg_cas03,48,50,4	duplicate(InsideFlagsPR3)	Fadhgridh#8	GUILD_FLAG
-prtg_cas03,43,58,4	duplicate(InsideFlagsPR3)	Fadhgridh#9	GUILD_FLAG
-prtg_cas03,48,58,4	duplicate(InsideFlagsPR3)	Fadhgridh#10	GUILD_FLAG
-prtg_cas03,158,210,4	duplicate(InsideFlagsPR3)	Fadhgridh#11	GUILD_FLAG
-prtg_cas03,169,210,4	duplicate(InsideFlagsPR3)	Fadhgridh#12	GUILD_FLAG
-prtg_cas03,162,201,4	duplicate(InsideFlagsPR3)	Fadhgridh#13	GUILD_FLAG
-prtg_cas03,165,201,4	duplicate(InsideFlagsPR3)	Fadhgridh#14	GUILD_FLAG
+prtg_cas03,168,28,4	duplicate(InsideFlagsPR3)	Lazreagues#5-2	GUILD_FLAG
+prtg_cas03,182,28,4	duplicate(InsideFlagsPR3)	Lazreagues#6	GUILD_FLAG
+prtg_cas03,43,50,4	duplicate(InsideFlagsPR3)	Lazreagues#7	GUILD_FLAG
+prtg_cas03,48,50,4	duplicate(InsideFlagsPR3)	Lazreagues#8	GUILD_FLAG
+prtg_cas03,43,58,4	duplicate(InsideFlagsPR3)	Lazreagues#9	GUILD_FLAG
+prtg_cas03,48,58,4	duplicate(InsideFlagsPR3)	Lazreagues#10	GUILD_FLAG
+prtg_cas03,158,210,4	duplicate(InsideFlagsPR3)	Lazreagues#11	GUILD_FLAG
+prtg_cas03,169,210,4	duplicate(InsideFlagsPR3)	Lazreagues#12	GUILD_FLAG
+prtg_cas03,162,201,4	duplicate(InsideFlagsPR3)	Lazreagues#13	GUILD_FLAG
+prtg_cas03,165,201,4	duplicate(InsideFlagsPR3)	Lazreagues#14	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-prontera,143,203,2	duplicate(InsideFlagsPR3)	Fadhgridh#15	GUILD_FLAG
+prontera,143,203,2	duplicate(InsideFlagsPR3)	Lazreagues#15	GUILD_FLAG
 
 // Kafra Employee
 //============================================================

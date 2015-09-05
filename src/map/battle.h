@@ -459,6 +459,12 @@ struct Battle_Config {
 	int bg_update_interval;
 	int bg_flee_penalty;
 
+	int bg_reward_rates;
+	int bg_ranking_bonus;
+
+	int bg_ranked_mode;
+	int bg_ranked_max_games;
+
 	// rAthena
 	int max_third_parameter;
 	int max_baby_third_parameter;
@@ -473,6 +479,9 @@ struct Battle_Config {
 	int min_npc_vendchat_distance;
 	int atcommand_mobinfo_type;
 
+	// Costume System
+	int reserved_costume_id;
+	
 	int mob_size_influence; // Enable modifications on earned experience, drop rates and monster status depending on monster size. [mkbu95]
 	int bowling_bash_area;
 	int mob_chase_refresh; //How often a monster should refresh its chase [Playtester]

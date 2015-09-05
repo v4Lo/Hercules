@@ -14,6 +14,7 @@ struct auction_data;
 struct guild_member;
 struct guild_position;
 struct guild_storage;
+struct master_storage;
 struct mail_message;
 struct map_session_data;
 struct party_member;
@@ -52,6 +53,8 @@ struct intif_interface {
 	int (*request_registry) (struct map_session_data *sd, int flag);
 	int (*request_guild_storage) (int account_id, int guild_id);
 	int (*send_guild_storage) (int account_id, struct guild_storage *gstor);
+	int (*request_master_storage) (int account_id, int master_id);
+	int (*send_master_storage) (int account_id, struct master_storage *mstor);
 	int (*create_party) (struct party_member *member,char *name,int item,int item2);
 	int (*request_partyinfo) (int party_id, int char_id);
 	int (*party_addmember) (int party_id,struct party_member *member);
@@ -127,6 +130,8 @@ struct intif_interface {
 	void (*pMessageToFD) (int fd);
 	void (*pLoadGuildStorage) (int fd);
 	void (*pSaveGuildStorage) (int fd);
+	void(*pLoadMasterStorage) (int fd);
+	void(*pSaveMasterStorage) (int fd);
 	void (*pPartyCreated) (int fd);
 	void (*pPartyInfo) (int fd);
 	void (*pPartyMemberAdded) (int fd);

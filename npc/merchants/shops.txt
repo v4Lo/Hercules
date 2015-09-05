@@ -1366,7 +1366,7 @@ OnInit:
 	sellitem Scell;
 	sellitem Monster's_Feed;
 	sellitem Animal's_Skin;
-	sellitem Bill_Of_Birds;
+	//sellitem Bill_Of_Birds;
 }
 
 moc_ruins,81,113,0	trader	Item Collector#moc2	4_M_03,{
@@ -1374,7 +1374,7 @@ OnInit:
 	sellitem Scell;
 	sellitem Monster's_Feed;
 	sellitem Animal's_Skin;
-	sellitem Bill_Of_Birds;
+	//sellitem Bill_Of_Birds;
 }
 
 moc_ruins,110,105,2	trader	Jeweler#moc1	8_F,{
@@ -1579,7 +1579,7 @@ OnInit:
 	sellitem Pumpkin;
 	sellitem Pumpkin_Head;
 	sellitem Tree_Root;
-	sellitem Goat's_Horn;
+	//sellitem Goat's_Horn;
 	sellitem Pet_Food;
 	sellitem Poison_Powder;
 	sellitem Single_Cell;

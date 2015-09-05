@@ -48,7 +48,7 @@ cmd_fild03,0,0,0,0	monster	Mutant Dragonoid	1262,1,0,0,1
 cmd_fild03,0,0,0,0	monster	Pest	1256,30,0,0,0
 cmd_fild03,0,0,0,0	monster	Poporing	1031,10,0,0,0
 cmd_fild03,0,0,0,0	monster	Anolian	1206,90,0,0,0
-cmd_fild03,0,0,0,0	monster	Toad	1089,1,3600000,1800000,1
+cmd_fild03,0,0,0,0	monster	Toad	1089,1,3600000,600000,1
 cmd_fild03,356,232,3,3	monster	Shining Plant	1083,1,1800000,900000,1
 cmd_fild03,262,289,3,3	monster	Shining Plant	1083,1,1800000,900000,1
 cmd_fild03,145,191,3,3	monster	Shining Plant	1083,1,1800000,900000,1
@@ -183,7 +183,7 @@ cmd_fild08,326,258,50,110	monster	Kobold Archer	1282,10,0,0,0
 cmd_fild08,326,258,50,110	monster	Side Winder	1037,2,0,0,0
 cmd_fild08,0,0,0,0	monster	Side Winder	1037,3,0,0,0
 cmd_fild08,130,192,110,150	monster	Side Winder	1037,15,0,0,0
-cmd_fild08,0,0,0,0	monster	Gryphon	1259,1,3600000,1800000,1
+cmd_fild08,0,0,0,0	monster	Gryphon	1259,1,3600000,600000,1
 cmd_fild08,60,143,10,10	monster	Yellow Plant	1081,4,1800000,900000,1
 cmd_fild08,130,201,10,10	monster	Yellow Plant	1081,4,1800000,900000,1
 

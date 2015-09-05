@@ -32,7 +32,7 @@
 
 /// Uncomment to disable Hercules' anonymous stat report
 /// We kindly ask you to consider keeping it enabled, it helps us improve Hercules.
-//#define STATS_OPT_OUT
+#define STATS_OPT_OUT
 
 /// Uncomment to enable the Cell Stack Limit mod.
 /// It's only config is the battle_config custom_cell_stack_limit.

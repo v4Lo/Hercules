@@ -92,3 +92,13 @@ pvp_n_8-3	mapflag	pvp_noguild
 pvp_n_8-4	mapflag	pvp_noguild
 pvp_n_8-5	mapflag	pvp_noguild
 pvp_2vs2	mapflag	pvp_noguild
+
+
+//onlyro pvp
+2009rwc_03	mapflag	pvp_noguild
+2009rwc_04	mapflag	pvp_noguild
+guild_vs2	mapflag	pvp_noguild
+guild_vs3	mapflag	pvp_noguild
+guild_vs1	mapflag	pvp_noguild
+payon_mem	mapflag	pvp_noguild
+pvp_y_1-2	mapflag	pvp_noguild

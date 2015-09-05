@@ -1,0 +1,126 @@
+-	script	guildchange	-1,{
+	
+	mes "[Guild Leader Changer]";
+	mes "Hello.";
+	mes "I administer the guild register.";
+	mes "Although most guild services have been automated I still have to do guild leader changes manually.";
+	next;
+	mes "[Guild Leader Changer]";
+	mes "I can change a guild leader once a month per guild.";
+	mes "Normally a fee occurs but I do it for free once per guild.";
+	mes "A higher guild level translates to a significantly higher fee.";
+	.@gid = getcharid(2);
+	if (.@gid != 0 && strcharinfo(0) == getguildmaster(.@gid)) {
+		query_sql("SELECT `guild_lv` FROM `guild` WHERE `guild_id` = '"+ .@gid +"'",.@guild_lv);
+		next;
+		mes "[Guild Leader Changer]";
+		mes "Welcome guild master of ^0000FF"+getguildname(.@gid)+"^000000.";
+		mes "The level of your guild is "+.@guild_lv+".";
+		.@lastChangeDate = getd("$onlyro_guild_change_"+.@gid);
+		.@month = 60 * 60 * 24 * 30;
+		next;
+		if(.@lastChangeDate > gettimetick(2)) {
+			mes "[Guild Leader Changer]";
+			mes "You are not allowed to change the guild leader for another ^0000FF"+ callfunc("Time2Str",.@lastChangeDate) + "^000000.";
+			close;
+		}
+		.@cost = .@guild_lv*.@guild_lv*100000;
+		mes "[Guild Leader Changer]";
+		mes "The fee to change the guild leader of your guild is ^FF0000"+.@cost+" Zeny^000000 and ^FF0000one Emperium^000000.";
+		mes "Would you like to transfer the ownership of your guild?";
+		.@changedFreeAlready = getd("$onlyro_guild_free_"+.@gid);
+		next;
+		if(.@changedFreeAlready == 0) {
+			switch(select("Change the leader for a fee:Change the leader for free (once):No, thank you.")) {
+				case 1:
+				break;
+				case 2:
+					.@cost = 0;
+				break;
+				case 3:
+					mes "[Guild Leader Changer]";
+					mes "Please come again.";
+					close;
+				break;
+			}
+		} else {
+			switch(select("Change the leader for a fee:No, thank you.")) {
+				case 1:
+				break;
+				case 2:
+					mes "[Guild Leader Changer]";
+					mes "Please come again.";
+					close;
+				break;
+			}
+		}
+		mes "[Guild Leader Changer]";
+		mes "Please enter the name of the character you want to transfer the guild ownership to.";
+		mes "The character has to be a logged in guild member.";
+		next;
+		input .@newLeader$;
+		mes "[Guild Leader Changer]";
+		mes "The new owner will be ^FF0000"+.@newLeader$+"^000000.";
+		if(.@cost > 0) mes "The required fee amounts to ^FF0000"+.@cost+" Zeny^000000 and ^FF0000one Emperium^000000.";
+		mes "Should I go ahead and do the transfer?";
+		next;
+		switch(select("Yes, please.:No! Stop! I changed my mind!")) {
+			case 2:
+				mes "[Guild Leader Changer]";
+				mes "Please calm down. Nothing has happened yet.";
+				mes "I will cancel the process, as you requested.";
+				close;
+			break;
+		}
+		if(Zeny < .@cost) {
+			mes "[Guild Leader Changer]";
+			mes "You do not own enough zeny to pay the transfer fee.";
+			close;
+		}
+		if(.@cost > 0 && countitem(714) == 0) {
+			mes "[Guild Leader Changer]";
+			mes "You seem to be missing the required ^FF0000Emperium^000000.";
+			close;
+		}
+		if(.@newLeader$ == strcharinfo(0)) {
+			mes "[Guild Leader Changer]";
+			mes "You are already owner of your guild.";
+			close;
+		}
+		.@newLeaderCID = getcharid(0, .@newLeader$); // char id
+		.@newLeaderGID = getcharid(2, .@newLeader$); // gid 
+		.@newLeaderAID = getcharid(3, .@newLeader$); // aid
+		if(!isloggedin(.@newLeaderAID, .@newLeaderCID)) {
+			mes "[Guild Leader Changer]";
+			mes ""+.@newLeader$+" is not online.";
+			close;
+		}
+		if(.@gid != .@newLeaderGID) {
+			mes "[Guild Leader Changer]";
+			mes ""+.@newLeader$+" is not the name of a guildmember.";
+			close;
+		}
+		if(.@cost == 0) {
+			setd("$onlyro_guild_free_"+.@gid, 1);
+		} else {
+			Zeny = Zeny-.@cost;
+			delitem 714, 1;
+		}
+		.@nextChangeDate = .@month + gettimetick(2);
+		setd("$onlyro_guild_change_"+.@gid, .@nextChangeDate);
+		guildchangegm(.@gid, .@newLeader$);
+		// if(getguildmaster(.@gid) == .@newLeader$) {
+		mes "[Guild Leader Changer]";
+		mes "Ownership successfully transfered to "+.@newLeader$+".";
+		close;
+		// } else {
+			// mes "[Guild Leader Changer]";
+			// mes "Guild transfer failed. Please contact the OnlyRO Staff.";
+			// close;
+		// }
+	}
+	close;
+}
+
+prontera,165,102,4	duplicate(guildchange)	Guild Admin#g1_prt	4_M_ZONDAOYAJI
+prt_in,134,24,4	duplicate(guildchange)	Guild Admin#g1_test	4_M_ZONDAOYAJI

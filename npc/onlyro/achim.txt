@@ -1,0 +1,37 @@
+prontera,137,95,5	trader	Tool Dealer Achim#p_a	4_M_YURI,{
+	
+OnInit:
+	sellitem Wing_Of_Fly;
+	sellitem Wing_Of_Butterfly;
+	sellitem Spectacles;
+	sellitem Arrow;
+	sellitem Silver_Arrow;
+	sellitem Fire_Arrow;
+	sellitem Red_Potion;
+	sellitem Orange_Potion;
+	sellitem Yellow_Potion;
+	sellitem White_Potion;
+	sellitem Green_Potion;
+	sellitem Center_Potion;
+	sellitem Awakening_Potion;
+	sellitem Berserk_Potion;
+	sellitem Blue_Gemstone;
+	sellitem Leaf_Of_Yggdrasil;
+	sellitem Booby_Trap;
+	sellitem Bullet;
+	sellitem Silver_Bullet;
+	sellitem Shell_Of_Blood;
+	sellitem Buy_Market_Permit2,666;
+	end;
+end;
+}
+-	script	p_a1	-1,{
+OnInit:
+	emotion 8, 0, "Tool Dealer Achim#p_a";
+	initnpctimer;
+end;
+OnTimer180000:
+	emotion 8, 0, "Tool Dealer Achim#p_a";
+	setnpctimer rand(0,150000);
+end;
+}

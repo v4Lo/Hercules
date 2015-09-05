@@ -84,22 +84,22 @@ hu_fild05,112,272,62,82	monster	Grove	1687,15,0,0,0
 hu_fild05,112,272,62,82	monster	Novus	1715,2,0,0,0
 hu_fild05,112,272,62,82	monster	Novus	1718,2,0,0,0
 hu_fild05,112,272,62,82	monster	Anopheles	1627,10,0,0,0
-hu_fild05,112,272,62,82	monster	Mutant Dragonoid	1262,1,24000000,1800000,0
+hu_fild05,112,272,62,82	monster	Mutant Dragonoid	1262,1,24000000,600000,0
 hu_fild05,276,302,93,60	monster	Grove	1687,15,0,0,0
 hu_fild05,276,302,93,60	monster	Novus	1715,2,0,0,0
 hu_fild05,276,302,93,60	monster	Novus	1718,1,0,0,0
 hu_fild05,276,302,93,60	monster	Anopheles	1627,10,0,0,0
-hu_fild05,276,302,93,60	monster	Mutant Dragonoid	1262,1,24000000,1800000,0
+hu_fild05,276,302,93,60	monster	Mutant Dragonoid	1262,1,24000000,600000,0
 hu_fild05,286,144,82,90	monster	Grove	1687,15,0,0,0
 hu_fild05,286,144,82,90	monster	Novus	1715,2,0,0,0
 hu_fild05,286,144,82,90	monster	Novus	1718,2,0,0,0
 hu_fild05,286,144,82,90	monster	Anopheles	1627,10,0,0,0
-hu_fild05,286,144,82,90	monster	Mutant Dragonoid	1262,1,24000000,1800000,0
+hu_fild05,286,144,82,90	monster	Mutant Dragonoid	1262,1,24000000,600000,0
 hu_fild05,118,106,80,70	monster	Grove	1687,15,0,0,0
 hu_fild05,118,106,80,70	monster	Novus	1715,2,0,0,0
 hu_fild05,118,106,80,70	monster	Novus	1718,1,0,0,0
 hu_fild05,118,106,80,70	monster	Anopheles	1627,10,0,0,0
-hu_fild05,118,106,80,70	monster	Mutant Dragonoid	1262,1,24000000,1800000,0
+hu_fild05,118,106,80,70	monster	Mutant Dragonoid	1262,1,24000000,600000,0
 hu_fild05,0,0,0,0	monster	Anopheles	1627,10,0,0,0
 hu_fild05,0,0,0,0	monster	Dragon Egg	1721,1,7200000,1800000,0
 hu_fild05,196,196,5,5	monster	Dragon Egg	1721,1,7200000,1800000,0

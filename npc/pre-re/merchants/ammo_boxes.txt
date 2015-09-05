@@ -11,3 +11,4 @@
 //============================================================
 
 izlude,171,127,3	duplicate(mdk)	Magazine Dealer Kenny#iz	4_M_01
+que_ng,187,149,3	duplicate(mdk)	Magazine Dealer Kenny#ng	4_M_01

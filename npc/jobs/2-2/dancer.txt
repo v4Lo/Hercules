@@ -883,10 +883,17 @@ job_duncer,95,93,4	script	Bijou#da	4W_F_01,{
 		mes "gift from me.";
 		mes "Please take it.";
 		mes "May your performances always bring joy to your audience~";
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 1986, 1; //waffe
+		
 		if (.@jlevel == 50)
 			getitem 1953,1; //Line_
-		else
-			getitem 1950,1; //Rope
+		//else
+			//getitem 1950,1; //Rope
 		close;
 	}
 }

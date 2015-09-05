@@ -1,0 +1,379 @@
+//===== Hercules Script ======================================
+//= Battleground Flavius
+-	script	BG_Flavius	-1,{
+	end;
+
+OnGuillaumeQuit:
+OnCroixQuit:
+	end;
+
+OnGuillaumeJoin:
+OnCroixJoin:
+	end;
+
+OnBuildTeams:
+	set $@BG_Flaviust1,bg_create_team("bat_b01",390,10,0,"BG_Flavius::OnGuillaumeQuit","");
+	set $@BG_Flaviust2,bg_create_team("bat_b01",10,290,1,"BG_Flavius::OnCroixQuit","");
+	end;
+	
+OnReady:
+	// BG Variables
+	set .BG_Status, 1;
+	set .Guillaume_Score, 0;
+	set .Guillaume_Loss, 0;
+	set .Croix_Score, 0;
+	set .Croix_Loss, 0;
+	set .Match, 0;
+	// Prepare NPC
+	donpcevent "#gfl1_respawn::OnBGStart";
+	donpcevent "#cfl1_respawn::OnBGStart";
+	// Build and Warp Teams
+	initnpctimer;
+	// Start Match!
+
+OnRoundStart:
+	sleep 2000;
+	if( .BG_Status != 1 ) end;
+
+	areapercentheal "bat_b01",382,2,397,17,100,100;
+	areapercentheal "bat_b01",2,282,17,297,100,100;
+	bg_warp $@BG_Flaviust1,"bat_b01",311,224;
+	bg_warp $@BG_Flaviust2,"bat_b01",87,75;
+
+	sleep 2000;
+	if( .BG_Status != 1 ) end;
+
+	set .Match, .Match + 1;
+	// Crystal Spawn
+	set .Guillaume_Crystal, bg_monster($@BG_Flaviust1,"bat_b01",328,150,"Crystal Guillaume",1914,"BG_Flavius::OnGuillaumeBreak");
+	setwall "bat_b01",327,149,2,6,0,"gui_wall1-1";
+	setwall "bat_b01",329,149,2,0,0,"gui_wall1-2";
+	setwall "bat_b01",329,151,2,2,0,"gui_wall1-3";
+	setwall "bat_b01",327,151,2,4,0,"gui_wall1-4";
+
+	set .Croix_Crystal, bg_monster($@BG_Flaviust2,"bat_b01",62,150,"Crystal Croix",1915,"BG_Flavius::OnCroixBreak");
+	setwall "bat_b01",61,149,2,6,0,"cro_wall1-1";
+	setwall "bat_b01",63,149,2,0,0,"cro_wall1-2";
+	setwall "bat_b01",63,151,2,2,0,"cro_wall1-3";
+	setwall "bat_b01",61,151,2,4,0,"cro_wall1-4";
+
+	// Guardian Spawns
+	bg_monster $@BG_Flaviust1,"bat_b01",328,160,"Guillaume Guardian",1949,"BG_Flavius::OnGuiGuardian";
+	bg_monster $@BG_Flaviust1,"bat_b01",328,140,"Guillaume Guardian",1950,"BG_Flavius::OnGuiGuardian";
+	set .Guillaume_Guardian, 2;
+	bg_monster $@BG_Flaviust2,"bat_b01",62,160,"Croix Guardian",1949,"BG_Flavius::OnCroGuardian";
+	bg_monster $@BG_Flaviust2,"bat_b01",61,140,"Croix Guardian",1950,"BG_Flavius::OnCroGuardian";
+	set .Croix_Guardian, 2;
+	// Announces
+	mapannounce "bat_b01","Welcome to the Battle of Flavius. Kill the enemy guardians, then attack the crystal!",1,0x00FF00;
+	end;
+
+OnRoundStop:
+	// Remove Monsters
+	killmonster "bat_b01","BG_Flavius::OnGuiGuardian";
+	killmonster "bat_b01","BG_Flavius::OnCroGuardian";
+	delwall "gui_wall1-1";
+	delwall "gui_wall1-2";
+	delwall "gui_wall1-3";
+	delwall "gui_wall1-4";
+	killmonster "bat_b01","BG_Flavius::OnGuillaumeBreak";
+	delwall "cro_wall1-1";
+	delwall "cro_wall1-2";
+	delwall "cro_wall1-3";
+	delwall "cro_wall1-4";
+	killmonster "bat_b01","BG_Flavius::OnCroixBreak";
+	end;
+
+OnGuiGuardian:
+	if( set(.Guillaume_Guardian, .Guillaume_Guardian - 1) <= 0 )
+	{
+		delwall "gui_wall1-1";
+		delwall "gui_wall1-2";
+		delwall "gui_wall1-3";
+		delwall "gui_wall1-4";
+		mapannounce "bat_b01","The Guillaume Crystal is vulnerable to attack!",1,0x0000FF;
+	}
+	end;
+
+OnCroGuardian:
+	if( set(.Croix_Guardian, .Croix_Guardian - 1) <= 0 )
+	{
+		delwall "cro_wall1-1";
+		delwall "cro_wall1-2";
+		delwall "cro_wall1-3";
+		delwall "cro_wall1-4";
+		mapannounce "bat_b01","The Croix Crystal is vulnerable to attack!",1,0xFF0000;
+	}
+	end;
+
+OnGuillaumeBreak:
+	donpcevent "BG_Flavius::OnRoundStop";
+	set .Guillaume_Loss, .Guillaume_Loss + 1;
+	if( set(.Croix_Score, .Croix_Score + 1) < 2 )
+	{
+		bg_updatescore "bat_b01",.Guillaume_Score,.Croix_Score;
+		mapannounce "bat_b01","The Guillaume Crystal has been destroyed!",1,0x0000FF;
+		donpcevent "BG_Flavius::OnRoundStart";
+	}
+	else
+	{
+		bg_updatescore "bat_b01",.Guillaume_Score,.Croix_Score;
+		mapannounce "bat_b01","The Croix army has won the Battle of Flavius!",1,0xFF0000;
+		donpcevent "BG_Flavius::OnMatchEnd";
+	}
+	end;
+
+OnCroixBreak:
+	donpcevent "BG_Flavius::OnRoundStop";
+	set .Croix_Loss, .Croix_Loss + 1;
+	if( set(.Guillaume_Score, .Guillaume_Score + 1) < 2 )
+	{
+		bg_updatescore "bat_b01",.Guillaume_Score,.Croix_Score;
+		mapannounce "bat_b01","The Croix Crystal has been destroyed!",1,0xFF0000;
+		donpcevent "BG_Flavius::OnRoundStart";
+	}
+	else
+	{
+		bg_updatescore "bat_b01",.Guillaume_Score,.Croix_Score;
+		mapannounce "bat_b01","The Guillaume army has won the Battle of Flavius!",1,0x0000FF;
+		donpcevent "BG_Flavius::OnMatchEnd";
+	}
+	end;
+
+OnTimer600000:
+	mapannounce "bat_b01","Battle of Flavius will end in 5 minutes",1,0x8B0000;
+	end;
+
+OnTimer840000:
+	mapannounce "bat_b01","Battle of Flavius will end in 1 minute",1,0x8B0000;
+	end;
+
+OnTimer900000:
+	if( .Croix_Score > .Guillaume_Score )
+		mapannounce "bat_b01","The Croix army has won the Battle of Flavius!",1,0xFF0000;
+	else if( .Croix_Score < .Guillaume_Score )
+		mapannounce "bat_b01","The Guillaume army has won the Battle of Flavius!",1,0x0000FF;
+	else
+		mapannounce "bat_b01","The Battle of Flavius is over. The time is out, this is a Tie",1,0x8B0000;
+
+OnMatchEnd:
+	stopnpctimer;
+	donpcevent "#gfl1_respawn::OnBGStop";
+	donpcevent "#cfl1_respawn::OnBGStop";
+	set .BG_Status, 2; // BG Status
+	// =======================================================
+	// Team Rewards
+	// =======================================================
+	if( .Guillaume_Score > .Croix_Score )
+	{
+		set .@t1r,5;
+		set .@t2r,3;
+	}
+	else if( .Croix_Score > .Guillaume_Score )
+	{
+		set .@t1r,3;
+		set .@t2r,5;
+	}
+	else
+	{
+		set .@t1r,4;
+		set .@t2r,4;
+	}
+	
+	.@rqitA = queueiterator($@BG_Flaviusq1);
+	.@rqitB = queueiterator($@BG_Flaviusq2);
+
+	$@bgFinishedPlayerCount = 0;
+	
+	while ((set(.currentRID, qinext(.@rqitA))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t1r;
+		getitem 7829,2;
+		detachrid;
+	}
+
+	while ((set(.currentRID, qinext(.@rqitB))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t2r;
+		getitem 7829,2;
+		detachrid;
+	}
+	
+	qiclear(.@rqitA);
+	qiclear(.@rqitB);
+	queuedel($@BG_Flaviusq1);
+	queuedel($@BG_Flaviusq2);
+	// =======================================================
+	sleep 2000;
+	bg_warp $@BG_Flaviust1,"SavePoint",0,0;
+	bg_warp $@BG_Flaviust2,"SavePoint",0,0;
+	sleep 3000;
+	bg_destroy $@BG_Flaviust1;
+	set $@BG_Flaviust1, 0;
+	bg_destroy $@BG_Flaviust2;
+	set $@BG_Flaviust2, 0;
+	$@bg_type_ext$ = "BG_Flavius";
+	donpcevent "bg_queue::OnHasBGFinished";
+	bg_updatescore .Castle$,.Guillaume_Score,.Croix_Score;
+	//mapannounce "bat_b01","Battle of Flavius will start 15 seconds!",1,0x8B0000;
+	//initnpctimer;
+	end;
+
+OnTimer10000:
+	if( .BG_Status == 2 )
+		mapannounce "bat_b01","Battle of Flavius will start in 5 seconds!",1,0x8B0000;
+	end;
+
+OnTimer15000:
+	if( .BG_Status != 2 )
+		end;
+OnReset:
+	stopnpctimer;
+	donpcevent "BG_Flavius::OnRoundStop";
+	set .Guillaume_Score, 0;
+	set .Guillaume_Crystal, 0;
+	set .Guillaume_Loss, 0;
+	set .Croix_Score, 0;
+	set .Croix_Crystal, 0;
+	set .Croix_Loss, 0;
+	set .Match, 0;
+	bg_destroy $@BG_Flaviust1;
+	bg_destroy $@BG_Flaviust2;
+	set $@BG_Flaviust1, 0;
+	set $@BG_Flaviust2, 0;
+	sleep 1000;
+	mapwarp "bat_b01","bat_room",155,150;
+	sleep 1000;
+	maprespawnguildid "bat_b01",0,3; // Just in case someone else
+	sleep 1000;
+	bg_updatescore "bat_b01",0,0;
+	set .BG_Status, 0;
+	donpcevent "BG_Flavius::OnReadyCheck";
+	end;
+}
+
+// Battleground Therapist
+// *********************************************************************
+
+bat_b01,390,13,5	script	Battlefield Surgeon#fl12	95,{
+	switch( getvariableofnpc(.BG_Status,"BG_Flavius") )
+	{
+	case 2:
+		bg_leave;
+		warp "prontera",156,191;
+		break;
+	case 1:
+		mes "[Battlefield Surgeon]";
+		mes "Just close your eyes, and take a deep breathe.";
+		mes "You can be free from pain.";
+
+		specialeffect2 312;
+		skilleffect 34,0;
+		skilleffect 29,0;
+		percentheal 100,100;
+		sc_start SC_BLESSING,300000,10;
+		sc_start SC_INC_AGI,300000,10;
+		repairall;
+
+		close2;
+
+		break;
+	}
+	end;
+}
+
+bat_b01,10,293,5	script	Battlefield Surgeon#fl11	95,{
+	switch( getvariableofnpc(.BG_Status,"BG_Flavius") )
+	{
+	case 2:
+		bg_leave;
+		warp "prontera",156,191;
+		break;
+	case 1:
+		mes "[Battlefield Surgeon]";
+		mes "Just close your eyes, and take a deep breathe.";
+		mes "You can be free from pain.";
+
+		specialeffect2 312;
+		skilleffect 34,0;
+		skilleffect 29,0;
+		percentheal 100,100;
+		sc_start SC_BLESSING,300000,10;
+		sc_start SC_INC_AGI,300000,10;
+		repairall;
+
+		close2;
+
+		break;
+	}
+	end;
+}
+
+// Battleground Respawn
+// *********************************************************************
+
+bat_b01,390,10,0	script	#gfl1_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b01",382,2,397,17,100,100;
+	areawarp "bat_b01",382,2,397,17,"bat_b01",311,224;
+	initnpctimer;
+	end;
+}
+
+bat_b01,10,290,0	script	#cfl1_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b01",2,282,17,297,100,100;
+	areawarp "bat_b01",2,282,17,297,"bat_b01",87,75;
+	initnpctimer;
+	end;
+}
+
+// Flags
+// *********************************************************************
+
+
+// MapFlags
+// *********************************************************************
+
+bat_b01	mapflag	battleground	2
+bat_b01	mapflag	nomemo
+bat_b01	mapflag	nosave	SavePoint
+bat_b01	mapflag	noteleport
+bat_b01	mapflag	nowarp
+bat_b01	mapflag	nowarpto
+bat_b01	mapflag	noreturn
+bat_b01	mapflag	nobranch
+bat_b01	mapflag	nopenalty
+bat_b01	mapflag	loadevent

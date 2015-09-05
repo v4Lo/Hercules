@@ -57,8 +57,30 @@ alde_dun03,171,127,4	script	ald015r	WARPNPC,1,1,{
 	}
 }
 alde_dun04,80,273,0	warp	aldd016	2,2,alde_dun03,263,26
-alde_dun04,207,225,0	warp	ald017	1,1,c_tower3,7,34
-alde_dun04,215,192,0	warp	ald018	1,1,c_tower2,148,283
+//alde_dun04,207,225,0	warp	ald017	1,1,c_tower3,7,34
+alde_dun04,207,225,0	script	Gatekeeper#ctx	4W_F_01,{
+	mes "[Gatekeeper]";
+	mes	"Do you want to go back to the Clocktower?";
+		switch(select("yes:no")){
+			case 1:
+				warp "c_tower3",7,34;
+			case 2:
+			close;
+		}
+	close;
+}
+//alde_dun04,215,192,0	warp	ald018	1,1,c_tower2,148,283
+alde_dun04,215,192,0	script	Gatekeeper#cty	4W_F_01,{
+	mes "[Gatekeeper]";
+	mes	"Do you want to go back to the Clocktower?";
+		switch(select("yes:no")){
+			case 1:
+				warp "c_tower2",148,283;
+			case 2:
+			close;
+		}
+	close;
+}
 alde_dun04,32,74,0	warp	aldd19	1,1,alde_dun02,187,239
 alde_dun04,208,58,0	warp	aldd20	2,2,alde_dun04,268,74
 alde_dun04,272,74,0	warp	aldd021	2,2,alde_dun04,204,62

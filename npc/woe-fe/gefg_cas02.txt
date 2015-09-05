@@ -14,7 +14,7 @@
 
 // Guild Flag (Outside Castle)
 //============================================================
--	script	Eeyorbriggar#1::OutsideFlagsG2	GUILD_FLAG,{
+-	script	Jyolbriger#1::OutsideFlagsG2	GUILD_FLAG,{
 
 	.@GID = getcastledata("gefg_cas02",1);
 
@@ -64,14 +64,14 @@ OnRecvCastleG02:
 	end;
 }
 
-gef_fild13,303,243,4	duplicate(OutsideFlagsG2)	Eeyorbriggar#1-2	GUILD_FLAG
-gef_fild13,312,243,4	duplicate(OutsideFlagsG2)	Eeyorbriggar#2	GUILD_FLAG
-gef_fild13,290,243,4	duplicate(OutsideFlagsG2)	Eeyorbriggar#3	GUILD_FLAG
-gef_fild13,324,243,4	duplicate(OutsideFlagsG2)	Eeyorbriggar#4	GUILD_FLAG
+gef_fild13,303,243,4	duplicate(OutsideFlagsG2)	Jyolbriger#1-2	GUILD_FLAG
+gef_fild13,312,243,4	duplicate(OutsideFlagsG2)	Jyolbriger#2	GUILD_FLAG
+gef_fild13,290,243,4	duplicate(OutsideFlagsG2)	Jyolbriger#3	GUILD_FLAG
+gef_fild13,324,243,4	duplicate(OutsideFlagsG2)	Jyolbriger#4	GUILD_FLAG
 
 // Guild Flag (Inside Castle)
 //============================================================
--	script	Eeyorbriggar#5::InsideFlagsG2	GUILD_FLAG,{
+-	script	Jyolbriger#5::InsideFlagsG2	GUILD_FLAG,{
 	end;
 
 OnRecvCastleG02:
@@ -79,17 +79,17 @@ OnRecvCastleG02:
 	end;
 }
 
-gefg_cas02,65,130,5	duplicate(InsideFlagsG2)	Eeyorbriggar#5-2	GUILD_FLAG
-gefg_cas02,30,123,5	duplicate(InsideFlagsG2)	Eeyorbriggar#6	GUILD_FLAG
-gefg_cas02,65,139,6	duplicate(InsideFlagsG2)	Eeyorbriggar#7	GUILD_FLAG
-gefg_cas02,37,177,6	duplicate(InsideFlagsG2)	Eeyorbriggar#8	GUILD_FLAG
-gefg_cas02,37,168,6	duplicate(InsideFlagsG2)	Eeyorbriggar#9	GUILD_FLAG
-gefg_cas02,68,47,2	duplicate(InsideFlagsG2)	Eeyorbriggar#10	GUILD_FLAG
-gefg_cas02,68,36,2	duplicate(InsideFlagsG2)	Eeyorbriggar#11	GUILD_FLAG
+gefg_cas02,65,130,5	duplicate(InsideFlagsG2)	Jyolbriger#5-2	GUILD_FLAG
+gefg_cas02,30,123,5	duplicate(InsideFlagsG2)	Jyolbriger#6	GUILD_FLAG
+gefg_cas02,65,139,6	duplicate(InsideFlagsG2)	Jyolbriger#7	GUILD_FLAG
+gefg_cas02,37,177,6	duplicate(InsideFlagsG2)	Jyolbriger#8	GUILD_FLAG
+gefg_cas02,37,168,6	duplicate(InsideFlagsG2)	Jyolbriger#9	GUILD_FLAG
+gefg_cas02,68,47,2	duplicate(InsideFlagsG2)	Jyolbriger#10	GUILD_FLAG
+gefg_cas02,68,36,2	duplicate(InsideFlagsG2)	Jyolbriger#11	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-geffen,112,129,1	duplicate(InsideFlagsG2)	Eeyorbriggar#12	GUILD_FLAG
+geffen,112,129,1	duplicate(InsideFlagsG2)	Jyolbriger#12	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -124,7 +124,7 @@ gefg_cas02,140,116,0	duplicate(Gld_Trea_Spawn)	Treasure#gefg_cas02	-1
 
 // AGIT Manager
 //============================================================
-gefg_cas02,176,178,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas02	-1
+//gefg_cas02,176,178,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas02	-1
 
 // Guardians
 //============================================================

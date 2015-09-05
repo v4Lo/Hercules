@@ -2933,7 +2933,7 @@ struct map_session_data* HP_bg_getavailablesd(struct battleground_data *bgd) {
 	}
 	return retVal___;
 }
-bool HP_bg_team_delete(int bg_id) {
+bool HP_bg_team_delete(int bg_id, bool remove) {
 	int hIndex = 0;
 	bool retVal___ = false;
 	if( HPMHooks.count.HP_bg_team_delete_pre ) {
@@ -2949,7 +2949,7 @@ bool HP_bg_team_delete(int bg_id) {
 		}
 	}
 	{
-		retVal___ = HPMHooks.source.bg.team_delete(bg_id);
+		retVal___ = HPMHooks.source.bg.team_delete(bg_id, remove);
 	}
 	if( HPMHooks.count.HP_bg_team_delete_post ) {
 		bool (*postHookFunc) (bool retVal___, int *bg_id);
@@ -3094,7 +3094,7 @@ bool HP_bg_member_respawn(struct map_session_data *sd) {
 	}
 	return retVal___;
 }
-int HP_bg_create(unsigned short map_index, short rx, short ry, const char *ev, const char *dev) {
+int HP_bg_create(unsigned short map_index, short rx, short ry, int guild_index, const char *ev, const char *dev) {
 	int hIndex = 0;
 	int retVal___ = 0;
 	if( HPMHooks.count.HP_bg_create_pre ) {
@@ -3110,7 +3110,7 @@ int HP_bg_create(unsigned short map_index, short rx, short ry, const char *ev, c
 		}
 	}
 	{
-		retVal___ = HPMHooks.source.bg.create(map_index, rx, ry, ev, dev);
+		retVal___ = HPMHooks.source.bg.create(map_index, rx, ry,guild_index, ev, dev);
 	}
 	if( HPMHooks.count.HP_bg_create_post ) {
 		int (*postHookFunc) (int retVal___, unsigned short *map_index, short *rx, short *ry, const char *ev, const char *dev);
@@ -45137,7 +45137,7 @@ void HP_mob_damage(struct mob_data *md, struct block_list *src, int damage) {
 		}
 	}
 	{
-		HPMHooks.source.mob.damage(md, src, damage);
+		HPMHooks.source.mob.damage(md, src, damage, -1);
 	}
 	if( HPMHooks.count.HP_mob_damage_post ) {
 		void (*postHookFunc) (struct mob_data *md, struct block_list *src, int *damage);
@@ -48668,7 +48668,9 @@ int HP_npc_reload(void) {
 	}
 	return retVal___;
 }
+
 bool HP_npc_unloadfile(const char *filepath) {
+
 	int hIndex = 0;
 	bool retVal___ = false;
 	if( HPMHooks.count.HP_npc_unloadfile_pre ) {
@@ -70322,7 +70324,7 @@ int HP_status_get_sc_type(sc_type idx) {
 	}
 	return retVal___;
 }
-int HP_status_damage(struct block_list *src, struct block_list *target, int64 hp, int64 sp, int walkdelay, int flag) {
+int HP_status_damage(struct block_list *src, struct block_list *target, int64 hp, int64 sp, int walkdelay, int flag, int skill_id) {
 	int hIndex = 0;
 	int retVal___ = 0;
 	if( HPMHooks.count.HP_status_damage_pre ) {
@@ -70338,7 +70340,7 @@ int HP_status_damage(struct block_list *src, struct block_list *target, int64 hp
 		}
 	}
 	{
-		retVal___ = HPMHooks.source.status.damage(src, target, hp, sp, walkdelay, flag);
+		retVal___ = HPMHooks.source.status.damage(src, target, hp, sp, walkdelay, flag, skill_id);
 	}
 	if( HPMHooks.count.HP_status_damage_post ) {
 		int (*postHookFunc) (int retVal___, struct block_list *src, struct block_list *target, int64 *hp, int64 *sp, int *walkdelay, int *flag);
@@ -76498,6 +76500,7 @@ int HP_unit_counttargeted(struct block_list *bl) {
 	}
 	return retVal___;
 }
+#if 0
 int HP_unit_fixdamage(struct block_list *src, struct block_list *target, int sdelay, int ddelay, int64 damage, short div, unsigned char type, int64 damage2) {
 	int hIndex = 0;
 	int retVal___ = 0;
@@ -76525,6 +76528,7 @@ int HP_unit_fixdamage(struct block_list *src, struct block_list *target, int sde
 	}
 	return retVal___;
 }
+#endif
 int HP_unit_changeviewsize(struct block_list *bl, short size) {
 	int hIndex = 0;
 	int retVal___ = 0;

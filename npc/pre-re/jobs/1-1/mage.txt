@@ -208,6 +208,12 @@ geffen_in,164,124,4	script	Mage Guildsman	2_F_MAGICMASTER,{
 		callfunc "Job_Change",Job_Mage;
 		callfunc "F_ClearJobVar";
 		Zeny += 50;
+		getitem 5583, 1;
+		getitem 2456, 1;
+		getitem 15009, 1;
+		getitem 2560, 1;
+		getitem 1650, 1; // waffe
+		
 		if (questprogress(1005)) {
 			completequest 1005;
 		}

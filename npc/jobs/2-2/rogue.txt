@@ -184,9 +184,14 @@ in_rogue,363,122,4	script	Rogue Guildsman#rg	4_F_ROGUE,{
 				close2;
 				if (.@jlevel == 50) {
 					getitem 1220,1; //Gladius_
-				} else {
-					getitem 1219,1; //Gladius
-				}
+				} //else {
+					//getitem 1219,1; //Gladius
+				//}
+				getitem 2571, 1;
+				getitem 15011, 1;
+				getitem 2458, 1;
+				getitem 18514, 1;
+				getitem 13066, 1; //waffe
 				end;
 			}
 			if (select("I'm ready.:Hold on, I need to get ready!") == 2) {

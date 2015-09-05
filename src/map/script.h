@@ -319,7 +319,8 @@ enum {
 	MF_BATTLEGROUND,
 	MF_RESET,
 	MF_NOTOMB,
-	MF_NOCASHSHOP
+	MF_NOCASHSHOP,
+	MF_ENABLEEC,
 };
 
 /**
@@ -664,7 +665,7 @@ struct script_interface {
 	bool (*queue_del) (int idx);
 	bool (*queue_remove) (int idx, int var);
 	int (*queue_create) (void);
-	void (*queue_clear) (int idx);
+	bool (*queue_clear) (int idx);
 	/* */
 	const char * (*parse_curly_close) (const char *p);
 	const char * (*parse_syntax_close) (const char *p);
@@ -718,6 +719,7 @@ struct script_interface {
 	int (*buildin_killmonsterall_sub) (struct block_list *bl, va_list ap);
 	int (*buildin_announce_sub) (struct block_list *bl, va_list ap);
 	int (*buildin_getareausers_sub) (struct block_list *bl, va_list ap);
+	int(*buildin_getareausersid_sub) (struct block_list *bl, va_list ap);
 	int (*buildin_getareadropitem_sub) (struct block_list *bl, va_list ap);
 	int (*mapflag_pvp_sub) (struct block_list *bl, va_list ap);
 	int (*buildin_pvpoff_sub) (struct block_list *bl, va_list ap);

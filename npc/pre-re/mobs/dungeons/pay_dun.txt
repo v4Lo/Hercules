@@ -151,7 +151,7 @@ pay_dun04,0,0,0,0	monster	Archer Skeleton	1016,15,0,0,0
 pay_dun04,0,0,0,0	monster	Nine Tail	1180,30,60000,30000,0
 pay_dun04,0,0,0,0	monster	Skeleton General	1290,1,0,0,0
 pay_dun04,0,0,0,0	monster	Am Mut	1301,1,0,0,0
-pay_dun04,120,115,0,0	monster	Cat o' Nine Tails	1307,1,3600000,7200000,1
+pay_dun04,120,115,0,0	monster	Cat o' Nine Tails	1307,1,3600000,600000,1
 pay_dun04,120,120,10,10	monster	Shining Plant	1083,1,1800000,900000,1
 pay_dun04,28,110,5,5	monster	Shining Plant	1083,1,1800000,900000,1
 pay_dun04,0,0,0,0	monster	Red Plant	1078,10,180000,90000,1

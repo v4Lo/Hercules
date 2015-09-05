@@ -155,6 +155,12 @@ izlude_in,74,172,4	script	Swordman#swd_1	2_M_SWORDMASTER,{
 			next;
 			callfunc "Job_Change",Job_Swordman;
 			job_sword_q = 0;
+			getitem 5583, 1;
+			getitem 2456, 1;
+			getitem 15009, 1;
+			getitem 2560, 1;
+			getitem 1192, 1; // waffe
+			
 			completequest 1014;
 			mes "[Swordman]";
 			mes "Once again, congratulations. I expect that you will be a good representative of the Swordman Association.";

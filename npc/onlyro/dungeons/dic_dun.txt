@@ -1,0 +1,173 @@
+//===== Hercules Script ======================================
+//= Scaraba Hole Warp Script
+//===== By: ==================================================
+//= Chilly, Muad_Dib
+//===== Current Version: =====================================
+//= 1.1
+//===== Description: =========================================
+//= Warp Points for Scaraba Hole
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 1.1 Updated to match official script. [Joseph]
+//============================================================
+
+dic_dun01,87,212,0	warp	scarabahole0001	1,1,dic_dun01,169,227
+dic_dun01,165,227,0	warp	scarabahole0002	1,1,dic_dun01,83,212
+dic_dun01,371,228,0	warp	scarabahole0003	1,1,dic_dun01,32,156
+dic_dun01,28,156,0	warp	scarabahole0004	1,1,dic_dun01,367,228
+dic_dun01,371,172,0	warp	scarabahole0005	1,1,dic_dun01,32,100
+dic_dun01,28,100,0	warp	scarabahole0006	1,1,dic_dun01,367,172
+dic_dun02,102,148,0	warp	scarabahole0007	1,1,dic_dun01,290,99
+dic_dun01,371,100,0	warp	scarabahole0008	1,1,dic_dun01,33,43
+dic_dun01,29,43,0	warp	scarabahole0009	1,1,dic_dun01,367,100
+
+
+//===== Hercules Script ======================================
+//= El Dicastes Dungeon Monster Spawn Script
+//===== By: ==================================================
+//= Kisuka
+//===== Current Version: =====================================
+//= 1.2
+//===== Description: =========================================
+//= Official monster spawns in El Dicastes Dungeon.
+//===== Additional Comments: =================================
+//= 1.0 Official spawns from Aegis [Kisuka]
+//= 1.1 Added Nightmare Scaraba Hole [Chilly]
+//= 1.2 Updated Nightmare spawns and names. [Euphy]
+//============================================================
+
+//==================================================
+// dic_dun01 - Underground Passage Kamidal Tunnel
+//==================================================
+dic_dun01,0,0,0,0	monster	One-Horned Scaraba	2083,50,5000,0,0
+dic_dun01,0,0,0,0	monster	Two-Horned Scaraba	2084,45,5000,0,0
+dic_dun01,0,0,0,0	monster	Scaraba Egg	2088,15,5000,0,0
+dic_dun01,0,0,0,0	monster	Scaraba Egg	2089,15,5000,0,0
+
+//==================================================
+// dic_dun02 - Underground Nest Scaraba Hole
+//==================================================
+dic_dun02,0,0,0,0	monster	Antler Scaraba	2085,50,5000,0,0
+dic_dun02,0,0,0,0	monster	Rake Scaraba	2086,45,5000,0,0
+dic_dun02,0,0,0,0	monster	Antler Scaraba Egg	2090,15,5000,0,0
+dic_dun02,0,0,0,0	monster	Rake Scaraba Egg	2091,15,5000,0,0
+dic_dun02,0,0,0,0	boss_monster	Scaraba Queen	2087,1,7200000,0,0
+
+//===== Hercules Script ======================================
+//= El Dicastes Quest NPCs
+//===== By: ==================================================
+//= Gennosuke Kouga, Muad_Dib
+//===== Current Version: =====================================
+//= 2.4
+//===== File Encoding ========================================
+//= CP-949 (EUC-KR compatible). Do NOT read/save it as UTF-8.
+//===== Description: =========================================
+//= [Official Conversion]
+//= Quest NPCs related to Dewata:
+//== Sapha's Visit, Doha's Secrect Order, Frede's Request,
+//== Department Quests, Document Quests,
+//== Chesire's Call, Cat Hands Enchantment
+//== Cat Hand Agent
+//===== Additional Comments: =================================
+//= 1.0 First version. 14107 lines, oh, the pain...
+//= 1.1 Standardized and reduced by 7000+ lines. [Euphy]
+//= 1.2 Further optimization. [Euphy]
+//= 1.2a Small bug fix. [Euphy]
+//= 1.3 Temporarly disabled Izlude Fish Tail?#33 NPC because of
+//= 	the new Izlude Town Map. [Masao]
+//= 1.4 Fixed minor typos. [Joseph]
+//= 1.5 Removed "Mysterious Documents" duplicated in magic_books. [Euphy]
+//= 1.6 Fixed missing checks for quest: Sapha's Visit. [Joseph]
+//= 1.7 Updated to match the official script. [Joseph]
+//= 1.8 Optimized and fixed invalid checkquest. [Joseph]
+//= 1.8a Disabled "Fish Tails" until Izlude RE coordinates are found. [Euphy]
+//= 1.8b Updated "Calyon" NPC and fixed a check. [Euphy]
+//= 1.9 Updated "Fish Tails" with RE coordinates.
+//= 1.9a Minor fix. [Joseph]
+//= 2.0 Fixed variables. [Joseph]
+//= 2.1 Added reset option to "Kareka". [Euphy]
+//= 2.2 Added Izlude duplicates. [Euphy]
+//= 2.3 Added GM management NPCs. [Euphy]
+//= 2.4 Corrected NPC Location. [Dastgir]
+//============================================================
+
+// Entrance
+//============================================================
+manuk,321,182,5	script	Entrance Manager#ep133	4_MAN_GALTUN,{
+	mes "[Entrance Manager]";
+	mes "Do you want to enter the tunnel?";
+	next;
+	if(select("Yes.:No.") == 2) {
+		mes "[Entrance Manager]";
+		mes "Maybe next time.";
+		close;
+	}
+	mes "[Entrance Manager]";
+	mes "Be careful.";
+	close2;
+	warp "dic_dun01",33,212;
+	end;
+}
+
+// Vigilantes
+//============================================================
+-	script	Vigilante#main	-1,{
+	if (compare(strnpcinfo(0),"ep133_26")) {
+		if (false && !isequipped(2782)) {
+			mes "[Vigilante]";
+			mes "¡ô¡ó¡ö ¡÷ ¡þ¡ù¡ó?";
+			mes "¢¤¡ö¡ø ¢³ ¡÷¢£¡ü ¡ø ¡Ð¡õ¡û...";
+			next;
+			mes "The Vigilante says something and then shakes his head.";
+			mes "Looks like a negative reaction from the looks of his firm pose holding his shield in front of him.";
+			close;
+		}
+		mes "[Vigilante]";
+		mes "Manuk is just before us.";
+		mes "Are you heading to Manuk?";
+		next;
+		if (select("Yes.:No.") == 1) {
+			mes "[Vigilante]";
+			mes "I will send you to Manuk.";
+			close2;
+			warp "manuk",326,180;
+			end;
+		}
+		mes "[Vigilante]";
+		mes "Good luck.";
+		close;
+	}
+	if (false && !isequipped(2782)) {
+		mes "[Vigilante]";
+		mes "¡ô¡ó¡ö ¡÷ ¡þ¡ù¡ó?";
+		mes "¢¤¡ö¡ø ¢³ ¡÷¢£¡ü ¡ø ¡Ð¡õ¡û...";
+		mes "¡ð¡ú¢± ¡ô ¡ò¡õ¡ú ¡õ..! ";
+		next;
+		mes "Cannot communicate with him.";
+		close;
+	}
+	if (false && ep13_3_secret < 6) {
+		mes "The area below is restricted because it is dangerous.";
+		mes "I cannot let you pass because you are here as guests.";
+		mes "Please follow the tunnel to get to the capital city.";
+		close;
+	}
+	mes "[Vigilante]";
+	mes "Do you need something from the cave?";
+	next;
+	if (select("Yes.:No.") == 1) {
+		mes "[Vigilante]";
+		mes "Be careful.";
+		close2;
+		warp "dic_dun02",101,142;
+		end;
+	}
+	mes "[Vigilante]";
+	mes "Please step aside because it is dangerous.";
+	mes "You won't know when those Scarabas will start rampaging..";
+	close;
+
+}
+dic_dun01,286,104,5	duplicate(Vigilante#main)	Vigilante#ep133_23	4_MAN_GALTUN
+dic_dun01,294,106,3	duplicate(Vigilante#main)	Vigilante#ep133_24	4_MAN_GALTUN1
+dic_dun01,30,216,5	duplicate(Vigilante#main)	Vigilante#ep133_26	4_MAN_GALTUN1

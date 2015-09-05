@@ -67,28 +67,16 @@ OnAgitStart:
 // Spawn (fall through), or respawn the Emperium once it has been broken.
 OnStartArena:
 	// OnAgitStart will fall through and spawn the Emperium.
-	if (strnpcinfo(2) == "aldeg_cas01") { setarray .@emproom[0],216,23; }
-	else if (strnpcinfo(2) == "aldeg_cas02") { setarray .@emproom[0],213,23; }
-	else if (strnpcinfo(2) == "aldeg_cas03") { setarray .@emproom[0],205,31; }
-	else if (strnpcinfo(2) == "aldeg_cas04") { setarray .@emproom[0],36,217; }
-	else if (strnpcinfo(2) == "aldeg_cas05") { setarray .@emproom[0],27,101; }
-	else if (strnpcinfo(2) == "gefg_cas01") { setarray .@emproom[0],197,181; }
-	else if (strnpcinfo(2) == "gefg_cas02") { setarray .@emproom[0],176,178; }
-	else if (strnpcinfo(2) == "gefg_cas03") { setarray .@emproom[0],244,166; }
-	else if (strnpcinfo(2) == "gefg_cas04") { setarray .@emproom[0],174,177; }
-	else if (strnpcinfo(2) == "gefg_cas05") { setarray .@emproom[0],194,184; }
-	else if (strnpcinfo(2) == "payg_cas01") { setarray .@emproom[0],139,139; }
-	else if (strnpcinfo(2) == "payg_cas02") { setarray .@emproom[0],38,25; }
-	else if (strnpcinfo(2) == "payg_cas03") { setarray .@emproom[0],269,265; }
-	else if (strnpcinfo(2) == "payg_cas04") { setarray .@emproom[0],270,28; }
-	else if (strnpcinfo(2) == "payg_cas05") { setarray .@emproom[0],30,30; }
-	else if (strnpcinfo(2) == "prtg_cas01") { setarray .@emproom[0],197,197; }
-	else if (strnpcinfo(2) == "prtg_cas02") { setarray .@emproom[0],157,174; }
-	else if (strnpcinfo(2) == "prtg_cas03") { setarray .@emproom[0],16,220; }
-	else if (strnpcinfo(2) == "prtg_cas04") { setarray .@emproom[0],291,14; }
-	else if (strnpcinfo(2) == "prtg_cas05") { setarray .@emproom[0],266,266; }
-	// Add custom Guild Castles here.
-	else {
+	if(gettime(4)==2) {
+		if (strnpcinfo(2) == "payg_cas02") { setarray .@emproom[0],38,25; }
+		else if (strnpcinfo(2) == "aldeg_cas05") { setarray .@emproom[0],27,101; }
+		else { end; }
+	} else if(gettime(4)==0) {
+		if (strnpcinfo(2) == "gefg_cas04") { setarray .@emproom[0],174,177; }
+		else if (strnpcinfo(2) == "prtg_cas03") { setarray .@emproom[0],16,220; }
+		else { end; }
+	} else {
+		gvgoff strnpcinfo(2);
 		end;
 	}
 	if (!mobcount(strnpcinfo(2),"Agit#"+strnpcinfo(2)+"::OnAgitBreak")) {
@@ -99,6 +87,7 @@ OnStartArena:
 // The Emperium has been broken.
 OnAgitBreak:
 	.@GID = getcharid(2);
+	.@breaker$ = strcharinfo(0);
 	// Show and log error if an unguilded player breaks the Emperium. (Should NEVER happen)
 	if (.@GID <= 0) {
 		.@notice$ = "Character "+strcharinfo(0)+" ("+getcharid(0)+") broke the Emperium in Castle: "+strnpcinfo(2)+" while guildless. No data will be saved and Emperium respawned.";
@@ -134,12 +123,13 @@ OnAgitBreak:
 			setcastledata strnpcinfo(2), .@i, 0;
 		}
 	}
+	
 	// Respawn the Emperium, and display new owners.
 	sleep 500; // Slow down script execution slightly.
 	if( agitcheck() )
 		donpcevent "Agit#"+strnpcinfo(2)+"::OnStartArena";
 	sleep 7000;
-	announce "The [" + getcastlename(strnpcinfo(2)) + "] castle has been conquered by the [" + getguildname(.@GID) + "] guild.",bc_all|bc_woe;
+	announce "The [" + getcastlename(strnpcinfo(2)) + "] castle has been conquered by ["+.@breaker$+"] of the [" + getguildname(.@GID) + "] guild.",bc_all|bc_woe;
 	end;
 
 // War of Emperium has ended.
@@ -172,7 +162,7 @@ OnRecvCastle:
 	.@GID = getcastledata(strnpcinfo(2),1);
 	if (.@GID == 0) {
 		killmonsterall strnpcinfo(2);
-		if (compare(strnpcinfo(2),"aldeg")) {
+		if (compare(strnpcinfo(2),"aldeg") && (gettime(4)==2)) {
 			// Normal Spawns
 			monster strnpcinfo(2),0,0,"Evil Druid",1117,10;
 			monster strnpcinfo(2),0,0,"Khalitzburg",1132,4;
@@ -196,9 +186,8 @@ OnRecvCastle:
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Tower Keeper",1270,4;
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Bloody Knight",1268,1;
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Abysmal Knight",1219,1;
-			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Raydric Archer",1276,5;
-		}
-		else if (compare(strnpcinfo(2),"gefg")) {
+			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Raydric Archer",1276,5; 
+		} else if (compare(strnpcinfo(2),"gefg") && (gettime(4)==0)) {
 			// Normal Spawns
 			monster strnpcinfo(2),0,0,"Evil Druid",1117,10;
 			monster strnpcinfo(2),0,0,"Wind Ghost",1263,11;
@@ -221,8 +210,8 @@ OnRecvCastle:
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"High Orc",1213,10;
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Orc Archer",1189,10;
 		}
-		else if (compare(strnpcinfo(2),"payg")) {
-			// Normal Spawns
+		else if (compare(strnpcinfo(2),"payg") && (gettime(4)==2)) {
+ 			// Normal Spawns
 			monster strnpcinfo(2),0,0,"Greatest General",1277,9;
 			monster strnpcinfo(2),0,0,"Wanderer",1208,10;
 			monster strnpcinfo(2),0,0,"Mutant Dragonoid",1262,5;
@@ -242,9 +231,8 @@ OnRecvCastle:
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Moonlight Flower",1150,1;
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Eddga",1115,1;
 			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Wanderer",1208,6;
-			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Raydric Archer",1276,5;
-		}
-		else if (compare(strnpcinfo(2),"prtg")) {
+			monster strnpcinfo(2),.@emproom[0],.@emproom[1],"Raydric Archer",1276,5; 
+		} else if (compare(strnpcinfo(2),"prtg") && (gettime(4)==0)) {
 			// Normal Spawns
 			monster strnpcinfo(2),0,0,"Raydric",1163,1;
 			monster strnpcinfo(2),0,0,"Khalitzburg",1132,10;
@@ -273,7 +261,7 @@ OnRecvCastle:
 		else {
 			end;
 		}
-		donpcevent "Agit#"+strnpcinfo(2)+"::OnStartArena";
+		//donpcevent "Agit#"+strnpcinfo(2)+"::OnStartArena";
 		// Disable Kafra Staff...
 		disablenpc "Kafra Staff#"+strnpcinfo(2);
 		end;
@@ -925,59 +913,65 @@ OnRecvCastle:
 		close;
 	}
 
-	if (compare(strnpcinfo(2),"aldeg")) {
-		.@destination$ = "gld_dun02";
-		if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],32,122;
-		else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],79,30;
-		else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],165,38;
-		else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],160,148;
-		else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],103,169;
-	}
-	else if (compare(strnpcinfo(2),"gefg")) {
-		.@destination$ = "gld_dun04";
-		if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],39,258;
-		else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],125,270;
-		else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],268,251;
-		else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],268,108;
-		else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],230,35;
-	}
-	else if (compare(strnpcinfo(2),"payg")) {
-		.@destination$ = "gld_dun01";
-		if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],186,165;
-		else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],54,165;
-		else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],54,39;
-		else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],186,39;
-		else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],223,202;
-	}
-	else if (compare(strnpcinfo(2),"prtg")) {
-		.@destination$ = "gld_dun03";
-		if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],28,251;
-		else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],164,268;
-		else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],164,179;
-		else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],268,203;
-		else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],199,28;
-	}
-	// Add custom Guild Castles here.
-	else {
-		end;
-	}
-
 	mes "[Ringing Voice]";
 	mes "'Only the truly brave can take the test.'";
 	next;
 	mes " ";
-	mes "There's a small lever. Will you pull it?";
+	mes "There's four small levers. They are each labeled with a town name and a number. Very mysterious indeed.";
+	mes "Which one will you pull?";
 	next;
-	if(select("Pull.:Don't pull.") == 1) {
-		if (getcharid(2) == .@GID) {
-			close2;
-			warp .@destination$,.@coordinates[0],.@coordinates[1];
-			end;
-		}
-		mes " ";
-		mes "Nothing happened.";
-		close;
+
+	.@dungeon = select("Pull Payon ["+getmapusers("gld_dun01")+"] Lever.",
+						"Pull Aldebaran ["+getmapusers("gld_dun02")+"] Lever.",
+						"Pull Prontera ["+getmapusers("gld_dun03")+"] Lever.",
+						"Pull Geffen ["+getmapusers("gld_dun04")+"] Lever.",
+						"Don't pull.");
+	
+	switch (.@dungeon) {
+		case 1:
+			.@destination$ = "gld_dun01";
+			if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],186,165;
+			else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],54,165;
+			else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],54,39;
+			else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],186,39;
+			else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],223,202;
+			break;
+		case 2:
+			.@destination$ = "gld_dun02";
+			if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],32,122;
+			else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],79,30;
+			else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],165,38;
+			else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],160,148;
+			else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],103,169;
+			break;
+		case 3:
+			.@destination$ = "gld_dun03";
+			if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],28,251;
+			else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],164,268;
+			else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],164,179;
+			else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],268,203;
+			else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],199,28;
+			break;
+		case 4:
+			.@destination$ = "gld_dun04";
+			if (compare(strnpcinfo(2),"cas01")) setarray .@coordinates[0],39,258;
+			else if (compare(strnpcinfo(2),"cas02")) setarray .@coordinates[0],125,270;
+			else if (compare(strnpcinfo(2),"cas03")) setarray .@coordinates[0],268,251;
+			else if (compare(strnpcinfo(2),"cas04")) setarray .@coordinates[0],268,108;
+			else if (compare(strnpcinfo(2),"cas05")) setarray .@coordinates[0],230,35;
+			break;
+		default:
+			close;
+			break;
 	}
+	
+	if (getcharid(2) == .@GID) {
+		close2;
+		warp .@destination$,.@coordinates[0],.@coordinates[1];
+		end;
+	}
+	mes " ";
+	mes "Nothing happened.";
 	close;
 }
 
@@ -1136,9 +1130,6 @@ OnClock0001:
 	// If there is no owner, do nothing.
 	if (!.@GID) end;
 
-	// Is there Economy in this castle?
-	.@Treasure = getcastledata(strnpcinfo(2),2)/5+4;
-
 	// Set information
 	if (strnpcinfo(2) == "aldeg_cas01") {
 		.@treasurebox = 1324;
@@ -1257,6 +1248,10 @@ OnClock0001:
 		setcastledata strnpcinfo(2),3,.@defence + getcastledata(strnpcinfo(2),5);
 		if (getcastledata(strnpcinfo(2),3) > 100) setcastledata strnpcinfo(2),3,100;
 	}
+
+	// Is there Economy in this castle?
+	.@Treasure = getcastledata(strnpcinfo(2),2)/5+4;
+
 	// Reset daily investment limits.
 	setcastledata strnpcinfo(2),4,0;
 	setcastledata strnpcinfo(2),5,0;

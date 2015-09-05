@@ -1,0 +1,11 @@
+// --------------------------------------------------------------
+// -                       PvP NoPot                            -
+// --------------------------------------------------------------
+2009rwc_03	mapflag	zone	NoPot
+2009rwc_04	mapflag	zone	NoPot
+guild_vs2	mapflag	zone	NoPot
+guild_vs3	mapflag	zone	NoPot
+guild_vs1	mapflag	zone	NoPot
+payon_mem	mapflag	zone	NoPot
+pvp_y_1-2	mapflag	zone	NoPot
+

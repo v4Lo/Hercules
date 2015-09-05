@@ -182,6 +182,12 @@ prt_church,184,41,4	script	Cleric#aco	1_M_PASTOR,{
 		skill 143,0,0;
 		callfunc "Job_Change",Job_Acolyte;
 		callfunc "F_ClearJobVar";
+		getitem 5583, 1;
+		getitem 2456, 1;
+		getitem 15009, 1;
+		getitem 2560, 1;
+		getitem 16004, 1; // waffe
+		
 		if (questprogress(1001)) {
 			completequest 1001;
 		}

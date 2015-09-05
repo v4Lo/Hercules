@@ -677,6 +677,13 @@ comodo,172,230,3	script	Wandering Master#job_sta	4_M_JOB_ASSASSIN,{
 			completequest 7011;
 			callfunc "Job_Change",Job_Star_Gladiator;
 			callfunc "F_ClearJobVar";		//clears all job variables for the current player
+			
+			getitem 2571, 1;
+			getitem 15011, 1;
+			getitem 2458, 1;
+			getitem 18514, 1;
+			getitem 1583, 1; //waffe
+			
 			next;
 			mes "[Moogang]";
 			mes "From now on, please";

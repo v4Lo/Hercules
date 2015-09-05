@@ -56,6 +56,6 @@
  * - on the action of unhiding (its a quick effect, ~0.007s in duration), and due to the nature of the skill cast on the client
  * - it was not possible to work around this, and thus why it is optional, comment the line to disable.
  **/
-#define ANTI_MAYAP_CHEAT
+//#define ANTI_MAYAP_CHEAT
 
 #endif // CONFIG_SECURE_H

@@ -1,0 +1,103 @@
+//===== rAthena Script =======================================
+//= OnPCLogin NPC for GMs
+//===== By: ==================================================
+//= Akkarin
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= This NPC saves your settings so the next time you login, it
+//= will auto perform the commands you selected. Easy to edit
+//= or duplicate/modify based on cmds you want to allow.
+//===== Additional Comments: =================================
+//= 1.0 First Version. (based on my original OnPCLogin NPC)
+//============================================================
+prt_in,129,33,5	script	GM Settings	757,{
+if( getgroupid() < 99) { 
+	mes "You found me. Grab yourself a cookie.";
+	close;
+	end;
+}
+
+	set .@reset$,"^000000";
+	set .@disabled$,"^BE1C1C";
+	set .@enabled$,"^0DB40D";
+	
+GMSettingsMenu:
+	if( getgroupid() >= 99) { 
+	mes "[^484848GM Settings^000000]";
+	mes "Note: These are all account based, not per-character.";
+	mes "Note 2: You must relog for them to take effect.";
+	if (#pcgmloginflag&1) { set .@st_hide$,.@enabled$+"On"+.@reset$; } else { set .@st_hide$,.@disabled$+"Off"+.@reset$; }
+	if (#pcgmloginflag&2) { set .@st_monsterignore$,.@enabled$+"On"+.@reset$; } else { set .@st_monsterignore$,.@disabled$+"Off"+.@reset$; }
+	if (#pcgmloginflag&4) { set .@st_speed$,.@enabled$+"On"+.@reset$; } else { set .@st_speed$,.@disabled$+"Off"+.@reset$; }
+	if (#pcgmloginflag&8) { set .@st_uptime$,.@enabled$+"On"+.@reset$; } else { set .@st_uptime$,.@disabled$+"Off"+.@reset$; }
+	next;
+	switch(select("Auto Hide ["+.@st_hide$+"]:Monster Ignore ["+.@st_monsterignore$+"]:Speed 0 ["+.@st_speed$+"]:Show Uptime ["+.@st_uptime$+"]")){
+		case 1:
+			mes "[^484848GM Settings^000000]";
+			mes "Auto Hide is currently "+.@st_hide$;
+			mes "Desc: Auto hide automatically hides your GM character when you login.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcgmloginflag&1) { set #pcgmloginflag, #pcgmloginflag &~ 1; } else { set #pcgmloginflag, #pcgmloginflag | 1; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 2:
+			mes "[^484848GM Settings^000000]";
+			mes "Monster Ignore is currently "+.@st_monsterignore$;
+			mes "Desc: Automatically prevents your character from being targeted by mobs.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcgmloginflag&2) { set #pcgmloginflag, #pcgmloginflag &~ 2; } else { set #pcgmloginflag, #pcgmloginflag | 2; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 3:
+			mes "[^484848GM Settings^000000]";
+			mes "Speed 0 on login is currently "+.@st_speed$;
+			mes "Desc: Sets character movement speed to 0.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcgmloginflag&4) { set #pcgmloginflag, #pcgmloginflag &~ 4; } else { set #pcgmloginflag, #pcgmloginflag | 4; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 4:
+			mes "[^484848Settings^000000]";
+			mes "Uptime on login is currently "+.@st_uptime$;
+			mes "Desc: Display server uptime on login.";
+			next;	
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcgmloginflag&8) { set #pcgmloginflag, #pcgmloginflag &~ 8; } else { set #pcgmloginflag, #pcgmloginflag | 8; }
+					break;
+				case 2:	break;
+			}
+			break;
+	}
+	}
+	goto GMSettingsMenu;
+	
+OnPCLoginEvent:
+	sleep2 500;
+	if( getgroupid() < 98 && getgroupid() > 1) {
+		atcommand "!hide";
+		atcommand "!speed 0";
+		atcommand "!uptime";
+		atcommand "!monsterignore";
+	}
+	if (#pcgmloginflag&1)		atcommand "!hide";
+	if (#pcgmloginflag&2)		atcommand "!monsterignore";
+	if (#pcgmloginflag&4)		atcommand "!speed 0";
+	if (#pcgmloginflag&8)		atcommand "!uptime";
+	end;
+}

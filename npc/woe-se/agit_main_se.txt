@@ -20,13 +20,14 @@
 // Core, triggers all other events
 //============================================================
 -	script	Manager#template	-1,{
+	end;
 OnAgitInit2:
 OnRecvCastle2:
 	if (strnpcinfo(2) == "template") end;
 	if (!getcastledata(strnpcinfo(2),1)) {
-		donpcevent strnpcinfo(0)+"::OnStart";
+		//donpcevent strnpcinfo(0)+"::OnStart";
 		// Monster spawns are identical for all castles.
-		monster strnpcinfo(2),0,0,"Evil Druid",1117,10;
+		/*monster strnpcinfo(2),0,0,"Evil Druid",1117,10;
 		monster strnpcinfo(2),0,0,"Khalitzburg",1132,4;
 		monster strnpcinfo(2),0,0,"Abysmal Knight",1219,3;
 		monster strnpcinfo(2),0,0,"Executioner",1205,1;
@@ -38,7 +39,7 @@ OnRecvCastle2:
 		monster strnpcinfo(2),0,0,"Alice",1275,1;
 		monster strnpcinfo(2),0,0,"Bloody Knight",1268,2;
 		monster strnpcinfo(2),0,0,"Dark Lord",1272,2;
-		monster strnpcinfo(2),0,0,"Tower Keeper",1270,4;
+		monster strnpcinfo(2),0,0,"Tower Keeper",1270,4;*/
 	}
 	if (getcastledata(strnpcinfo(2),9) < 1)
 		disablenpc "Kafra Employee#"+substr(strnpcinfo(2),0,1)+substr(strnpcinfo(2),8,9);

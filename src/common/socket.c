@@ -3,6 +3,7 @@
 // Portions Copyright (c) Athena Dev Teams
 
 #define HERCULES_CORE
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #include "config/core.h" // SHOW_SERVER_STATS
 #include "socket.h"

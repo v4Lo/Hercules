@@ -353,8 +353,9 @@ enum ItemTradeRestrictions {
 	ITR_NOGSTORAGE      = 0x040, ///< Item can't be placed in the guild storage
 	ITR_NOMAIL          = 0x080, ///< Item can't be attached to mail messages
 	ITR_NOAUCTION       = 0x100, ///< Item can't be auctioned
+	ITR_MASTEROVERRIDE	= 0x200,
 
-	ITR_ALL             = 0x1ff  ///< Sum of all the above values
+	ITR_ALL             = 0x3ff  ///< Sum of all the above values
 };
 
 /**
@@ -463,7 +464,7 @@ struct item_data {
 		unsigned available : 1;
 		unsigned no_refine : 1; // [celest]
 		unsigned delay_consume : 1;     ///< Signifies items that are not consumed immediately upon double-click [Skotlex]
-		unsigned trade_restriction : 9; ///< Item trade restrictions mask (@see enum ItemTradeRestrictions)
+		unsigned trade_restriction : 10; ///< Item trade restrictions mask (@see enum ItemTradeRestrictions)
 		unsigned autoequip: 1;
 		unsigned buyingstore : 1;
 		unsigned bindonequip : 1;
@@ -527,6 +528,7 @@ struct item_data {
 #define itemdb_isdropable(item, gmlv)             (itemdb->isrestricted((item), (gmlv), 0, itemdb->isdropable_sub))
 #define itemdb_cantrade(item, gmlv, gmlv2)        (itemdb->isrestricted((item), (gmlv), (gmlv2), itemdb->cantrade_sub))
 #define itemdb_canpartnertrade(item, gmlv, gmlv2) (itemdb->isrestricted((item), (gmlv), (gmlv2), itemdb->canpartnertrade_sub))
+#define itemdb_canmastertrade(item, gmlv, gmlv2)  (itemdb->isrestricted((item), (gmlv), (gmlv2), itemdb->canmastertrade_sub))
 #define itemdb_cansell(item, gmlv)                (itemdb->isrestricted((item), (gmlv), 0, itemdb->cansell_sub))
 #define itemdb_cancartstore(item, gmlv)           (itemdb->isrestricted((item), (gmlv), 0, itemdb->cancartstore_sub))
 #define itemdb_canstore(item, gmlv)               (itemdb->isrestricted((item), (gmlv), 0, itemdb->canstore_sub))
@@ -590,6 +592,7 @@ struct itemdb_interface {
 	int (*isdropable_sub) (struct item_data *item, int gmlv, int unused);
 	int (*cantrade_sub) (struct item_data *item, int gmlv, int gmlv2);
 	int (*canpartnertrade_sub) (struct item_data *item, int gmlv, int gmlv2);
+	int(*canmastertrade_sub) (struct item_data *item, int gmlv, int gmlv2);
 	int (*cansell_sub) (struct item_data *item, int gmlv, int unused);
 	int (*cancartstore_sub) (struct item_data *item, int gmlv, int unused);
 	int (*canstore_sub) (struct item_data *item, int gmlv, int unused);

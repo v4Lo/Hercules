@@ -1,0 +1,75 @@
+-	script	onlyro_pvp	-1,{
+	function getRandomMap;
+	function showRooms;
+
+	showRooms();
+
+	function	showRooms	{
+		mes "[PvP Guide]", "Hello, how are you doing?";
+		mes "I'm the PvP Guide.";
+		mes "There are some ^FF0000special rules^000000 for PvP.";
+		mes "1. Healing items are not allowed.";
+		mes "2. Items not restoring SP or HP are allowed.";
+		
+		for(set .@i,0; .@i<.arraysize; set .@i,.@i+1)
+			set .@menu$, .@menu$+.name$[.@i]+" ["+getmapusers(.maps$[.@i])+" / "+.Limit[.@i]+"]:";
+		set .@menu$, .@menu$+"Cancel.";
+		set .@i, select(.@menu$)-1;
+		if (.@i == .arraysize) close;
+		if (getmapusers(.maps$[.@i]) >= .Limit[.@i]) {
+			mes "[PVP Fight Square Reception Staff]";
+			mes "This map is currently full.";
+			close;
+		}
+		warp .maps$[.@i],0,0;
+		end;
+	}
+		
+	function	getRandomMap	{
+		setarray .@pool$[0], "2009rwc_03", "2009rwc_04", "guild_vs2", "guild_vs3", "guild_vs1";
+		set .@random, rand(0,getarraysize(.@pool$)-1);
+		return .@pool$[.@random];
+	}
+
+	
+	OnInit:
+		setarray .maps$[0],	getRandomMap(), "payon_mem", "pvp_y_1-2";
+		setarray .name$[0],	"Room of the Day",  "Old Payon",	"Izlude";
+		setarray .Limit[0],	128,			128,			128;
+		set .arraysize, getarraysize(.maps$);
+		initnpctimer;
+	end;
+	
+	OnTimer1000:
+		delwaitingroom;
+		for(set .@i,0; .@i<.arraysize; set .@i,.@i+1)
+			set .@count, .@count+getmapusers(.maps$[.@i]);
+		waitingroom ( .@count == 0 ? "No":.@count)+" player"+( .@count == 1 ? "":"s") +" in PVP", 0;
+		initnpctimer;
+	end;
+	
+	OnClock0500:
+		setarray .maps$[0],	getRandomMap(), "payon_mem", "pvp_y_1-2";
+	end;
+}
+
+prontera,146,98,4	duplicate(onlyro_pvp)	PvP Guide#pvp_pron	4_M_SWORDMAN
+morocc,153,97,4	duplicate(onlyro_pvp)	PvP Guide#pvp_mor	4_M_SWORDMAN
+geffen,130,69,4	duplicate(onlyro_pvp)	PvP Guide#pvp_gef	4_M_SWORDMAN
+aldebaran,152,116,4	duplicate(onlyro_pvp)	PvP Guide#pvp_alde	4_M_SWORDMAN
+alberta,39,240,4	duplicate(onlyro_pvp)	PvP Guide#pvp_alb	4_M_SWORDMAN
+izlude,119,92,4	duplicate(onlyro_pvp)	PvP Guide#pvp_iz	4_M_SWORDMAN
+yuno,167,187,4	duplicate(onlyro_pvp)	PvP Guide#pvp_yuno	4_M_SWORDMAN
+einbroch,247,205,4	duplicate(onlyro_pvp)	PvP Guide#pvp_einbr	4_M_SWORDMAN
+lighthalzen,153,108,4	duplicate(onlyro_pvp)	PvP Guide#pvp_lhz	4_M_SWORDMAN
+comodo,184,158,4	duplicate(onlyro_pvp)	PvP Guide#pvp_com	4_M_SWORDMAN
+gonryun,155,126,4	duplicate(onlyro_pvp)	PvP Guide#pvp_gon	4_M_SWORDMAN
+rachel,114,140,4	duplicate(onlyro_pvp)	PvP Guide#pvp_rac	4_M_SWORDMAN
+veins,202,134,4	duplicate(onlyro_pvp)	PvP Guide#pvp_ve	4_M_SWORDMAN
+hugel,103,165,4	duplicate(onlyro_pvp)	PvP Guide#pvp_hu	4_M_SWORDMAN
+amatsu,123,154,4	duplicate(onlyro_pvp)	PvP Guide#pvp_ama	4_M_SWORDMAN
+louyang,204,104,4	duplicate(onlyro_pvp)	PvP Guide#pvp_lou	4_M_SWORDMAN
+ayothaya,209,169,4	duplicate(onlyro_pvp)	PvP Guide#pvp_ayo	4_M_SWORDMAN
+prt_in,53,141,4	duplicate(onlyro_pvp)	PvP Guide#pvp_prtin	4_M_SWORDMAN
+alberta_in,25,146,4	duplicate(onlyro_pvp)	PvP Guide#pvp_alb_in	4_M_SWORDMAN
+geffen_in,62,62,4	duplicate(onlyro_pvp)	PvP Guide#pvp_gefin	4_M_SWORDMAN

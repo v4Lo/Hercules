@@ -1,0 +1,163 @@
+amatsu,166,128,6	script	Old Man	120,{
+	if(onlyro_easter2015 == 0) {
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "Oh no, why did this happen to me, no, noooo!";
+		mes "*sob*";
+		next;
+		if (select("I don't care, goodbye.:What happened?") == 1) {
+			close;
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "This beasty little monster stole all my eggs!";
+		mes "*sob*";
+		next;
+		if (select("Haha!:Eggs?") == 1) {
+			close;
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "Yes, all of my eggs. I collected them for easter. I wanted to dye them for my grandchildren. You know, I'm not a wealthy man, so this was the only thing I could've given to them. Now I got nothing. I don't know what to do ...";
+		mes "*sob*";
+		next;
+		if (select("I can't help you!:How can I help you?" ) == 1) {
+			close;
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "Well, you could try to get my stolen eggs back!";
+		mes "*sob*";
+		next;
+		if (select("No way!:How do I do this?") == 1) {
+			close;
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "I heard this little monster is out there everywhere with his little friends. Just go hunt them and get my eggs back!";
+		mes "*sob*";
+		next;
+		if (select("I can't, I'm too scared!:Okay, what does this monster look like?" ) == 1) {
+			emotion e_sob;
+			mes "[Old Man]";
+			mes "*sob*";
+			mes "My grandchildren will be so sad ...";
+			mes "*sob*";
+			close;
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "It's a little bunny that looks so cute at first sight, but when you leave something unguarded, this little monster just steals it!";
+		mes "*sob*";
+		next;
+		if (select("I can't kill a cute bunny!:Ok, and what do I get out of it?"  ) == 1) {
+			emotion e_sob;
+			mes "[Old Man]";
+			mes "*sob*";
+			mes "My grandchildren will be so sad ...";
+			mes "*sob*";
+			close;
+		}
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "Well, as you know, I'm not that wealthy. So what could I give to you in exchange ...";
+		next;
+		mes "[Old Man]";
+		mes "... hum ...";
+		mes "... let me think about it ...";
+		next;
+		mes "[Old Man]";
+		mes "... got it! I could give you some of the stuffs I collected all over the years! ";
+		next;
+		mes "[Old Man]";
+		mes "^FF33FF4 Holy Eggs ^000000- 1 Gift Box";
+		mes "^FF33FF33 Holy Eggs ^000000- 1 Old Card Album";
+		mes "^FF33FF111 Holy Eggs ^000000- 1 Drooping Bunny";
+		next;
+		mes "[Old Man]";
+		mes "So, good luck on hunting that little beasts.";
+		mes "Please bring me back my eggs so my grandchildren won't be disappointed.";
+		onlyro_easter2015 = 1;
+	} else {
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "Ah, you're back! Great! Did you bring me back my eggs?";
+		mes "*sob*";
+		next;
+		if (select("Yes:Not yet") == 2) {
+			close;
+		}
+		if(countitem(12019) >= 4) {
+			mes "[Old Man]";
+			mes "Wow! That's a lot of eggs! So which item did you have in mind?";
+			next;
+			switch(select("Gift Box (^FF33FF4^000000):Old Card Album (^FF33FF33^000000):Drooping Bunny (^FF33FF111^000000)")) {
+				case 1:
+					if(countitem(12019) >= 4) {
+						delitem 12019,4;
+						getitem 644,1;
+						mes "[Old Man]";
+						mes "Yay! You brought back my eggs! I'm so happy! Thank you so much!";
+						close;
+					}
+				break;
+				case 2:
+					if(countitem(12019) >= 33) {
+						delitem 12019,33;
+						getitem 616,1;
+						mes "[Old Man]";
+						mes "Yay! You brought back so many eggs! My grandchildren will be so happy!";
+						close;
+					}
+				break;
+				case 3:
+					if(countitem(12019) >= 111) {
+						delitem 12019,111;
+						getitem 5290,1;
+						mes "[Old Man]";
+						mes "Wow! So many eggs! Where did you find all those eggs?! That's enough for the whole city!";
+						close;
+					}
+				break;
+				default:
+				break;
+			}
+		}
+		emotion e_sob;
+		mes "[Old Man]";
+		mes "*sob*";
+		mes "But.. but.. that's not nearly enough eggs.";
+		mes "*sob*";
+	}
+	close;
+}
+
+-	script	EasterEvent	-1,{
+OnInit:
+    initnpctimer;
+    end;
+
+OnTimer180000:
+	.@aid = getrandomaid();
+	if(.@aid == 0) {
+		initnpctimer;
+		end;
+	}
+	attachrid .@aid;
+	if(!checkvending() && !checkchatting() && checkidle() < 5) { // just skip afks, bad luck
+		getmapxy(.@m$,.@x,.@y,0);
+		if(compare(.@m$, "_fild")) {
+			areamonster .@m$, .@x-5, .@y-5, .@x+5, .@y+5, "Easter Egg", 2110, 1;
+		}
+	}
+	.@tick = 180000 - (180000/playercount());
+	setnpctimer .@tick;
+	end;
+}

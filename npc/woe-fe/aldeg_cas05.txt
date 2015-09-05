@@ -77,22 +77,20 @@ OnRecvCastleA05:
 	end;
 }
 
-aldeg_cas05,170,85,2	duplicate(InsideFlagsA5)	Rothenburg#3-2	GUILD_FLAG
-aldeg_cas05,142,212,2	duplicate(InsideFlagsA5)	Rothenburg#4	GUILD_FLAG
-aldeg_cas05,149,196,2	duplicate(InsideFlagsA5)	Rothenburg#5	GUILD_FLAG
+aldeg_cas05,170,85,4	duplicate(InsideFlagsA5)	Rothenburg#3-2	GUILD_FLAG
+aldeg_cas05,142,212,6	duplicate(InsideFlagsA5)	Rothenburg#4	GUILD_FLAG
+aldeg_cas05,149,196,4	duplicate(InsideFlagsA5)	Rothenburg#5	GUILD_FLAG
 aldeg_cas05,41,180,2	duplicate(InsideFlagsA5)	Rothenburg#6	GUILD_FLAG
 aldeg_cas05,38,201,2	duplicate(InsideFlagsA5)	Rothenburg#7	GUILD_FLAG
 aldeg_cas05,65,182,2	duplicate(InsideFlagsA5)	Rothenburg#8	GUILD_FLAG
 aldeg_cas05,65,205,2	duplicate(InsideFlagsA5)	Rothenburg#9	GUILD_FLAG
-aldeg_cas05,10,218,2	duplicate(InsideFlagsA5)	Rothenburg#10	GUILD_FLAG
-aldeg_cas05,10,218,2	duplicate(InsideFlagsA5)	Rothenburg#11	GUILD_FLAG
-aldeg_cas05,164,201,2	duplicate(InsideFlagsA5)	Rothenburg#12	GUILD_FLAG
+aldeg_cas05,10,218,4	duplicate(InsideFlagsA5)	Rothenburg#10	GUILD_FLAG
+aldeg_cas05,164,201,4	duplicate(InsideFlagsA5)	Rothenburg#12	GUILD_FLAG
 aldeg_cas05,14,117,2	duplicate(InsideFlagsA5)	Rothenburg#13	GUILD_FLAG
-aldeg_cas05,10,225,2	duplicate(InsideFlagsA5)	Rothenburg#14	GUILD_FLAG
 aldeg_cas05,187,59,2	duplicate(InsideFlagsA5)	Rothenburg#15	GUILD_FLAG
-aldeg_cas05,154,51,2	duplicate(InsideFlagsA5)	Rothenburg#16	GUILD_FLAG
-aldeg_cas05,22,211,2	duplicate(InsideFlagsA5)	Rothenburg#17	GUILD_FLAG
-aldeg_cas05,150,202,2	duplicate(InsideFlagsA5)	Rothenburg#18	GUILD_FLAG
+aldeg_cas05,154,51,4	duplicate(InsideFlagsA5)	Rothenburg#16	GUILD_FLAG
+aldeg_cas05,22,211,4	duplicate(InsideFlagsA5)	Rothenburg#17	GUILD_FLAG
+aldeg_cas05,150,202,4	duplicate(InsideFlagsA5)	Rothenburg#18	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================

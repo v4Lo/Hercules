@@ -267,6 +267,9 @@ bool chrif_save(struct map_session_data *sd, int flag) {
 	if (sd->state.storage_flag == STORAGE_FLAG_GUILD)
 		gstorage->save(sd->status.account_id, sd->status.guild_id, flag);
 
+	if (sd->state.storage_flag == 3)
+		mstorage->save(sd->status.account_id, sd->master_account_id, flag);
+
 	if (flag)
 		sd->state.storage_flag = STORAGE_FLAG_CLOSED; //Force close it.
 

@@ -130,8 +130,8 @@ que_god01	mapflag	nobranch
 que_god02	mapflag	nobranch
 que_bingo	mapflag	nobranch
 que_hugel	mapflag	nobranch
-poring_c01	mapflag	nobranch
-poring_c02	mapflag	nobranch
+//poring_c01	mapflag	nobranch
+//poring_c02	mapflag	nobranch
 kh_mansion	mapflag	nobranch
 kh_rossi	mapflag	nobranch
 kh_school	mapflag	nobranch
@@ -387,3 +387,14 @@ ecl_hub01	mapflag	nobranch
 // Poring War ==================
 poring_w01	mapflag	nobranch
 poring_w02	mapflag	nobranch
+
+//onlyro pvp
+
+2009rwc_03	mapflag	nobranch
+2009rwc_04	mapflag	nobranch
+guild_vs2	mapflag	nobranch
+guild_vs3	mapflag	nobranch
+guild_vs1	mapflag	nobranch
+payon_mem	mapflag	nobranch
+pvp_y_1-2	mapflag	nobranch
+

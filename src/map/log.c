@@ -47,6 +47,7 @@ char log_picktype2char(e_log_pick_type type) {
 		case LOG_TYPE_LOOT:             return 'L';  // (L)oot (consumed monster pick/drop)
 		case LOG_TYPE_BANK:             return 'K';  // Ban(K) Transactions
 		case LOG_TYPE_OTHER:            return 'X';  // Other
+		case LOG_TYPE_MSTORAGE:			return '1';
 	}
 
 	// should not get here, fallback
@@ -73,27 +74,27 @@ char log_chattype2char(e_log_chat_type type) {
 
 /// check if this item should be logged according the settings
 bool should_log_item(int nameid, int amount, int refine, struct item_data *id) {
-	int filter = logs->config.filter;
+	/*int filter = logs->config.filter;*/
 
 	if( id == NULL )
 		return false;
 
-	if( ( filter&LOG_FILTER_ALL ) ||
-		( filter&LOG_FILTER_HEALING && id->type == IT_HEALING ) ||
-		( filter&LOG_FILTER_ETC_AMMO && ( id->type == IT_ETC || id->type == IT_AMMO ) ) ||
-		( filter&LOG_FILTER_USABLE && ( id->type == IT_USABLE || id->type == IT_CASH ) ) ||
-		( filter&LOG_FILTER_WEAPON && id->type == IT_WEAPON ) ||
-		( filter&LOG_FILTER_ARMOR && id->type == IT_ARMOR ) ||
-		( filter&LOG_FILTER_CARD && id->type == IT_CARD ) ||
-		( filter&LOG_FILTER_PETITEM && ( id->type == IT_PETEGG || id->type == IT_PETARMOR ) ) ||
-		( filter&LOG_FILTER_PRICE && id->value_buy >= logs->config.price_items_log ) ||
-		( filter&LOG_FILTER_AMOUNT && abs(amount) >= logs->config.amount_items_log ) ||
-		( filter&LOG_FILTER_REFINE && refine >= logs->config.refine_items_log ) ||
-		( filter&LOG_FILTER_CHANCE && ( ( id->maxchance != -1 && id->maxchance <= logs->config.rare_items_log ) || id->nameid == ITEMID_EMPERIUM ) )
-	)
+	//if( ( filter&LOG_FILTER_ALL ) ||
+	//	( filter&LOG_FILTER_HEALING && id->type == IT_HEALING ) ||
+	//	( filter&LOG_FILTER_ETC_AMMO && ( id->type == IT_ETC || id->type == IT_AMMO ) ) ||
+	//	( filter&LOG_FILTER_USABLE && ( id->type == IT_USABLE || id->type == IT_CASH ) ) ||
+	//	( filter&LOG_FILTER_WEAPON && id->type == IT_WEAPON ) ||
+	//	( filter&LOG_FILTER_ARMOR && id->type == IT_ARMOR ) ||
+	//	( filter&LOG_FILTER_CARD && id->type == IT_CARD ) ||
+	//	( filter&LOG_FILTER_PETITEM && ( id->type == IT_PETEGG || id->type == IT_PETARMOR ) ) ||
+	//	( filter&LOG_FILTER_PRICE && id->value_buy >= logs->config.price_items_log ) ||
+	//	( filter&LOG_FILTER_AMOUNT && abs(amount) >= logs->config.amount_items_log ) ||
+	//	( filter&LOG_FILTER_REFINE && refine >= logs->config.refine_items_log ) ||
+	//	( filter&LOG_FILTER_CHANCE && ( ( id->maxchance != -1 && id->maxchance <= logs->config.rare_items_log ) || id->nameid == ITEMID_EMPERIUM ) )
+	//)
 		return true;
 
-	return false;
+	//return false;
 }
 void log_branch_sub_sql(struct map_session_data* sd) {
 	SqlStmt* stmt;

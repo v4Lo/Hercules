@@ -77,6 +77,8 @@ prt_are_in	mapflag	zone	Izlude Battle Arena
 // Inside Eclage ===========
 1@ecl	mapflag	zone	Memorial Dungeon
 
+1@epc1	mapflag	zone	Memorial Dungeon
+
 //Towns
 alberta	mapflag	zone	Towns
 aldebaran	mapflag	zone	Towns

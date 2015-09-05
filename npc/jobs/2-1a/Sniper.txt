@@ -57,7 +57,7 @@ valkyrie,44,55,5	script	Sniper#Valkyrie	4_F_JOB_HUNTER,{
 			close;
 		}
 		jobchange Job_Sniper;
-		ADVJOB = 0;
+		//ADVJOB = 0;
 		mes "[Sniper]";
 		mes "Congratulations!";
 		mes "As a Sniper, I hope";

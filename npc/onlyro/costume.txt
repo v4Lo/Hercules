@@ -1,0 +1,193 @@
+//===== Hercules Script ======================================
+//= Headgear to Costume converter >> Costume to Headgear converter
+//===== By: ==================================================
+//= Rebel, Zephyrus [rAthena]
+//= Mhalicot [Hercules]
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= Hercules
+//===== Description: =========================================
+//= Allows a user to convert the equipped headgear 
+//	(on Top, Mid or Low) into a costume item. 
+//	It will remove any card and refine of the Item.
+//= Allows a user to restore the equipped costume headgear 
+//	(on Top, Mid or Low) into its original form. 
+//	It will not return any card or refine of the item.
+//===== Additional Comments: =================================
+//= 1.0 Initial script [All of this script are credit to
+//	Rebel, Zephyrus of [rAthena] and revised by [Mhalicot]
+//	to make it compatible in Hercules.]
+//= 1.1 Denied if Headgear is rental, has refine,
+//	or has card[Mhalicot]
+//	Note: You must apply the costumeitem Plugins
+//  in order to use this script.
+//============================================================
+-	script	Costume Clown	-1,{
+	mes "[Clown]";
+	mes "I can convert your headgear into a Costume Headgear or restore it to its Original form. For a small fee of course.. hihi";
+	switch(select("I want to convert.:I want to restore.:No thanks.")) {
+	case 1:
+			next;
+			mes "[Clown]";
+			mes "Please, select what to convert.";
+			mes "The headgear must not be refined. A refined costume would be silly.";
+			mes "And no cards. I hate cards...";
+			mes "My expenses will be covered by just 50.000z.";
+			next;
+			setarray .@Position$[1],"Top","Mid","Low";
+			setarray .@Position[1],     1,    9,   10;
+			set .@Menu$,"";
+			for( set .@i, 1; .@i < 4; set .@i, .@i + 1 )
+			{
+				if( getequipisequiped(.@Position[.@i]) )
+				set .@Menu$, .@Menu$ + .@Position$[.@i] + "-" + "[" + getequipname(.@Position[.@i]) + "]";
+				set .@Menu$, .@Menu$ + ":";
+			}
+			set .@Part, .@Position[ select(.@Menu$) ];
+			set .@id, getequipid(.@Part);
+			set .@ref, getequiprefinerycnt(.@Part);
+			if( !getequipisequiped(.@Part) )
+			{
+				mes "[Clown]";
+				mes "You're not wearing anything there...";
+				close;
+			}
+			mes "[Clown]";
+			mes "You want to Costume your " + getitemname(getequipid(.@Part)) + "?";
+			next;
+			if( select("Yes, proceed:No, I am sorry.") == 2 )
+			{
+				mes "[Clown]";
+				mes "Need some time to think about it, huh?";
+				mes "Alright, I can understand.";
+				close;
+			}
+			for(set .@i,0; .@i<4; set .@i,.@i+1)
+				set .@slot[.@i], getequipcardid(.@Part,.@i);
+			if (.@slot[0]>4000 && .@slot[0]<5000) { // If it has card don't convert
+				mes "[Clown]";
+				mes "A card? Here?!";
+				mes "As I said before, I don't convert headgear with cards.";
+				emotion e_hmm;
+				close;
+			}
+			getinventorylist;
+			for(set .@i,0; .@i<@inventorylist_count; set .@i,.@i+1)
+				if (@inventorylist_expire[.@i] != 0 && @inventorylist_equip[.@i] != 0) { // If rental don't convert
+					mes "[Clown]";
+					mes "Sorry, I don't convert a rental headgear!";
+					emotion e_hmm;
+					close;
+				}
+			if (.@ref > 0) { // If refine don't convert
+				mes "[Clown]";
+				mes "Sorry please keep in mind.";
+				mes "I don't convert headgear with refine.";
+				emotion e_hmm;
+				close;
+			}
+			if (!countitem(.@id)) { 
+				mes "[Clown]";
+				mes "Where is "+getitemname(.@id)+"...?";
+				npctalk "You're a snoozy cheater!";
+				logmes "CHEATER: Tried to sign an item not having it: "+getitemname(.@id);
+				emotion e_wah;
+				close;
+			}
+			if( !getequipisequiped(.@Part) )
+			{
+				mes "[Clown]";
+				mes "You're not wearing anything there...";
+				close;
+			}
+			if (Zeny < 50000) {
+				mes "[Clown]";
+				mes "You don't seem rich enough to enjoy costumes. Come again when you can pay my fee of 50.000z.";
+				close;
+			}
+			Zeny -= 50000;
+			costume .@Part; // Convert the Headgear
+			mes "[Clown]";
+			mes "Done, enjoy your costume.";
+			close;
+	case 2:
+			next;
+			mes "[Clown]";
+			mes "Please, select what to restore.";
+			next;
+			.@lower = 4096;
+			.@mid = 2048;
+			.@top = 1024;
+			setarray .@bitmasks[1],.@top,.@mid,.@lower;
+			setarray .@Position$[1],"Top","Mid","Low";
+			setarray .@Position[1],     13,    12,   11;
+			set .@Menu$,"";
+			for( set .@i, 1; .@i < 4; set .@i, .@i + 1 )
+			{
+				if( getequipisequiped(.@Position[.@i]) )
+				set .@Menu$, .@Menu$ + .@Position$[.@i] + "-" + "[" + getequipname(.@Position[.@i]) + "]";
+				set .@Menu$, .@Menu$ + ":";
+			}
+			.@selection = select(.@Menu$);
+			set .@Part, .@Position[.@selection];
+			.@bitmask = .@bitmasks[.@selection];
+			if( !getequipisequiped(.@Part) )
+			{
+				mes "[Clown]";
+				mes "You're not wearing anything there...";
+				close;
+			}
+			.@id = getequipid(.@Part);
+			.@b = 0;
+			mes "[Clown]";
+			mes "You want to restore your " + getitemname(getequipid(.@Part)) + "?";
+			next;
+			if( select("Yes, proceed:No, I am sorry.") == 2 )
+			{
+				mes "[Clown]";
+				mes "Need some time to think about it, huh?";
+				mes "Alright, I can understand.";
+				close;
+			}
+			if( !getequipisequiped(.@Part) )
+			{
+				mes "[Clown]";
+				mes "You're not wearing anything there...";
+				close;
+			}
+			if (!countitem(.@id)) {
+				mes "[Clown]";
+				mes "Where is "+getitemname(.@id)+"...?";
+				npctalk "You're a snoozy cheater!";
+				logmes "CHEATER: Tried to restore an item not having it: "+getitemname(.@id);
+				emotion e_wah;
+				close;
+			}
+			getinventorylist;
+			for(set .@i,0; .@i<@inventorylist_count; set .@i,.@i+1) {
+				if (@inventorylist_bound[.@i] != 0 && (@inventorylist_equip[.@i] & .@bitmask) > 0) {
+					.@b = @inventorylist_bound[.@i];
+				}
+			}
+			delitem2(.@id, 1, getequipisidentify(.@Part), getequiprefinerycnt(.@Part),0,getequipcardid(.@Part,0),getequipcardid(.@Part,1),getequipcardid(.@Part,2),getequipcardid(.@Part,3));
+			if(.@b > 0){
+				getitembound .@id,1,.@b;
+			} else {
+				getitem .@id,1;
+			}
+			
+			
+			mes "[Clown]";
+			mes "Done, enjoy your restored headgear.";
+			close;
+	case 3:
+		mes "[Clown]";
+		mes "Very well. Return at once if you seek my services.";
+		close;
+	}
+}
+// --------------------------------------------------------------------------
+// Use duplicates to put your npc on different cities
+// --------------------------------------------------------------------------
+prontera,164,108,4	duplicate(Costume Clown)	Costume Clown#1	715

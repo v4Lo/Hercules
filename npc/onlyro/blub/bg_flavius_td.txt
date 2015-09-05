@@ -1,0 +1,272 @@
+-	script	Flavius_TD	-1,{
+	end;
+
+OnGuillaumeQuit:
+OnGuillaumeDie:
+	if( .BG_Status == 1 )
+	{
+		set .Guillaume_Score, .Guillaume_Score - 1;
+		donpcevent "Flavius_TD::OnValidateScore";
+	}
+	end;
+
+OnCroixQuit:
+OnCroixDie:
+	if( .BG_Status == 1 )
+	{
+		set .Croix_Score, .Croix_Score - 1;
+		donpcevent "Flavius_TD::OnValidateScore";
+	}
+	end;
+
+OnBuildTeams:
+	set $@Flavius_TDt1,bg_create_team("bat_b03",390,10,0,"Flavius_TD::OnGuillaumeQuit","Flavius_TD::OnGuillaumeDie");
+	set $@Flavius_TDt2,bg_create_team("bat_b03",10,290,1,"Flavius_TD::OnCroixQuit","Flavius_TD::OnCroixDie");
+	end;
+
+OnReady:
+	initnpctimer;
+	.BG_Status = 1;
+	set .Guillaume_Score, 99;
+	set .Croix_Score, 99;
+	bg_updatescore "bat_b03",.Guillaume_Score,.Croix_Score;
+	sleep 2000;
+	bg_warp $@Flavius_TDt1,"bat_b03",328,150;
+	bg_warp $@Flavius_TDt2,"bat_b03",62,150;
+	sleep 2000;
+	bg_team_reveal $@Flavius_TDt1;
+	bg_team_reveal $@Flavius_TDt2;
+	donpcevent "#guitd_respawn::OnBGStart";
+	donpcevent "#crotd_respawn::OnBGStart";
+	end;
+
+OnValidateScore:
+	if( .BG_Status != 1  )
+		end;
+
+	bg_updatescore "bat_b03",.Guillaume_Score,.Croix_Score;
+	set .@Guillaume, bg_get_data($@Flavius_TDt1, 0);
+	set .@Croix, bg_get_data($@Flavius_TDt2, 0);
+
+	if( .Croix_Score <= 0 )
+	{ // Guillaume Won
+		set .@t1r,3;
+		set .@t2r,1;
+		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
+	}
+	else if( .Guillaume_Score <= 0 )
+	{ // Croix Won
+		set .@t1r,1;
+		set .@t2r,3;
+		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
+	}
+	else if( .@Croix == 0 )
+	{ // All Croix Players quit
+		set .@Rate, 99 - .Croix_Score;
+		set .@t1r,3;
+		set .@t2r,1;
+		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
+	}
+	else if( .@Guillaume == 0 )
+	{ // All Guillaume Players quit
+		set .@Rate, 99 - .Guillaume_Score;
+		set .@t1r,1;
+		set .@t2r,3;
+		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
+	}
+	else end;
+	.@rqitA = queueiterator($@Flavius_TDq1);
+	.@rqitB = queueiterator($@Flavius_TDq2);
+
+	$@bgFinishedPlayerCount = 0;
+	
+	while ((set(.currentRID, qinext(.@rqitA))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t1r;
+		detachrid;
+	}
+
+	while ((set(.currentRID, qinext(.@rqitB))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t2r;
+		detachrid;
+	}
+	
+	qiclear(.@rqitA);
+	qiclear(.@rqitB);
+	queuedel($@Flavius_TDq1);
+	queuedel($@Flavius_TDq2);
+
+	donpcevent "Flavius_TD::OnMatchEnd";
+	end;
+
+OnTimer600000:
+	mapannounce "bat_b03","The Battle will end in 5 minutes!",1,0x808000;
+	end;
+
+OnTimer840000:
+	mapannounce "bat_b03","The Battle will end in 1 minute!",1,0x808000;
+	end;
+
+OnTimer900000:
+	if( .Guillaume_Score > .Croix_Score )
+	{ // Guillaume Won
+		set .@t1r,3;
+		set .@t2r,1;
+		mapannounce "bat_b03","The Guillaume army has won the Battle of Flavius TD!",1,0x0000FF;
+	}
+	else if( .Guillaume_Score < .Croix_Score )
+	{ // Croix Won
+		set .@t1r,1;
+		set .@t2r,3;
+		mapannounce "bat_b03","The Croix army has won the Battle of Flavius TD!",1,0xFF0000;
+	}
+	else
+	{
+		set .@t1r,1;
+		set .@t2r,1;
+		mapannounce "bat_b03","The battle is over. This is a Tie...!",1,0x808000;
+	}
+	.@rqitA = queueiterator($@Flavius_TDq1);
+	.@rqitB = queueiterator($@Flavius_TDq2);
+
+	$@bgFinishedPlayerCount = 0;
+	
+	while ((set(.currentRID, qinext(.@rqitA))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t1r;
+		detachrid;
+	}
+
+	while ((set(.currentRID, qinext(.@rqitB))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t2r;
+		detachrid;
+	}
+	
+	qiclear(.@rqitA);
+	qiclear(.@rqitB);
+	queuedel($@Flavius_TDq1);
+	queuedel($@Flavius_TDq2);
+	donpcevent "Flavius_TD::OnMatchEnd";
+	end;
+
+OnMatchEnd:
+	stopnpctimer;
+	donpcevent "#guitd_respawn::OnBGStop";
+	donpcevent "#crotd_respawn::OnBGStop";
+	set .BG_Status, 2;
+	set .Guillaume_Score, 99;
+	set .Croix_Score, 99;
+	sleep 5000;
+	bg_warp $@Flavius_TDt1,"SavePoint",0,0;
+	bg_warp $@Flavius_TDt2,"SavePoint",0,0;
+	sleep 3000;
+	bg_destroy $@Flavius_TDt1;
+	set $@Flavius_TDt1, 0;
+	bg_destroy $@Flavius_TDt2;
+	set $@Flavius_TDt2, 0;
+	$@bg_type_ext$ = "Flavius_TD";
+	donpcevent "bg_queue::OnHasBGFinished";
+	bg_updatescore "bat_b03",99,99;
+	end;
+}
+
+// Battleground Therapist
+// *********************************************************************
+
+bat_b03,390,13,5	script	Battlefield Surgeon#td1	95,{
+	specialeffect2 312;
+	skilleffect 34,0;
+	skilleffect 29,0;
+	percentheal 100,100;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INC_AGI,300000,10;
+	repairall;
+	end;
+
+}
+
+bat_b03,10,293,5	script	Battlefield Surgeon#td2	95,{
+	specialeffect2 312;
+	skilleffect 34,0;
+	skilleffect 29,0;
+	percentheal 100,100;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INC_AGI,300000,10;
+	repairall;
+	end;
+
+}
+
+// Battleground Respawn
+// *********************************************************************
+
+bat_b03,390,10,0	script	#guitd_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b03",382,2,397,17,100,100;
+	areawarp "bat_b03",382,2,397,17,"bat_b03",306,138,327,161;
+	initnpctimer;
+	end;
+}
+
+bat_b03,10,290,0	script	#crotd_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b03",2,282,17,297,100,100;
+	areawarp "bat_b03",2,282,17,297,"bat_b03",72,138,93,161;
+	initnpctimer;
+	end;
+}
+
+// Flags
+// *********************************************************************
+
+
+// MapFlags
+// *********************************************************************
+
+bat_b03	mapflag	battleground	2
+bat_b03	mapflag	nomemo
+bat_b03	mapflag	nosave	SavePoint
+bat_b03	mapflag	noteleport
+bat_b03	mapflag	nowarp
+bat_b03	mapflag	nowarpto
+bat_b03	mapflag	noreturn
+bat_b03	mapflag	nobranch
+bat_b03	mapflag	nopenalty

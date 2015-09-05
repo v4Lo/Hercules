@@ -99,6 +99,11 @@
 //ve_in	mapflag	noicewall
 //ve_in02	mapflag	noicewall
 
+pay_gld	mapflag	noicewall
+alde_gld	mapflag	noicewall
+prt_gld	mapflag	noicewall
+gef_fild13	mapflag	noicewall
+
 // Guild Castles ==========
 aldeg_cas01	mapflag	noicewall
 aldeg_cas02	mapflag	noicewall

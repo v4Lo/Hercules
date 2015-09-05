@@ -428,6 +428,13 @@ moc_prydb1,42,133,2	script	Comrade	2_M_THIEFMASTER,{
 		mes "You have passed the official Thief Test. You are now one of us.";
 		if (countitem(1069) != 0) delitem 1069,countitem(1069); //Mushroom_Of_Thief_1
 		if (countitem(1070) != 0) delitem 1070,countitem(1070); //Mushroom_Of_Thief_2
+		
+		getitem 5583, 1;
+		getitem 2456, 1;
+		getitem 15009, 1;
+		getitem 2560, 1;
+		getitem 13050, 1; // waffe
+		
 		callfunc "Job_Change",Job_Thief;
 		callfunc "F_ClearJobVar";
 		completequest 1013;

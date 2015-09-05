@@ -285,6 +285,13 @@ prt_castle,45,169,5	script	Senior Crusader	4_M_CRU_OLD,{
 		completequest 3015;
 		callfunc "Job_Change",Job_Crusader;
 		callfunc "F_ClearJobVar";		//clears all job variables for the current player
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 13434, 1; //waffe
+		
 		mes "[Michael Halig]";
 		mes "Behold...!";
 		mes "You are now a Crusader!";
@@ -1213,7 +1220,7 @@ OnTouch:
 //----------------------------------------------------------------------------
 // Purification Test
 //----------------------------------------------------------------------------
-job_cru,24,187,4	script	Patron Knight#2	4_M_CRU,{
+job_cru,27,187,4	script	Patron Knight#2	4_M_CRU,{
 	mes "[Bliant Piyord]";
 	mes "Welcome.";
 	mes "You will take";
@@ -1305,6 +1312,7 @@ OnDead:
 	if (.MyMonsterCount >= 10) {
 		CRUS_Q = 10;
 		changequest 3014,3015;
+		donpcevent "Monster Summon#cr5::OnStart";
 	}
 	end;
 
@@ -1404,7 +1412,7 @@ OnEnd:
 
 job_cru,168,150,0	script	Monster Summon#cr4-a	-1,{
 OnDead:
-	donpcevent "Monster Summon#cr5::OnStart";
+	//donpcevent "Monster Summon#cr5::OnStart";
 	end;
 }
 

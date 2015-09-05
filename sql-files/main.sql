@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `autotrade_data` (
   `itemkey` INT(11) NOT NULL DEFAULT '0',
   `amount` INT(11) NOT NULL DEFAULT '0',
   `price` INT(11) NOT NULL DEFAULT '0',
+  `vending_index` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`char_id`,`itemkey`)
 ) ENGINE=MyISAM; 
 
@@ -453,6 +454,30 @@ CREATE TABLE IF NOT EXISTS `guild_storage` (
   `unique_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `guild_id` (`guild_id`)
+) ENGINE=MyISAM;
+
+--
+-- Table structure for table `guild_storage`
+--
+
+CREATE TABLE IF NOT EXISTS `master_storage` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `master_account_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `nameid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `equip` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `identify` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '0',
+  `refine` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `attribute` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+  `card0` SMALLINT(11) NOT NULL DEFAULT '0',
+  `card1` SMALLINT(11) NOT NULL DEFAULT '0',
+  `card2` SMALLINT(11) NOT NULL DEFAULT '0',
+  `card3` SMALLINT(11) NOT NULL DEFAULT '0',
+  `expire_time` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `bound` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `unique_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `master_account_id` (`master_account_id`)
 ) ENGINE=MyISAM;
 
 --

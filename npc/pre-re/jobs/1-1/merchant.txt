@@ -151,6 +151,13 @@ alberta_in,53,43,6	script	Merchant#mer	4_M_04,{
 		mes "Congratulations!";
 		callfunc "Job_Change",Job_Merchant;
 		callfunc "F_ClearJobVar";
+
+		getitem 5583, 1;
+		getitem 2456, 1;
+		getitem 15009, 1;
+		getitem 2560, 1;
+		getitem 13423, 1; // waffe
+
 		if (questprogress(1009)) {
 			completequest 1009;
 		}

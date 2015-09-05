@@ -16,7 +16,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Gondul#1::OutsideFlagsPR5	GUILD_FLAG,{
+-	script	Kendul#1::OutsideFlagsPR5	GUILD_FLAG,{
 
 	.@GID = getcastledata("prtg_cas05",1);
 
@@ -66,14 +66,14 @@ OnRecvCastlePt05:
 	end;
 }
 
-prt_gld,199,243,2	duplicate(OutsideFlagsPR5)	Gondul#1-2	GUILD_FLAG
-prt_gld,199,236,2	duplicate(OutsideFlagsPR5)	Gondul#2	GUILD_FLAG
-prt_gld,197,243,2	duplicate(OutsideFlagsPR5)	Gondul#3	GUILD_FLAG
-prt_gld,197,236,2	duplicate(OutsideFlagsPR5)	Gondul#4	GUILD_FLAG
+prt_gld,199,243,2	duplicate(OutsideFlagsPR5)	Kendul#1-2	GUILD_FLAG
+prt_gld,199,236,2	duplicate(OutsideFlagsPR5)	Kendul#2	GUILD_FLAG
+prt_gld,197,243,2	duplicate(OutsideFlagsPR5)	Kendul#3	GUILD_FLAG
+prt_gld,197,236,2	duplicate(OutsideFlagsPR5)	Kendul#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Gondul#5::InsideFlagsPR5	GUILD_FLAG,{
+-	script	Kendul#5::InsideFlagsPR5	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePt05:
@@ -81,18 +81,18 @@ OnRecvCastlePt05:
 	end;
 }
 
-prtg_cas05,19,247,4	duplicate(InsideFlagsPR5)	Gondul#5-2	GUILD_FLAG
-prtg_cas05,19,243,4	duplicate(InsideFlagsPR5)	Gondul#6	GUILD_FLAG
-prtg_cas05,26,247,4	duplicate(InsideFlagsPR5)	Gondul#7	GUILD_FLAG
-prtg_cas05,26,243,4	duplicate(InsideFlagsPR5)	Gondul#8	GUILD_FLAG
-prtg_cas05,249,289,4	duplicate(InsideFlagsPR5)	Gondul#9	GUILD_FLAG
-prtg_cas05,256,289,4	duplicate(InsideFlagsPR5)	Gondul#10	GUILD_FLAG
-prtg_cas05,253,271,4	duplicate(InsideFlagsPR5)	Gondul#11	GUILD_FLAG
-prtg_cas05,273,257,4	duplicate(InsideFlagsPR5)	Gondul#12	GUILD_FLAG
+prtg_cas05,19,247,4	duplicate(InsideFlagsPR5)	Kendul#5-2	GUILD_FLAG
+prtg_cas05,19,243,4	duplicate(InsideFlagsPR5)	Kendul#6	GUILD_FLAG
+prtg_cas05,26,247,4	duplicate(InsideFlagsPR5)	Kendul#7	GUILD_FLAG
+prtg_cas05,26,243,4	duplicate(InsideFlagsPR5)	Kendul#8	GUILD_FLAG
+prtg_cas05,249,289,4	duplicate(InsideFlagsPR5)	Kendul#9	GUILD_FLAG
+prtg_cas05,256,289,4	duplicate(InsideFlagsPR5)	Kendul#10	GUILD_FLAG
+prtg_cas05,253,271,4	duplicate(InsideFlagsPR5)	Kendul#11	GUILD_FLAG
+prtg_cas05,273,257,4	duplicate(InsideFlagsPR5)	Kendul#12	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-prontera,165,194,5	duplicate(InsideFlagsPR5)	Gondul#13	GUILD_FLAG
+prontera,165,194,5	duplicate(InsideFlagsPR5)	Kendul#13	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -127,7 +127,7 @@ prtg_cas05,276,178,0	duplicate(Gld_Trea_Spawn)	Treasure#prtg_cas05	-1
 
 // AGIT Manager
 //============================================================
-prtg_cas05,266,266,0	duplicate(Gld_Agit_Manager)	Agit#prtg_cas05	-1
+//prtg_cas05,266,266,0	duplicate(Gld_Agit_Manager)	Agit#prtg_cas05	-1
 
 // Guardians
 //============================================================

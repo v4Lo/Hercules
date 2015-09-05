@@ -455,15 +455,15 @@ int unit_walktoxy_timer(int tid, int64 tick, int id, intptr_t data) {
 		ud->to_x = bl->x;
 		ud->to_y = bl->y;
 
-		if(battle_config.official_cell_stack_limit && map->count_oncell(bl->m, x, y, BL_CHAR|BL_NPC, 1) > battle_config.official_cell_stack_limit) {
+		// if(battle_config.official_cell_stack_limit && map->count_oncell(bl->m, x, y, BL_CHAR|BL_NPC, 1) > battle_config.official_cell_stack_limit) {
 			//Walked on occupied cell, call unit_walktoxy again
-			if(ud->steptimer != INVALID_TIMER) {
+			// if(ud->steptimer != INVALID_TIMER) {
 				//Execute step timer on next step instead
-				timer->delete(ud->steptimer, unit->step_timer);
-				ud->steptimer = INVALID_TIMER;
-			}
-			return unit->walktoxy(bl, x, y, 8);
-		}
+				// timer->delete(ud->steptimer, unit->step_timer);
+				// ud->steptimer = INVALID_TIMER;
+			// }
+			// return unit->walktoxy(bl, x, y, 8);
+		// }
 	}
 	return 0;
 }
@@ -494,7 +494,7 @@ int unit_walktoxy( struct block_list *bl, short x, short y, int flag)
 
 	if( ud == NULL) return 0;
 
-	if (battle_config.check_occupied_cells && (flag&8) && !map->closest_freecell(bl->m, &x, &y, BL_CHAR|BL_NPC, 1)) //This might change x and y
+	if ((flag&8) && !map->closest_freecell(bl->m, &x, &y, BL_CHAR, 1)) //This might change x and y
 		return 0;
 
 	if (!path->search(&wpd, bl->m, bl->x, bl->y, x, y, flag&1, CELL_CHKNOPASS)) // Count walk path cells
@@ -1102,8 +1102,11 @@ int unit_can_move(struct block_list *bl) {
 	}
 
 	// Icewall walk block special trapped monster mode
-	if(bl->type == BL_MOB) {
+	if (bl->type == BL_MOB) {
 		struct mob_data *md = BL_CAST(BL_MOB, bl);
+		if (md && md->db->mexp > 0 && ((md->status.mode&MD_BOSS && map->getcell(bl->m, bl->x, bl->y, CELL_CHKICEWALL)))) {
+			md->walktoxy_fail_count = 1;
+		}
 		if(md && ((md->status.mode&MD_BOSS && battle_config.boss_icewall_walk_block == 1 && map->getcell(bl->m,bl->x,bl->y,CELL_CHKICEWALL))
 			|| (!(md->status.mode&MD_BOSS) && battle_config.mob_icewall_walk_block == 1 && map->getcell(bl->m,bl->x,bl->y,CELL_CHKICEWALL)))) {
 			md->walktoxy_fail_count = 1; //Make sure rudeattacked skills are invoked
@@ -1150,15 +1153,21 @@ int unit_set_walkdelay(struct block_list *bl, int64 tick, int delay, int type) {
 		//Bosses can ignore skill induced walkdelay (but not damage induced)
 		if(bl->type == BL_MOB && (((TBL_MOB*)bl)->status.mode&MD_BOSS))
 			return 0;
+
 		//Make sure walk delay is not decreased
-		if (DIFF_TICK(ud->canmove_tick, tick+delay) > 0)
+		if (DIFF_TICK(ud->canmove_tick, tick + delay) > 0)
 			return 0;
 	} else {
+		ud->hitlock_tick = tick + delay;
 		//Don't set walk delays when already trapped.
 		if (!unit->can_move(bl))
 			return 0;
+
 		//Immune to being stopped for double the flinch time
-		if (DIFF_TICK(ud->canmove_tick, tick-delay) > 0)
+		//if (bl->type == BL_MOB && DIFF_TICK(ud->canmove_tick, tick - delay) > 0)
+		//	return 0;
+		//if (bl->type != BL_MOB &&
+		if(DIFF_TICK(ud->canmove_tick, tick - delay) > 0)
 			return 0;
 	}
 	ud->canmove_tick = tick + delay;
@@ -1518,7 +1527,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 
 	// moved here to prevent Suffragium from ending if skill fails
 #ifndef RENEWAL_CAST
-	if (!(skill->get_castnodex(skill_id, skill_lv)&2))
+	if ((skill->get_castnodex(skill_id, skill_lv) & 2) == 0)
 		casttime = skill->cast_fix_sc(src, casttime);
 #else
 	casttime = skill->vf_cast_fix(src, casttime, skill_id, skill_lv);
@@ -1580,8 +1589,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 	if( casttime <= 0 )
 		ud->state.skillcastcancel = 0;
 
-	if( !sd || sd->skillitem != skill_id || skill->get_cast(skill_id,skill_lv) )
-		ud->canact_tick = tick + casttime + 100;
+	if (!sd || sd->skillitem != skill_id || skill->get_cast(skill_id, skill_lv))
+		ud->canact_tick = tick + casttime;// +100;
 	if( sd )
 	{
 		switch( skill_id )
@@ -1699,7 +1708,7 @@ int unit_skilluse_pos2( struct block_list *src, short skill_x, short skill_y, ui
 
 	// moved here to prevent Suffragium from ending if skill fails
 #ifndef RENEWAL_CAST
-	if (!(skill->get_castnodex(skill_id, skill_lv)&2))
+	if ((skill->get_castnodex(skill_id, skill_lv) & 2) == 0)
 		casttime = skill->cast_fix_sc(src, casttime);
 #else
 	casttime = skill->vf_cast_fix(src, casttime, skill_id, skill_lv );
@@ -1710,8 +1719,8 @@ int unit_skilluse_pos2( struct block_list *src, short skill_x, short skill_y, ui
 	}
 
 	ud->state.skillcastcancel = castcancel&&casttime>0?1:0;
-	if( !sd || sd->skillitem != skill_id || skill->get_cast(skill_id,skill_lv) )
-		ud->canact_tick  = tick + casttime + 100;
+	if (!sd || sd->skillitem != skill_id || skill->get_cast(skill_id, skill_lv))
+		ud->canact_tick = tick + casttime;// +100;
 #if 0
 	if (sd) {
 		switch (skill_id) {
@@ -2163,8 +2172,14 @@ int unit_attack_timer_sub(struct block_list* src, int tid, int64 tick) {
 
 		ud->attackabletime = tick + sstatus->adelay;
 		// You can't move if you can't attack neither.
-		if (src->type&battle_config.attack_walk_delay)
-			unit->set_walkdelay(src, tick, sstatus->amotion, 1);
+		if (src->type&battle_config.attack_walk_delay || src->type == BL_HOM) {
+			if (src->type == BL_HOM) {
+				unit->set_walkdelay(src, tick, sstatus->adelay, 1);
+			}
+			else {
+				unit->set_walkdelay(src, tick, sstatus->amotion, 1);
+			}
+		}
 	}
 
 	if(ud->state.attack_continue) {
@@ -2276,6 +2291,7 @@ int unit_counttargeted(struct block_list* bl)
 /*==========================================
  *
  *------------------------------------------*/
+#if 0
 int unit_fixdamage(struct block_list *src, struct block_list *target, int sdelay, int ddelay, int64 damage, short div, unsigned char type, int64 damage2) {
 	nullpo_ret(target);
 
@@ -2284,7 +2300,7 @@ int unit_fixdamage(struct block_list *src, struct block_list *target, int sdelay
 
 	return status_fix_damage(src,target,damage+damage2,clif->damage(target,target,sdelay,ddelay,damage,div,type,damage2));
 }
-
+# endif
 /*==========================================
  * To change the size of the char (player or mob only)
  *------------------------------------------*/
@@ -2402,8 +2418,10 @@ int unit_remove_map(struct block_list *bl, clr_type clrtype, const char* file, i
 					storage->pc_quit(sd,0);
 				else if (sd->state.storage_flag == STORAGE_FLAG_GUILD)
 					gstorage->pc_quit(sd,0);
-
+				else if (sd->state.storage_flag == 3)
+					mstorage->pc_quit(sd, 0);
 				sd->state.storage_flag = STORAGE_FLAG_CLOSED; //Force close it when being warped.
+
 			}
 			if(sd->party_invite>0)
 				party->reply_invite(sd,sd->party_invite,0);
@@ -2912,7 +2930,9 @@ void unit_defaults(void) {
 	unit->skillcastcancel = unit_skillcastcancel;
 	unit->dataset = unit_dataset;
 	unit->counttargeted = unit_counttargeted;
+#if 0
 	unit->fixdamage = unit_fixdamage;
+# endif
 	unit->changeviewsize = unit_changeviewsize;
 	unit->remove_map = unit_remove_map;
 	unit->remove_map_pc = unit_remove_map_pc;

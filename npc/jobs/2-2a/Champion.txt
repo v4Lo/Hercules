@@ -62,7 +62,7 @@ valkyrie,53,42,3	script	Champion#Valkyrie	1_M_HOF,{
 			close;
 		}
 		jobchange Job_Champion;
-		ADVJOB = 0;
+		//ADVJOB = 0;
 		mes "[Champion]";
 		mes "Congratulations!";
 		mes "Live as a Champion,";

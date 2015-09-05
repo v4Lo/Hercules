@@ -1,0 +1,93 @@
+-	script	#autojoin	-1,{
+OnInit:
+	bindatcmd("autojoin",strnpcinfo(0)+"::OnChannelJoin");
+	bindatcmd("leavechannel",strnpcinfo(0)+"::OnLeaveChannel");
+	end;
+OnChannelJoin:
+	if(.@atcmd_numparameters > 0) {
+		.@char$ = charat(.@atcmd_parameters$[0], getstrlen(.@atcmd_parameters$[0])-1);
+		if(.@char$ == "n") {
+			channel_main_off = !channel_main_off;
+			message strcharinfo(0),"#main auto-join  is "+((channel_main_off)?"disabled":"enabled")+".";
+			if (!channel_main_off) {
+				atcommand "!join #main";
+			}
+		} else if(.@char$ == "t") {
+			channel_support_off = !channel_support_off;
+			message strcharinfo(0),"#support auto-join is "+((channel_support_off)?"enabled":"disabled")+".";
+			if (channel_support_off) {
+				atcommand "!join #support";
+			}
+		} else if(.@char$ == "e") {
+			channel_trade_off = !channel_trade_off;
+			message strcharinfo(0),"#trade auto-join is "+((channel_trade_off)?"disabled":"enabled")+".";
+			if (!channel_trade_off) {
+				atcommand "!join #trade";
+			}
+		} else if(.@char$ == "y") {
+			channel_party_off = !channel_party_off;
+			message strcharinfo(0),"#party auto-join is "+((channel_party_off)?"disabled":"enabled")+".";
+			if (!channel_party_off) {
+				atcommand "!join #party";
+			}
+		}
+	} else {
+		message strcharinfo(0),"Channel auto-join on login status:";
+		message strcharinfo(0),"#main is "+((channel_main_off)?"disabled":"enabled")+".";
+		message strcharinfo(0),"#support is "+((channel_support_off)?"enabled":"disabled")+".";
+		message strcharinfo(0),"#trade is "+((channel_trade_off)?"disabled":"enabled")+".";
+		message strcharinfo(0),"#party is "+((channel_party_off)?"disabled":"enabled")+".";
+	}
+	end;
+OnLeaveChannel:
+	if(.@atcmd_numparameters > 0) {
+		.@char$ = charat(.@atcmd_parameters$[0], getstrlen(.@atcmd_parameters$[0])-1);
+		if(.@char$ == "n") {
+			atcommand "!channel leave #main";
+		} else if(.@char$ == "t") {
+			atcommand "!channel leave #support";
+		} else if(.@char$ == "e") {
+			atcommand "!channel leave #trade";
+		} else if(.@char$ == "y") {
+			.@char$ = charat(.@atcmd_parameters$[0], getstrlen(.@atcmd_parameters$[0])-2);
+			if(.@char$ == "t") {
+				atcommand "!channel leave #party";
+			} else if(.@char$ == "l") {
+				atcommand "!channel leave #ally";
+			}
+		} else {
+			message strcharinfo(0),"Unknown channel " + .@atcmd_parameters$[0];
+			message strcharinfo(0),"Usage: !leavechannel #channelname (#main, #trade, #support, #ally, #party)";
+			message strcharinfo(0),"!leavechannel failed.";
+		}
+	} else {
+		message strcharinfo(0),"Usage: !leavechannel #channelname (#main, #trade, #support, #ally, #party)";
+		message strcharinfo(0),"!leavechannel failed.";
+	}
+end;
+OnPCLoginEvent:
+	if(!channel_main_off && !channel_support_off && !channel_trade_off) {
+		message strcharinfo(0), "Use !autojoin to configure channel auto-join. You can leave channels using !leavechannel.";
+	}
+	if (!channel_main_off) {
+		atcommand "!join #main";
+	} else {
+		message strcharinfo(0),"#main auto-join is "+((channel_main_off)?"disabled":"enabled")+".";
+	}
+	if (channel_support_off) {
+		atcommand "!join #support";
+	} else {
+		message strcharinfo(0),"#support auto-join is "+((channel_support_off)?"enabled":"disabled")+".";
+	}
+	if (!channel_trade_off) {
+		atcommand "!join #trade";
+	} else {
+		message strcharinfo(0),"#trade auto-join is "+((channel_trade_off)?"disabled":"enabled")+".";
+	}
+	if (!channel_party_off) {
+		atcommand "!join #party";
+	} else {
+		message strcharinfo(0),"#party auto-join is "+((channel_party_off)?"disabled":"enabled")+".";
+	}
+	end;
+}

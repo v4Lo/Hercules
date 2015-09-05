@@ -104,7 +104,7 @@ treasure01,169,40,0,0	monster	Hydra	1068,1,300000,100000,1
 //==================================================
 // treasure02 - Sunken Ship F2
 //==================================================
-treasure02,0,0,0,0	monster	Ghostring	1120,1,1980000,1200000,1
+treasure02,0,0,0,0	monster	Ghostring	1120,1,1980000,600000,1
 treasure02,0,0,0,0	monster	Whisper	1179,5,0,0,0
 treasure02,0,0,0,0	monster	Wanderer	1208,1,600000,300000,1
 treasure02,0,0,0,0	monster	Penomena	1216,22,300000,120000,1

@@ -129,7 +129,7 @@ prtg_cas04,271,162,0	duplicate(Gld_Trea_Spawn)	Treasure#prtg_cas04	-1
 
 // AGIT Manager
 //============================================================
-prtg_cas04,292,14,0	duplicate(Gld_Agit_Manager)	Agit#prtg_cas04	-1
+//prtg_cas04,292,14,0	duplicate(Gld_Agit_Manager)	Agit#prtg_cas04	-1
 
 // Guardians
 //============================================================

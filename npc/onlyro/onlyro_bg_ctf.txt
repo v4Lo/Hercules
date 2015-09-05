@@ -1,0 +1,450 @@
+//===== Hercules Script ======================================
+//= Battleground Treasure Theft
+-	script	BG_CTF	-1,{
+	end;
+
+OnBlueFlash:
+	if( getvariableofnpc(.Treasure_Carrier,"Guillaume_Treasure") == getcharid(0) && .BG_Status == 1)
+	{
+		getmapxy .@m$, .@x, .@y, 0;
+		viewpointmap "bat_b02",1, .@x, .@y, 1, 0x0000FF;
+		specialeffect2 73;
+		emotion e_hlp,1;
+		addtimer 2000, "BG_CTF::OnBlueFlash";
+		percentheal -5,-5;
+	}
+	end;
+
+OnRedFlash:
+	if( getvariableofnpc(.Treasure_Carrier,"Croix_Treasure") == getcharid(0) && .BG_Status == 1 )
+	{
+		getmapxy .@m$, .@x, .@y, 0;
+		viewpointmap "bat_b02",1, .@x, .@y, 2, 0xFF0000;
+		specialeffect2 73;
+		emotion e_hlp,1;
+		addtimer 2000, "BG_CTF::OnRedFlash";
+		percentheal -5,-5;
+	}
+	end;
+
+OnInit:
+	disablenpc "Guillaume_Treasure";
+	disablenpc "Croix_Treasure";
+	end;
+
+OnGuillaumeQuit:
+OnGuillaumeDie:
+	if( .BG_Status == 1 && getvariableofnpc(.Treasure_Carrier,"Croix_Treasure") == getcharid(0) )
+	{ // Drop Flag
+		set getvariableofnpc(.Treasure_Carrier,"Croix_Treasure"), 0;
+		pcblock 1,0; // UnBlock Skills/Items
+		getmapxy .@m$, .@x, .@y, 0;
+		movenpc "Croix_Treasure", .@x, .@y;
+		mapannounce "bat_b02","Croix Treasure was dropped by [ " + strcharinfo(0) + " ]",1,0xFF0000;
+		set getvariableofnpc(.Flag_Status,"Croix_Treasure"), 1; // OnFloor
+		initnpctimer "Croix_Treasure";
+		enablenpc "Croix_Treasure";
+	}
+	end;
+	
+OnCroixQuit:
+OnCroixDie:
+	if( .BG_Status == 1 && getvariableofnpc(.Treasure_Carrier,"Guillaume_Treasure") == getcharid(0) )
+	{ // Drop Flag
+		set getvariableofnpc(.Treasure_Carrier,"Guillaume_Treasure"), 0;
+		pcblock 1,0; // UnBlock Skills/Items
+		getmapxy .@m$, .@x, .@y, 0;
+		movenpc "Guillaume_Treasure", .@x, .@y;
+		mapannounce "bat_b02","Guillaume Treasure was dropped by [ " + strcharinfo(0) + " ]",1,0x0000FF;
+		set getvariableofnpc(.Flag_Status,"Guillaume_Treasure"), 1; // OnFloor
+		initnpctimer "Guillaume_Treasure";
+		enablenpc "Guillaume_Treasure";
+	}
+	end;
+
+OnBuildTeams:
+	set $@BG_CTFt1,bg_create_team("bat_b02",390,10,0,"BG_CTF::OnGuillaumeQuit","BG_CTF::OnGuillaumeDie");
+	set $@BG_CTFt2,bg_create_team("bat_b02",10,290,1,"BG_CTF::OnCroixQuit","BG_CTF::OnCroixDie");
+	end;
+
+OnReady:
+	initnpctimer;
+	.BG_Status = 1;
+	// BG Variables
+	set .Guillaume_Score, 0;
+	set .Croix_Score, 0;
+	sleep 2000;
+	bg_warp $@BG_CTFt1,"bat_b02",311,224;
+	bg_warp $@BG_CTFt2,"bat_b02",87,75;
+	sleep 2000;
+	// Respawn NPC's
+	donpcevent "#guictf_respawn::OnBGStart";
+	donpcevent "#croctf_respawn::OnBGStart";
+	// Start Match!
+	donpcevent "BG_CTF::OnMatchStart";
+	mapannounce "bat_b02","Welcome to Treasure Theft. Steal the enemy Treasure and bring it to your base!",1,0x00FF00;
+	end;
+
+OnMatchStart:
+	if( .BG_Status != 1 )
+		end;
+	// Flags2Base
+	donpcevent "Guillaume_Treasure::OnBase";
+	donpcevent "Croix_Treasure::OnBase";
+
+	end;
+
+OnGuillaumeScore:
+	set .Guillaume_Score, .Guillaume_Score + 1;
+	donpcevent "BG_CTF::OnMatchStop";
+	end;
+
+OnCroixScore:
+	set .Croix_Score, .Croix_Score + 1;
+	donpcevent "BG_CTF::OnMatchStop";
+	end;
+
+OnMatchStop:
+	disablenpc "Guillaume_Treasure";
+	disablenpc "Croix_Treasure";
+	bg_updatescore "bat_b02",.Guillaume_Score,.Croix_Score;
+
+	viewpointmap "bat_b02",2, 0, 0, 1, 0x0000FF;
+	viewpointmap "bat_b02",2, 0, 0, 2, 0xFF0000;
+	
+	if( .Guillaume_Score > 2 )
+	{ // Guillaume Won
+		mapannounce "bat_b02","The Guillaume army has won Treasure Theft.",1,0x0000FF;
+		donpcevent "BG_CTF::OnMatchEnd";
+	}
+	else if( .Croix_Score > 2 )
+	{ // Croix Won
+		mapannounce "bat_b02","The Croix army has won Treasure Theft.",1,0xFF0000;
+		donpcevent "BG_CTF::OnMatchEnd";
+	}
+	else
+	{ // Keep Playing
+		sleep 8000;
+		mapannounce "bat_b02","The Treasure Boxes have been set to their Bases",8;
+		donpcevent "BG_CTF::OnMatchStart";
+	}
+	end;
+
+OnTimer600000:
+	mapannounce "bat_b02","The Battle will end in 5 minutes",1,0x00FF00;
+	end;
+
+OnTimer840000:
+	mapannounce "bat_b02","The Battle will end in 1 minute",1,0x00FF00;
+	end;
+
+OnTimer900000:
+	disablenpc "Guillaume_Treasure";
+	disablenpc "Croix_Treasure";
+
+	viewpointmap "bat_b02",2, 0, 0, 1, 0x0000FF;
+	viewpointmap "bat_b02",2, 0, 0, 2, 0xFF0000;
+
+	if( .Guillaume_Score > .Croix_Score )
+		mapannounce "bat_b02","The Guillaume army has won Treasure Theft",1,0x0000FF;
+	else if( .Guillaume_Score < .Croix_Score )
+		mapannounce "bat_b02","The Croix army has won Treasure Theft",1,0xFF0000;
+	else
+		mapannounce "bat_b02","The battle has ended in a tie.",1,0x00FF00;
+	donpcevent "BG_CTF::OnMatchEnd";
+	end;
+
+OnMatchEnd:
+	stopnpctimer;
+	disablenpc "Guillaume_Treasure";
+	disablenpc "Croix_Treasure";
+	donpcevent "#guictf_respawn::OnBGStop";
+	donpcevent "#croctf_respawn::OnBGStop";
+	set .BG_Status, 2;
+	// =======================================================
+	// Team Rewards
+	// =======================================================
+	if( .Guillaume_Score > .Croix_Score )
+	{
+		set .@t1r,5;
+		set .@t2r,3;
+	}
+	else if( .Croix_Score > .Guillaume_Score )
+	{
+		set .@t1r,3;
+		set .@t2r,5;
+	}
+	else
+	{
+		set .@t1r,4;
+		set .@t2r,4;
+	}
+	
+	.@rqitA = queueiterator($@BG_CTFq1);
+	.@rqitB = queueiterator($@BG_CTFq2);
+
+	$@bgFinishedPlayerCount = 0;
+	
+	while ((set(.currentRID, qinext(.@rqitA))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t1r;
+		getitem 7829,2;
+		detachrid;
+	}
+
+	while ((set(.currentRID, qinext(.@rqitB))) != 0) {
+		attachrid .currentRID;
+		$@bgFinishedPlayerCount++;
+		setd("$onlyro_bgdelay_"+#master_id, gettimetick(2) + 10);
+		getitem 7773,.@t2r;
+		getitem 7829,2;
+		detachrid;
+	}
+	
+	qiclear(.@rqitA);
+	qiclear(.@rqitB);
+	queuedel($@BG_CTFq1);
+	queuedel($@BG_CTFq2);
+	// =======================================================
+	sleep 2000;
+	bg_warp $@BG_CTFt1,"SavePoint",0,0;
+	bg_warp $@BG_CTFt2,"SavePoint",0,0;
+	// =======================================================
+	set .Guillaume_Score, 0;
+	set .Croix_Score, 0;
+	sleep 3000;
+	bg_destroy $@BG_CTFt1;
+	set $@BG_CTFt1, 0;
+	bg_destroy $@BG_CTFt2;
+	set $@BG_CTFt2, 0;
+	$@bg_type_ext$ = strnpcinfo(3);
+	donpcevent "bg_queue::OnHasBGFinished";
+	bg_updatescore "bat_b02",0,0;
+	end;
+}
+
+// Battleground Therapist
+// *********************************************************************
+
+bat_b02,390,13,5	script	Battlefield Surgeon#ctf1	95,{
+	specialeffect2 312;
+	skilleffect 34,0;
+	skilleffect 29,0;
+	percentheal 100,100;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INC_AGI,300000,10;
+	repairall;
+	end;
+
+}
+
+bat_b02,10,293,5	script	Battlefield Surgeon#ctf2	95,{
+	specialeffect2 312;
+	skilleffect 34,0;
+	skilleffect 29,0;
+	percentheal 100,100;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INC_AGI,300000,10;
+	repairall;
+	end;
+
+}
+
+// Battleground Respawn
+// *********************************************************************
+
+bat_b02,390,10,0	script	#guictf_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b02",382,2,397,17,100,100;
+	areawarp "bat_b02",382,2,397,17,"bat_b02",311,224;
+	initnpctimer;
+	end;
+}
+
+bat_b02,10,290,0	script	#croctf_respawn	139,{
+	end;
+
+OnBGStart:
+	initnpctimer;
+	end;
+
+OnBGStop:
+	stopnpctimer;
+	end;
+
+OnTimer24000:
+	misceffect 83;
+	end;
+
+OnTimer25000:
+	areapercentheal "bat_b02",2,282,17,297,100,100;
+	areawarp "bat_b02",2,282,17,297,"bat_b02",87,75;
+	initnpctimer;
+	end;
+}
+
+// Flags
+// *********************************************************************
+
+bat_b02,328,150,0	script	Guillaume Treasure::Guillaume_Treasure	4_TREASURE_BOX,1,1,{
+	end;
+
+OnTouch:
+	if( getvariableofnpc(.BG_Status,"BG_CTF") != 1  || Hp < 1 )
+		end;
+
+	if( getcharid(4) == $@BG_CTFt2 && .Flag_Status < 2 )
+	{ // Flag Captured
+		set .Flag_Status, 2; // Taken
+		set .Treasure_Carrier, getcharid(0);
+
+		sc_end SC_HIDING;
+		sc_end SC_CLOAKING;
+		sc_end SC_CHASEWALK;
+
+		pcblock 1,1; // Block Skills/Items
+
+		mapannounce "bat_b02","Guillaume Treasure taken by [ " + strcharinfo(0) + " ]",1,0xFF0000;
+		disablenpc "Guillaume_Treasure";
+		addtimer 2000, "BG_CTF::OnBlueFlash";
+		stopnpctimer;
+	}
+	else if( getcharid(4) == $@BG_CTFt1 )
+	{
+		if( .Flag_Status == 0 && getvariableofnpc(.Treasure_Carrier,"Croix_Treasure") == getcharid(0) )
+		{
+			set getvariableofnpc(.Treasure_Carrier,"Croix_Treasure"),0;
+			set .Treasure_Carrier, 0;
+			mapannounce "bat_b02","Croix Treasure captured by [ " + strcharinfo(0) + " ]",1,0x0000FF;
+			pcblock 1,0; // UnBlock Skills/Items
+			stopnpctimer;
+			donpcevent "BG_CTF::OnGuillaumeScore";
+		}
+		else if( .Flag_Status == 1 )
+		{
+			mapannounce "bat_b02","Guillaume Treasure returned by [ " + strcharinfo(0) + " ]",1,0x0000FF;
+			disablenpc "Guillaume_Treasure";
+			sleep 2000;
+			movenpc "Guillaume_Treasure",328,150; // Back to Base
+			set .Flag_Status, 0;
+			initnpctimer;
+			enablenpc "Guillaume_Treasure";
+		}
+	}
+	end;
+
+OnTimer2000:
+	stopnpctimer;
+	if( .Flag_Status < 2 )
+	{
+		getmapxy .@m$, .@x, .@y, 1;
+		viewpointmap "bat_b02",1, .@x, .@y, 1, 0x0000FF;
+		specialeffect 223;
+		initnpctimer;
+	}
+	end;
+
+OnBase:
+	movenpc "Guillaume_Treasure",328,150;
+	set .Flag_Status, 0;
+	set .Treasure_Carrier, 0;
+	initnpctimer;
+	enablenpc "Guillaume_Treasure";
+	end;
+}
+
+bat_b02,62,150,0	script	Croix Treasure::Croix_Treasure	4_NONMYSTCASE,1,1,{
+	end;
+
+OnTouch:
+	if( getvariableofnpc(.BG_Status,"BG_CTF") != 1 || Hp < 1 )
+		end;
+
+	if( getcharid(4) == $@BG_CTFt1 && .Flag_Status < 2 )
+	{ // Flag Captured
+		set .Flag_Status, 2; // Taken
+		set .Treasure_Carrier, getcharid(0);
+
+		sc_end SC_HIDING;
+		sc_end SC_CLOAKING;
+		sc_end SC_CHASEWALK;
+
+		pcblock 1,1; // Block Skills/Items
+
+		mapannounce "bat_b02","Croix Treasure taken by [ " + strcharinfo(0) + " ]",1,0x0000FF;
+		disablenpc "Croix_Treasure";
+		addtimer 2000, "BG_CTF::OnRedFlash";
+		stopnpctimer;
+	}
+	else if( getcharid(4) == $@BG_CTFt2 )
+	{
+		if( .Flag_Status == 0 && getvariableofnpc(.Treasure_Carrier,"Guillaume_Treasure") == getcharid(0) )
+		{
+			set getvariableofnpc(.Treasure_Carrier,"Guillaume_Treasure"),0;
+			set .Treasure_Carrier, 0;
+			mapannounce "bat_b02","Guillaume Treasure was captured by [ " + strcharinfo(0) + " ]",1,0xFF0000;
+			pcblock 1,0; // UnBlock Skills/Items
+			stopnpctimer;
+			donpcevent "BG_CTF::OnCroixScore";
+		}
+		else if( .Flag_Status == 1 )
+		{
+			mapannounce "bat_b02","Croix Treasure was returned by [ " + strcharinfo(0) + " ]",1,0xFF0000;
+			disablenpc "Croix_Treasure";
+			sleep 2000;
+			movenpc "Croix_Treasure",62,150; // Back to Base
+			set .Flag_Status, 0;
+			initnpctimer;
+			enablenpc "Croix_Treasure";
+		}
+	}
+	end;
+
+OnTimer2000:
+	stopnpctimer;
+	if( .Flag_Status < 2 )
+	{
+		getmapxy .@m$, .@x, .@y, 1;
+		viewpointmap "bat_b02",1, .@x, .@y, 2, 0xFF0000;
+		specialeffect 223;
+		initnpctimer;
+	}
+	end;
+
+OnBase:
+	movenpc "Croix_Treasure",62,150;
+	set .Flag_Status, 0;
+	set .Treasure_Carrier, 0;
+	initnpctimer;
+	enablenpc "Croix_Treasure";
+	end;
+}
+// MapFlags
+// *********************************************************************
+
+bat_b02	mapflag	battleground	2
+bat_b02	mapflag	nomemo
+bat_b02	mapflag	nosave	SavePoint
+bat_b02	mapflag	noteleport
+bat_b02	mapflag	nowarp
+bat_b02	mapflag	nowarpto
+bat_b02	mapflag	noreturn
+bat_b02	mapflag	nobranch
+bat_b02	mapflag	nopenalty
+bat_b02	mapflag	loadevent

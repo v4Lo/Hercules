@@ -160,8 +160,12 @@ struct mapif_interface {
 	int (*parse_quest_load) (int fd);
 	int (*load_guild_storage) (int fd, int account_id, int guild_id, char flag);
 	int (*save_guild_storage_ack) (int fd, int account_id, int guild_id, int fail);
+	int(*load_master_storage) (int fd, int account_id, int master_id, char flag);
+	int(*save_master_storage_ack) (int fd, int account_id, int master_id, int fail);
 	int (*parse_LoadGuildStorage) (int fd);
 	int (*parse_SaveGuildStorage) (int fd);
+	int (*parse_SaveMasterStorage)(int fd);
+	int (*parse_LoadMasterStorage) (int fd);
 	int (*itembound_ack) (int fd, int aid, int guild_id);
 	int (*parse_ItemBoundRetrieve_sub) (int fd);
 	void (*parse_ItemBoundRetrieve) (int fd);

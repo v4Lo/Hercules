@@ -1,0 +1,651 @@
+1@epc1	mapflag	src4instance
+1@epc1	mapflag	nobranch
+1@epc1	mapflag	noicewall
+1@epc1	mapflag	nomemo
+1@epc1	mapflag	pvp	off
+1@epc1	mapflag	nosave	SavePoint
+1@epc1	mapflag	noteleport
+1@epc1	mapflag	monster_noteleport
+1@epc1	mapflag	nowarpto
+1@epc1	mapflag	partylock
+1@epc1	mapflag	zone	Memorial Dungeon
+
+//============================================================
+
+prontera,158,286,4	script	admin	567,{
+
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	.@md_name$ = "Castle Rush";
+	
+
+	if (!instance_check_party(.@party_id,2)){
+		mes "[admin]";
+		mes "I can't bear seeing them die.. again.";
+		next;
+		switch(select("How can i help you?:Turn around.")) {
+		case 1:
+			mes	"[admin]";
+			mes "Come back with a group of ^ff00004 adventurers who didn't go beyond their 1st job advancement^000000 and I'll explain it to you...";
+		case 2:
+			close;
+		}
+		close;
+	} 
+
+	if (Castle_Rush_Delay >= gettimetick(2)){
+		mes	"[admin]";
+		mes	"Thank you for your help back there.";
+		close;
+	}
+
+	if (instance_check_party(.@party_id,2)) {	
+		mes	"[admin]";
+		mes "You guys look like you can take a beating. Could you help me out for a second?";
+		next;
+		mes	"[admin]";
+		mes	"My castle has been overrun by fearsome foes, and they are ruining the whole decor.";
+		next;
+		mes	"[admin]";
+		mes "Could you help me rush my castle and pass judgement on those fools? There may be some rewards involved.";
+		next;
+		
+		switch(select("Make a plan (Generate Dungeon):Enter Castle:Leave")) {
+		case 1:
+			
+			mes "Select the difficulty setting.";	
+			switch(select("Normal:Challenge Mode:Information about 'Challenge Mode'")) {
+				case 1:
+					.@cm = 0;
+				break;
+				case 2:
+					.@cm = 1;
+				break;
+				case 3:
+					next;
+					mes	"[admin]";
+					mes "The challenge mode version has got similar rules as the normal version, but the dungeon varies from the original and is actually pretty damn hard.";
+					next;
+					mes	"[admin]";
+					mes "You need a group of ^ff00004 first class between level 30 and 68^000000, though a strong and balanced group is recommended for the challenge mode.";
+					next;
+					mes	"[admin]";
+					mes "We like to remind you that there is a video contest for this dungeon. Please have a look at our website for more information.";
+					next;
+					mes "Want to try Challenge Mode?";
+					switch(select("Yes:No")) {
+						case 1:
+							.@cm = 1;
+						break;
+						case 2:
+							.@cm = 0;
+							next;
+				}
+			}
+			
+			.@classcheck = 0;
+			getpartymember .@party_id, 1;
+			getpartymember .@party_id, 2;
+			
+			if (getcharid(0) == getpartyleader(.@party_id,2)){
+				.@talker = getcharid(3);
+				if($@partymembercount > 6) {
+					next;
+					mes "[admin]";
+					mes "Sorry, my Castle can't handle all those people. Come back with a maximum of 6 People.";
+					close;
+				}
+				if (.@cm == 1){
+					if($@partymembercount > 4) {
+						next;
+						mes "[admin]";
+						mes "Sorry, challenge mode only allows 4 People.";
+						close;
+					}
+				}
+				for (.@i = 0; .@i < $@partymembercount; .@i++) {
+					if (isloggedin($@partymemberaid[.@i], $@partymembercid[.@i])) {
+						attachrid($@partymemberaid[.@i]);
+						if( BaseLevel > 68 ) {
+							.@classcheck = 1;
+						}
+						else if(!((Class >= 0 && Class <= 6) || (Class >= 4001 && Class <= 4007) || (Class == 23) || (Class == 4046))){
+							.@classcheck = 2;
+						}
+					}
+				}
+				attachrid .@talker;
+				
+				if (.@classcheck == 1) {
+					next;
+					mes "[admin]";
+					mes "Woah, you are way too strong, you'll destroy my castle!";
+					mes "Entrance for people under level hmm... 68.";
+					close;
+				}
+				
+				if (.@classcheck == 2) {
+					next;
+					mes "[admin]";
+					mes "Woah, you are way too strong, you'll destroy my castle!";
+					mes "No entrance for adventurers who reached their second job class.";
+					close;
+				}
+
+				.@instance = instance_create(.@md_name$,.@party_id);	
+				
+				if( instance_attachmap("1@epc1", .@instance) == "" ) {					
+					mes "^0000ff"+.@md_name$+" ^000000- Critical Error!";
+					instance_destroy(.@instance);
+					close;
+				}
+				
+				instance_set_timeout 7200,300,.@instance;
+				instance_attach(.@instance);
+				
+				for (.@i = 0; .@i < $@partymembercount; .@i++) {
+					if (isloggedin($@partymemberaid[.@i], $@partymembercid[.@i])) {
+						'mayjoinids[.@i] = $@partymembercid[.@i];
+					}
+				}
+				
+				if (.@cm == 1){
+					'incm = 1;
+					'party = .@party_id;
+				}
+				'castle_rush_timer = gettimetick(2);
+				instance_init(.@instance);
+				switch(select("Enter Castle:Leave")) {
+				case 1:
+					warp "1@epc1",100,32;
+				case 2:
+					close;
+				}
+				
+			} else{
+				next;
+				mes "[admin]";
+				mes	"Fool! You are not the party leader, please agree upon a certain plan to proceed.";
+				close;
+			}
+			
+			//instance_warpall "1@epc1",100,32,.@instance;
+			
+			close;
+			
+		case 2:
+			if(has_instance2("1@epc1") >= 0) {
+				instance_attach has_instance2("1@epc1");
+				for (.@i = 0; .@i < 6; .@i++) {
+					if('mayjoinids[.@i] == getcharid(0)) {
+						warp "1@epc1",100,32;
+						close;
+					}
+				}
+			}
+			mes	"[admin]";
+			mes	"You seem like you don't have a plan.";
+			mes	"Rushing in like that could get us killed pretty easily.";
+			next;
+			mes	"[admin]";
+			mes	"Please make a plan before entering the castle.";
+			close;
+		
+		case 3:
+		
+			close;
+		
+			
+		}
+	}
+}
+
+
+1@epc1,1,1,0	script	Event Controller	CLEAR_NPC,{
+	end;
+
+OnInstanceInit:		
+		
+		.@label$ = instance_npcname(strnpcinfo(0));
+		
+		if ('incm == 1){
+		areamonster instance_mapname("1@epc1"),84,15,48,6,"Mantis",1139,10,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),84,15,48,6,"Mi Gao",1516,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),84,15,48,6,"Arclouse",1194,2,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),84,15,48,6,"Driller",1380,1,.@label$+"::OnMyMobDead";		
+		
+		areamonster instance_mapname("1@epc1"),85,31,20,24,"Mantis",1139,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,31,20,24,"Mi Gao",1516,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,31,20,24,"Arclouse",1194,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,31,20,24,"Driller",1380,2,.@label$+"::OnMyMobDead";
+		
+		areamonster instance_mapname("1@epc1"),85,45,20,38,"Mantis",1139,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,45,20,38,"Mi Gao",1516,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,45,20,38,"Arclouse",1194,5,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),85,45,20,38,"Driller",1380,2,.@label$+"::OnMyMobDead";
+		areamonster instance_mapname("1@epc1"),54,52,46,43,"Killer Mantis",1294,1,.@label$+"::OnMyMobDead";
+		
+		}
+		else{
+			areamonster instance_mapname("1@epc1"),55,6,83,15,"Mantis",1139,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),55,6,83,15,"Mi Gao",1516,5,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),55,6,83,15,"Caramel",1103,10,.@label$+"::OnMyMobDead";
+
+			areamonster instance_mapname("1@epc1"),67,35,84,45,"Mantis",1139,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),67,35,84,45,"Mi Gao",1516,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),67,35,84,45,"Caramel",1103,5,.@label$+"::OnMyMobDead";
+		}
+	end;
+	
+	
+OnMyMobDead:
+
+	.@mob_dead_num = mobcount(instance_mapname("1@epc1"),instance_npcname(strnpcinfo(0))+"::OnMyMobDead");
+	
+	if (.@mob_dead_num < 1) {
+		initnpctimer;
+	} else
+		mapannounce instance_mapname("1@epc1"),.@mob_dead_num+" Monsters Remaining",bc_map,"0xffff00";
+	if (.@mob_dead_num == 45){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: Monsters of the desert? What are they doing with my castle?!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 25){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: You're doing good, just keep on pushing!",bc_map,"0xffff00";
+	}
+	end;
+
+OnTimer5000:
+	mapannounce instance_mapname("1@epc1"),"All Monsters have been defeated. Please proceed.",bc_map,"0xffff00";
+	donpcevent instance_npcname("#Portal Eins")+"::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+1@epc1,51,70,0	script	#Portal Eins	WARPNPC,2,2,{																//Zweite Map
+	end;
+	
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+		
+		.@label$ = instance_npcname(strnpcinfo(0));
+		
+		if ('incm == 1){
+			areamonster instance_mapname("1@epc1"),165,79,145,62,"Plasma",1695,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),167,119,150,82,"Plasma",1695,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Siroma",1776,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Magmaring",1836,10,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Breeze",1692,10,.@label$+"::OnMyMobDead";
+		}
+		else{
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Stapo",1784,20,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Siroma",1776,15,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Magmaring",1836,5,.@label$+"::OnMyMobDead";
+			areamonster instance_mapname("1@epc1"),145,64,190,117,"Breeze",1692,5,.@label$+"::OnMyMobDead";
+		}
+	end;
+
+OnTouch_:
+
+		warp instance_mapname("1@epc1"),202,92;
+
+	end;
+
+OnMyMobDead:
+
+	.@mob_dead_num = mobcount(instance_mapname("1@epc1"),instance_npcname(strnpcinfo(0))+"::OnMyMobDead");
+	if (.@mob_dead_num < 1) {
+		initnpctimer;
+	} else
+		mapannounce instance_mapname("1@epc1"),.@mob_dead_num+" Monsters Remaining",bc_map,"0xffff00";
+	if (.@mob_dead_num == 44){
+			mapannounce instance_mapname("1@epc1"),"[Voice]: All this elemental power... please my castle... withstand this crisis.",bc_map,"0xffff00";
+	}
+	end;
+
+OnTimer5000:
+
+	mapannounce instance_mapname("1@epc1"),"All Monsters have been defeated.",bc_map,"0xffff00";
+	donpcevent instance_npcname("#Portal Zwei")+"::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+1@epc1,147,120,0	script	#Portal Zwei	WARPNPC,2,2,{																//Dritte Map 
+	end;
+	
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+	
+			.@label$ = instance_npcname(strnpcinfo(0));
+			setcell instance_mapname("1@epc1"),80,204,80,207,cell_walkable,0;
+			
+			if ('incm == 1){
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Alice",1275,5,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Pasana",1154,10,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Vanberk",1771,5,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Isilla",1772,5,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Chung E",1631,1,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Shinobi",1401,2,.@label$+"::OnMyMobDead";	
+				donpcevent instance_npcname("#Trap")+"::OnEnable";
+			}
+			else{
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Alice",1275,10,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Pasana",1154,10,.@label$+"::OnMyMobDead";
+				areamonster instance_mapname("1@epc1"),94,173,128,204,"Vanberk",1771,5,.@label$+"::OnMyMobDead";
+			}
+	end;
+
+OnTouch_:
+		warp instance_mapname("1@epc1"),82,205;
+	end;
+
+OnMyMobDead:
+
+	.@mob_dead_num = mobcount(instance_mapname("1@epc1"),instance_npcname(strnpcinfo(0))+"::OnMyMobDead");
+	if (.@mob_dead_num < 1) {
+		initnpctimer;
+	} else
+		mapannounce instance_mapname("1@epc1"),.@mob_dead_num+" Monsters Remaining",bc_map,"0xffff00";
+	if (.@mob_dead_num == 24){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: Ough, this is getting pretty hard. Please be careful not to damage my castle!",bc_map,"0xffff00";
+	}
+	end;
+
+OnTimer5000:
+
+	mapannounce instance_mapname("1@epc1"),"All Monsters have been defeated.",bc_map,"0xffff00";
+	donpcevent instance_npcname("#Portal Drei")+"::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+1@epc1,111,163,0	script	#Portal Drei	WARPNPC,2,2,{																//Emp Raum bzw. letzte Map
+	end;
+	
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+	
+			.@label$ = instance_npcname(strnpcinfo(0));
+		
+			setcell instance_mapname("1@epc1"),180,205,207,180,cell_basilica,1;
+			setcell instance_mapname("1@epc1"),193,194,193,188,cell_walkable,0;
+			setcell instance_mapname("1@epc1"),200,194,200,188,cell_walkable,0;
+			setcell instance_mapname("1@epc1"),185,186,180,186,cell_walkable,0;
+			setcell instance_mapname("1@epc1"),193,188,200,188,cell_walkable,0;
+		
+			if ('incm == 1){
+				monster instance_mapname("1@epc1"),196,188,"Zumm",2164,1,.@label$+"::OnMyMobDead";	
+				monster instance_mapname("1@epc1"),196,189,"Honey",2165,1,.@label$+"::OnMyMobDead";
+				monster instance_mapname("1@epc1"),197,190,"Nenya",2166,1,.@label$+"::OnMyMobDead";
+				monster instance_mapname("1@epc1"),197,191,"Secure",2167,1,.@label$+"::OnMyMobDead";
+				monster instance_mapname("1@epc1"),197,192,"Levon",2168,1,.@label$+"::OnMyMobDead";
+			}
+			else{
+				monster instance_mapname("1@epc1"),196,188,"Zumm",2160,1,.@label$+"::OnMyMobDead";	
+				monster instance_mapname("1@epc1"),196,189,"Honey",2161,1,.@label$+"::OnMyMobDead";
+				monster instance_mapname("1@epc1"),197,190,"Nenya",2162,1,.@label$+"::OnMyMobDead";
+				monster instance_mapname("1@epc1"),197,191,"Secure",2163,1,.@label$+"::OnMyMobDead";			// MVP
+			}
+			donpcevent instance_npcname("#Cage")+"::OnEnable";
+	end;
+
+OnTouch_:
+		warp instance_mapname("1@epc1"),180,190;
+	end;
+
+OnMyMobDead:
+
+	.@mob_dead_num = mobcount(instance_mapname("1@epc1"),instance_npcname(strnpcinfo(0))+"::OnMyMobDead");
+	if (.@mob_dead_num < 1) {
+		//initnpctimer;
+		mapannounce instance_mapname("1@epc1"),"[Voice]: My castle! MY castle!! ..Please kick the merchant out, thanks. ",bc_map,"0xffff00";
+	} else
+		mapannounce instance_mapname("1@epc1"),.@mob_dead_num+" Monsters Remaining",bc_map,"0xffff00";
+	
+	if ('incm == 1){
+	if (.@mob_dead_num == 4){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: That's one down... Those fools messed with the wrong novice!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 3){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: There goes the second one, I could have done this alone... pah!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 2){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: Phew, almost done.",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 1){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: The last one... SLAY them all!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 0){
+		.@castle_rush_endtime = gettimetick(2) - 'castle_rush_timer;
+		'castle_rush_endtime = .@castle_rush_endtime;
+		.@castle_rush_endtime_h = (.@castle_rush_endtime / 3600);
+		.@castle_rush_endtime_m = (.@castle_rush_endtime - (.@castle_rush_endtime_h * 3600)) / 60;
+		.@castle_rush_endtime_s = .@castle_rush_endtime - ((.@castle_rush_endtime_h * 3600) + (.@castle_rush_endtime_m * 60));
+		mapannounce instance_mapname("1@epc1"),"Event cleared, congratulations! Your time was: "+ .@castle_rush_endtime_h +" hours, " + .@castle_rush_endtime_m + " minutes and " + .@castle_rush_endtime_s + " seconds.",bc_map,"0xffff00";
+		donpcevent instance_npcname("Shalie")+"::OnEnable";
+		end;
+	}
+	}
+	else{
+	if (.@mob_dead_num == 3){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: That's one down... Those fools messed with the wrong novice!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 2){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: There goes the second one, I could have done this alone... pah!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 1){
+		mapannounce instance_mapname("1@epc1"),"[Voice]: The last one... SLAY them all!",bc_map,"0xffff00";
+	}
+	if (.@mob_dead_num == 0){
+		.@castle_rush_endtime = gettimetick(2) - 'castle_rush_timer;
+		.@castle_rush_endtime_h = (.@castle_rush_endtime / 3600);
+		.@castle_rush_endtime_m = (.@castle_rush_endtime - (.@castle_rush_endtime_h * 3600)) / 60;
+		.@castle_rush_endtime_s = .@castle_rush_endtime - ((.@castle_rush_endtime_h * 3600) + (.@castle_rush_endtime_m * 60));
+		mapannounce instance_mapname("1@epc1"),"Event cleared, congratulations! Your time was: "+ .@castle_rush_endtime_h +" hours, " + .@castle_rush_endtime_m + " minutes and " + .@castle_rush_endtime_s + " seconds.",bc_map,"0xffff00";
+		donpcevent instance_npcname("Shalie")+"::OnEnable";
+		end;
+	}
+	}
+	end;
+	
+OnPCDieEvent:
+	if ( strcharinfo(3) != has_instance("1@epc1") ) end;
+	
+	// warp if dead
+	//announce "OnPCDieEvent", bc_all;
+	getmapxy(.@m$,.@x,.@y,0);
+	if(.@x >= 180 && .@x <= 205 && .@y >= 186 && .@y <= 205) {
+		.@map$ = has_instance("1@epc1");
+		
+		warp .@map$,196,185;
+
+		.@users_on_map = getareausersid(.@map$,205,205,180,186);
+
+		instance_attach has_instance2("1@epc1");
+		
+		for (.@i = 0; .@i < .@users_on_map; .@i++) {
+			attachrid(.@account_ids[.@i]);
+			if(strcharinfo(3) == .@map$) {
+				.@partyhp = .@partyhp + Hp;
+			}
+		}
+		//announce "OnPCDieEvent inposition map: " + .@map$ + " users: " + .@users_on_map + " partyhp: "+ .@partyhp, bc_all;
+		if (.@users_on_map < 1) || (.@partyhp <= 0){
+			killmonsterall .@map$;
+			donpcevent instance_npcname(strnpcinfo(0))+"::OnEnable";
+		}
+	}
+end;
+OnPCLogoutEvent:
+	if ( strcharinfo(3) != has_instance("1@epc1") ) end;
+	
+	//announce "OnPCLogoutEvent", bc_all;
+	getmapxy(.@m$,.@x,.@y,0);
+	if(.@x >= 180 && .@x <= 205 && .@y >= 186 && .@y <= 205) {
+		.@map$ = has_instance("1@epc1");
+
+		.@users_on_map = getareausersid(.@map$,205,205,180,186);
+
+		instance_attach has_instance2("1@epc1");
+		
+		.@partyhp = -1*Hp;
+		
+		
+		for (.@i = 0; .@i < .@users_on_map; .@i++) {
+			attachrid(.@account_ids[.@i]);
+			if(strcharinfo(3) == .@map$) {
+				.@partyhp = .@partyhp + Hp;
+			}
+		}
+		
+		//announce "OnPCLogoutEvent inposition map: " + .@map$ + " users: " + .@users_on_map + " partyhp: "+ .@partyhp, bc_all;
+		if (.@users_on_map < 1) || (.@partyhp <= 0){
+			killmonsterall .@map$;
+			donpcevent instance_npcname(strnpcinfo(0))+"::OnEnable";
+		}
+	}
+	end;
+}
+
+1@epc1,196,196,4	script	Shalie	592,{
+
+	mes "[Shalie]";
+	mes	"Thank god, you saved me ... sob ... sob";
+	next;
+	mes	"[Shalie]";
+	mes	"The others always hated on me and said that I serve no purpose...";
+	mes	"I was just trying to make some decent Zeny!!";
+	next;
+	mes "[Shalie]";
+	mes	"Anyway... You saved me, and I like to give you something in return. You can have something from my fanny pack";
+	next;
+	if(castle_rush_endtime == 0 || castle_rush_endtime > 'castle_rush_endtime) {
+		castle_rush_endtime = 'castle_rush_endtime;
+	}
+	mes	"Please choose 1 item:";
+		switch(select("Baseball Cap[1]:Kafra Band[0]:Mr. Smile[0]")){
+		case 1:
+			close2;
+			
+			Castle_Rush_Delay = gettimetick(2) + 60*30;
+			
+			getitembound 5282,1,1;
+			getitembound 14533,1,1;
+			 if ('incm == 1){
+				 getitembound 14533,4,1;
+			 }
+			warp "prontera",156,282;
+			end;
+			
+		case 2:
+			close2;
+			
+			Castle_Rush_Delay = gettimetick(2) + 60*30;
+			
+			getitembound 5020,1,1;
+			getitembound 14533,1,1;
+			 if ('incm == 1){
+				 getitembound 14533,4,1;
+			 }
+			warp "prontera",156,282;
+			end;
+			
+		case 3:
+			close2;
+			
+			Castle_Rush_Delay = gettimetick(2) + 60*30;
+			
+			getitembound 2278,1,1;
+			getitembound 14533,1,1;
+			 if ('incm == 1){
+				 getitembound 14533,4,1;
+			 }
+			warp "prontera",156,282;
+			end;
+		}
+
+OnInstanceInit:
+	disablenpc instance_npcname("Shalie");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("Shalie");																											
+	end;
+	
+}
+
+1@epc1,189,191,3	script	#Cage	-1,1,5,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;	
+	
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+	
+OnTouch_:
+		mapannounce instance_mapname("1@epc1"),"[Voice]: Here they come... Punish them !!",bc_map,"0xffff00";
+		
+		setcell instance_mapname("1@epc1"),180,205,207,180,cell_basilica,0;
+		setcell instance_mapname("1@epc1"),193,194,193,188,cell_walkable,1;
+		setcell instance_mapname("1@epc1"),200,194,200,188,cell_walkable,1;
+		setcell instance_mapname("1@epc1"),193,188,200,188,cell_walkable,1;
+		disablenpc instance_npcname(strnpcinfo(0));
+		//enablenpc instance_npcname("#DisableCage");
+	end;
+}
+
+1@epc1,111,191,3	script	#Trap	-1,5,1,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;	
+	
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+	
+OnTouch_:
+		.@label$ = instance_npcname(strnpcinfo(0));
+		mapannounce instance_mapname("1@epc1"),"[Voice]: It's an ambush!!",bc_map,"0xffff00";
+		areamonster instance_mapname("1@epc1"),111,193,106,187,"Shinobi",1401,2,.@label$+"::OnMyMobDead";
+		disablenpc instance_npcname(strnpcinfo(0));
+	end;
+	
+OnMyMobDead:
+	end;
+}
+
+1@epc1,180,186,1	script	rubble#1	557,{
+	end;
+}
+1@epc1,181,186,2	script	rubble#2	557,{
+	end;
+}
+1@epc1,182,186,3	script	rubble#3	557,{
+	end;
+}
+1@epc1,183,186,4	script	rubble#4	557,{
+	end;
+}
+1@epc1,184,186,5	script	rubble#5	557,{
+	end;
+}
+1@epc1,185,186,6	script	rubble#6	557,{
+	end;
+}

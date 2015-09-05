@@ -682,6 +682,7 @@ int elemental_ai_sub_timer(struct elemental_data *ed, struct map_session_data *s
 			return 0;
 		}
 
+		int skill_id = -1;
 		status_zap(&sd->bl,0,sp);
 		ed->last_spdrain_time = tick;
 	}

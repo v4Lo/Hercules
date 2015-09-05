@@ -409,7 +409,7 @@
 363,0,0,0,0,0,0,10,0,no,0,0,0,magic,0,		HP_MEDITATIO,Meditatio
 364,0,0,0,0,0,0,10,1,no,0,0,0,magic,0,		HW_SOULDRAIN,Soul Drain
 365,9,8,1,-1,0,0,1,1,yes,0,0,0,weapon,0,		HW_MAGICCRASHER,Stave Crasher
-366,0,6,4,0,0x1,0,10,1,no,0,0,0,magic,0,		HW_MAGICPOWER,Mystical Amplification
+366,0,6,4,0,0x1,0,10,1,yes,0,0,0,magic,0,		HW_MAGICPOWER,Mystical Amplification
 367,9,8,1,0,0xD0,0,5,1,no,0,0,0,misc,0,		PA_PRESSURE,Gloria Domini
 368,0,6,4,0,0x61,0,5,1,yes,0,0,0,weapon,0,	PA_SACRIFICE, Martyr's Reckoning
 369,0,6,4,0,0x41,0,10,1,yes,0,0,0,misc,0,	PA_GOSPEL,Battle Chant
@@ -542,7 +542,7 @@
 496,0,6,4,0,0x1,0,1,0,no,0,0x8,0,none,0,		AM_TWILIGHT1,Twilight Alchemy 1
 497,0,6,4,0,0x1,0,1,0,no,0,0x8,0,none,0,		AM_TWILIGHT2,Twilight Alchemy 2
 498,0,6,4,0,0x1,0,1,0,no,0,0x8,0,none,0,		AM_TWILIGHT3,Twilight Alchemy 3
-499,-9,8,4,-1,0,0,1,2,no,0,0x208,0,weapon,0,	HT_POWER,Beast Strafing
+499,-9,8,1,-1,0,0,1,2,no,0,0x8,0,weapon,0,	HT_POWER,Beast Strafing
 500,0,6,4,0,0x40,0,5,1,no,0,0,0,misc,0,		GS_GLITTERING,Flip the Coin
 501,9,6,1,-1,0x50,0,1,1,no,0,0,0,misc,0,		GS_FLING,Fling
 502,-9,8,1,-1,0,0,1,3,no,0,0,0,weapon,0,		GS_TRIPLEACTION,Triple Action
@@ -590,7 +590,7 @@
 544,-5,6,1,0,0x40,0,10,1,no,0,0,0,weapon,0,	NJ_ISSEN,Final Strike
 
 // Additional NPC Skills (Episode 11.3)
-653,0,8,4,0,0x26,5:7:9:11:13:5:7:9:11:13,10,1,no,0,0x2002,0,weapon,0,	NPC_EARTHQUAKE,Earthquake
+653,0,8,4,0,0x6,5:7:9:11:13:5:7:9:11:13,10,1,no,0,0x2,0,magic,0,	NPC_EARTHQUAKE,Earthquake
 654,9,6,1,3,0,5,10,1,no,0,0x2,14,weapon,0,	NPC_FIREBREATH,Fire Breath
 655,9,6,1,1,0,5,10,1,no,0,0x2,14,weapon,0,	NPC_ICEBREATH,Ice Breath
 656,9,6,1,4,0,5,10,1,no,0,0x2,14,weapon,0,	NPC_THUNDERBREATH,Thunder Breath
@@ -607,7 +607,7 @@
 667,0,6,4,0,0x3,2:5:8:11:14,5,1,no,0,0x2,0,none,0,	NPC_WIDECONFUSE,Wide Confusion
 668,0,6,4,0,0x3,2:5:8:11:14,5,1,no,0,0x2,0,none,0,	NPC_WIDESLEEP,Wide Sleep
 669,0,6,4,3,0x3,5,1,1,no,0,0x2,0,magic,0,	NPC_WIDESIGHT,Wide Sight
-670,9,6,2,7,0x91,0,10,1,no,0,0x2,0,magic,0,	NPC_EVILLAND,Evil Land
+670,9,6,2,7,0x91,0,10,1,no,0,0x2002,0,magic,0,	NPC_EVILLAND,Evil Land
 671,0,6,4,0,0x1,0,5,1,no,0,0x2,0,magic,0,	NPC_MAGICMIRROR,Magic Mirror
 672,0,6,4,0,0x3,2:5:8:11:14,5,1,no,0,0x2,0,none,0,	NPC_SLOWCAST,Slow Cast
 673,-9,6,1,-1,0,0,5,1,no,0,0x2,0,weapon,0,	NPC_CRITICALWOUND,Critical Wounds

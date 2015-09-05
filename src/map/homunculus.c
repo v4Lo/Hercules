@@ -400,14 +400,26 @@ bool homunculus_evolve(struct homun_data *hd) {
 	hom = &hd->homunculus;
 	max = &hd->homunculusDB->emax;
 	min = &hd->homunculusDB->emin;
+
+
+	//hom->max_hp += rnd_value(min->HP, max->HP);
+	//hom->max_sp += rnd_value(min->SP, max->SP);
+	//hom->str += 10*rnd_value(min->str, max->str);
+	//hom->agi += 10*rnd_value(min->agi, max->agi);
+	//hom->vit += 10*rnd_value(min->vit, max->vit);
+	//hom->int_+= 10*rnd_value(min->int_,max->int_);
+	//hom->dex += 10*rnd_value(min->dex, max->dex);
+	//hom->luk += 10*rnd_value(min->luk, max->luk);
+
 	hom->max_hp += rnd_value(min->HP, max->HP);
 	hom->max_sp += rnd_value(min->SP, max->SP);
-	hom->str += 10*rnd_value(min->str, max->str);
-	hom->agi += 10*rnd_value(min->agi, max->agi);
-	hom->vit += 10*rnd_value(min->vit, max->vit);
-	hom->int_+= 10*rnd_value(min->int_,max->int_);
-	hom->dex += 10*rnd_value(min->dex, max->dex);
-	hom->luk += 10*rnd_value(min->luk, max->luk);
+	hom->str += 10*rnd_value(1, 10);
+	hom->agi += 10*rnd_value(1, 10);
+	hom->vit += 10*rnd_value(1, 10);
+	hom->int_ += 10*rnd_value(1, 10);
+	hom->dex += 10*rnd_value(1, 10);
+	hom->luk += 10*rnd_value(1, 10);
+
 	hom->intimacy = 500;
 
 	unit->remove_map(&hd->bl, CLR_OUTSIGHT, ALC_MARK);
@@ -766,7 +778,7 @@ bool homunculus_create(struct map_session_data *sd, struct s_homunculus *hom) {
 	
 	map->addiddb(&hd->bl);
 	status_calc_homunculus(hd,SCO_FIRST);
-	status_percent_heal(&hd->bl, 100, 100);
+	//status_percent_heal(&hd->bl, 100, 100);
 
 	hd->hungry_timer = INVALID_TIMER;
 	return true;
@@ -1000,12 +1012,12 @@ bool homunculus_shuffle(struct homun_data *hd) {
 		struct h_stats *max = &hd->homunculusDB->emax, *min = &hd->homunculusDB->emin;
 		hom->max_hp += rnd_value(min->HP, max->HP);
 		hom->max_sp += rnd_value(min->SP, max->SP);
-		hom->str += 10*rnd_value(min->str, max->str);
-		hom->agi += 10*rnd_value(min->agi, max->agi);
-		hom->vit += 10*rnd_value(min->vit, max->vit);
-		hom->int_+= 10*rnd_value(min->int_,max->int_);
-		hom->dex += 10*rnd_value(min->dex, max->dex);
-		hom->luk += 10*rnd_value(min->luk, max->luk);
+		hom->str += 10 * rnd_value(1, 10);
+		hom->agi += 10 * rnd_value(1, 10);
+		hom->vit += 10 * rnd_value(1, 10);
+		hom->int_ += 10 * rnd_value(1, 10);
+		hom->dex += 10 * rnd_value(1, 10);
+		hom->luk += 10 * rnd_value(1, 10);
 	}
 
 	hd->homunculus.exp = exp;

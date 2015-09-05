@@ -374,7 +374,13 @@ payon,157,141,5	script	Phoenix#TKJobChange	4_M_MONK,{
 			completequest 6002;
 			callfunc "Job_Change",Job_Taekwon;
 			callfunc "F_ClearJobVar";
+			
+			getitem 5583, 1;
+			getitem 2456, 1;
+			getitem 15009, 1;
+			getitem 2560, 1;
 			getitem 2101,1; // Guard[0]
+			
 			mes "[Phoenix]";
 			mes "You are still young, so";
 			mes "I assume you'll want a job";

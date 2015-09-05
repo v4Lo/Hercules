@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="94">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="3rdparty">
+        <df name="cmake">
+          <df name="tests">
+            <in>HAVE_MONOTONIC_CLOCK.c</in>
+          </df>
+        </df>
+        <df name="libconfig">
+          <in>grammar.c</in>
+          <in>libconfig.c</in>
+          <in>scanctx.c</in>
+          <in>scanner.c</in>
+          <in>strbuf.c</in>
+        </df>
+        <df name="mt19937ar">
+          <in>mt19937ar.c</in>
+          <in>mtTest.c</in>
+        </df>
+      </df>
+      <df name="npc">
+        <df name="viva">
+          <in>mapflags.txt</in>
+          <in>warper.txt</in>
+        </df>
+      </df>
+      <df name="src">
+        <df name="char">
+          <in>char.c</in>
+          <in>int_auction.c</in>
+          <in>int_elemental.c</in>
+          <in>int_guild.c</in>
+          <in>int_homun.c</in>
+          <in>int_mail.c</in>
+          <in>int_mercenary.c</in>
+          <in>int_party.c</in>
+          <in>int_pet.c</in>
+          <in>int_quest.c</in>
+          <in>int_storage.c</in>
+          <in>inter.c</in>
+          <in>pincode.c</in>
+        </df>
+        <df name="common">
+          <in>HPM.c</in>
+          <in>conf.c</in>
+          <in>console.c</in>
+          <in>core.c</in>
+          <in>db.c</in>
+          <in>des.c</in>
+          <in>ers.c</in>
+          <in>grfio.c</in>
+          <in>malloc.c</in>
+          <in>mapindex.c</in>
+          <in>md5calc.c</in>
+          <in>mutex.c</in>
+          <in>nullpo.c</in>
+          <in>random.c</in>
+          <in>showmsg.c</in>
+          <in>socket.c</in>
+          <in>sql.c</in>
+          <in>strlib.c</in>
+          <in>sysinfo.c</in>
+          <in>thread.c</in>
+          <in>timer.c</in>
+          <in>utils.c</in>
+        </df>
+        <df name="login">
+          <in>account_sql.c</in>
+          <in>ipban_sql.c</in>
+          <in>login.c</in>
+          <in>loginlog_sql.c</in>
+        </df>
+        <df name="map">
+          <in>HPMmap.c</in>
+          <in>atcommand.c</in>
+          <in>battle.c</in>
+          <in>battleground.c</in>
+          <in>buyingstore.c</in>
+          <in>chat.c</in>
+          <in>chrif.c</in>
+          <in>clif.c</in>
+          <in>date.c</in>
+          <in>duel.c</in>
+          <in>elemental.c</in>
+          <in>guild.c</in>
+          <in>homunculus.c</in>
+          <in>instance.c</in>
+          <in>intif.c</in>
+          <in>irc-bot.c</in>
+          <in>itemdb.c</in>
+          <in>log.c</in>
+          <in>mail.c</in>
+          <in>map.c</in>
+          <in>mapreg_sql.c</in>
+          <in>mercenary.c</in>
+          <in>mob.c</in>
+          <in>npc.c</in>
+          <in>npc_chat.c</in>
+          <in>party.c</in>
+          <in>path.c</in>
+          <in>pc.c</in>
+          <in>pc_groups.c</in>
+          <in>pet.c</in>
+          <in>quest.c</in>
+          <in>script.c</in>
+          <in>searchstore.c</in>
+          <in>skill.c</in>
+          <in>status.c</in>
+          <in>storage.c</in>
+          <in>trade.c</in>
+          <in>unit.c</in>
+          <in>vending.c</in>
+        </df>
+        <df name="plugins">
+          <in>HPMHooking.c</in>
+          <in>db2sql.c</in>
+          <in>dbghelpplug.c</in>
+          <in>sample.c</in>
+        </df>
+        <df name="test">
+          <in>test_spinlock.c</in>
+        </df>
+        <df name="tool">
+          <in>mapcache.c</in>
+        </df>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>configure</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+        </makeTool>
+      </makefileType>
+      <item path="3rdparty/cmake/tests/HAVE_MONOTONIC_CLOCK.c"
+            ex="false"
+            tool="0"
+            flavor2="2">
+      </item>
+      <item path="3rdparty/libconfig/grammar.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/libconfig/libconfig.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/libconfig/scanctx.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/libconfig/scanner.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/libconfig/strbuf.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/mt19937ar/mt19937ar.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdparty/mt19937ar/mtTest.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <folder path="0/3rdparty/cmake">
+        <cTool>
+          <incDir>
+            <pElem>3rdparty/cmake/tests</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/3rdparty/libconfig">
+        <cTool>
+          <incDir>
+            <pElem>3rdparty/libconfig</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/3rdparty/mt19937ar">
+        <cTool>
+          <incDir>
+            <pElem>3rdparty/mt19937ar</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/char">
+        <cTool>
+          <incDir>
+            <pElem>src/char</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/common">
+        <cTool>
+          <incDir>
+            <pElem>src/common</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/login">
+        <cTool>
+          <incDir>
+            <pElem>src/login</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/map">
+        <cTool>
+          <incDir>
+            <pElem>src/map</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/plugins">
+        <cTool>
+          <incDir>
+            <pElem>src/plugins</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/test">
+        <cTool>
+          <incDir>
+            <pElem>src/test</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="0/src/tool">
+        <cTool>
+          <incDir>
+            <pElem>src/tool</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <item path="src/char/char.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_auction.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_elemental.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_guild.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_homun.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_mail.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_mercenary.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_party.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_pet.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_quest.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/int_storage.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/inter.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/char/pincode.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/HPM.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/conf.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/console.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/core.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/db.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/des.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/ers.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/grfio.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/malloc.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/mapindex.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/md5calc.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/mutex.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/nullpo.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/random.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/showmsg.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/socket.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/strlib.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/sysinfo.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/thread.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/timer.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/common/utils.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/login/account_sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/login/ipban_sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/login/login.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/login/loginlog_sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/HPMmap.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/atcommand.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/battle.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/battleground.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/buyingstore.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/chat.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/chrif.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/clif.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/date.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/duel.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/elemental.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/guild.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/homunculus.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/instance.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/intif.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/irc-bot.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/itemdb.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/log.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/mail.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/map.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/mapreg_sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/mercenary.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/mob.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/npc.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/npc_chat.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/party.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/path.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/pc.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/pc_groups.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/pet.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/quest.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/script.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/searchstore.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/skill.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/status.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/storage.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/trade.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/unit.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/map/vending.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/plugins/HPMHooking.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/plugins/db2sql.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/plugins/dbghelpplug.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/plugins/sample.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/test/test_spinlock.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/tool/mapcache.c" ex="false" tool="0" flavor2="2">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

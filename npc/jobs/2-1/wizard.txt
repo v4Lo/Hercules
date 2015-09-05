@@ -419,6 +419,13 @@ gef_tower,111,37,4	script	Wizard Guildsman	1_F_GYPSY,{
 		completequest 9018;
 		callfunc "Job_Change",Job_Wizard;
 		callfunc "F_ClearJobVar";		// clears all job variables for the current player
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 1658, 1; //waffe
+		
 		mes "[Catherine]";
 		mes "Since you're a Wizard now, act like a Wizard, got it?";
 		mes "Us wizards have to be careful since we possess the ultimate power of magic.";
@@ -886,7 +893,7 @@ gef_tower,102,24,2	script	Gloomy Wizard	4_M_JOB_WIZARD,{
 		end;
 	}
 	else if (WIZ_Q == 6) {
-		if (WIZ_Q2 == 6) {
+		if (WIZ_Q == 6 && WIZ_Q2 < 7) {
 			mes "[Raulel]";
 			mes "Hahahahahaha~ I've never seen anyone so...sooo...*sneeze* tenacious as you.";
 			mes "So you want to try again eh? Even though I've ridiculed you for your failures before??";

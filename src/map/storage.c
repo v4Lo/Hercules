@@ -27,6 +27,7 @@
 
 struct storage_interface storage_s;
 struct guild_storage_interface gstorage_s;
+struct master_storage_interface mstorage_s;
 
 struct storage_interface *storage;
 struct guild_storage_interface *gstorage;
@@ -148,6 +149,12 @@ int storage_additem(struct map_session_data* sd, struct item* item_data, int amo
 
 	if( item_data->bound > IBT_ACCOUNT && !pc_can_give_bound_items(sd) ) {
 		clif->message(sd->fd, msg_sd(sd,294));
+		return 1;
+	}
+
+	if (item_data->card[0] == CARD0_CREATE && (int)MakeDWord(item_data->card[2], item_data->card[3]) == BG_CHARID && (BG_TRADE & 32)>0)
+		 {	// "Battleground's Items"
+		clif->message(sd->fd, msg_txt(264));
 		return 1;
 	}
 
@@ -449,6 +456,12 @@ int guild_storage_additem(struct map_session_data* sd, struct guild_storage* sto
 		return 1;
 	}
 
+	if (item_data->card[0] == CARD0_CREATE && (int)MakeDWord(item_data->card[2], item_data->card[3]) == BG_CHARID && (BG_TRADE & 64)>0)
+	{	// "Battleground's Items"
+		clif->message(sd->fd, msg_txt(264));
+		return 1;
+	}
+
 	if(itemdb->isstackable2(data)){ //Stackable
 		for(i=0;i<MAX_GUILD_STORAGE;i++){
 			if(compare_item(&stor->items[i], item_data)) {
@@ -741,6 +754,422 @@ void do_init_gstorage(bool minimal) {
 void do_final_gstorage(void) {
 	db_destroy(gstorage->db);
 }
+
+/**
+* ONLYRO MASTER STORAGE
+*/
+
+/**
+* @see DBCreateData
+*/
+DBData create_masterstorage(DBKey key, va_list args)
+{
+	struct master_storage *ms = NULL;
+	ms = (struct master_storage *) aCalloc(sizeof(struct master_storage), 1);
+	ms->master_id = key.i;
+	return DB->ptr2data(ms);
+}
+
+struct master_storage *master2storage_ensure(int master_account_id)
+{
+	struct master_storage *ms = NULL;
+	struct s_mapiterator* iter;
+	if (master_account_id >= 0) {
+		iter = mapit_getallusers();
+		struct map_session_data* sd;
+		for (sd = (TBL_PC*)mapit->first(iter); mapit->exists(iter); sd = (TBL_PC*)mapit->next(iter))
+		{
+			if (sd->master_account_id == master_account_id) {
+				ms = idb_ensure(mstorage->db, master_account_id, mstorage->create);
+				break;
+			}
+		}
+		mapit->free(iter);
+	}
+	return ms;
+}
+
+int master_storage_delete(int master_account_id) {
+	idb_remove(mstorage->db, master_account_id);
+	return 0;
+}
+
+/*==========================================
+* Attempt to open master storage for sd
+* return
+*   0 : success (open or req to create a new one)
+*   1 : fail
+*   2 : no master for sd
+*------------------------------------------*/
+int storage_master_storageopen(struct map_session_data* sd)
+{
+	struct master_storage *mstor;
+
+	nullpo_ret(sd);
+
+	if (sd->master_account_id < 0)
+		return 2;
+
+	if (sd->state.storage_flag)
+		return 1; //Can't open both storages at a time.
+
+	if (!pc_can_give_items(sd)) { //check is this GM level can open master storage and store items [Lupus]
+		clif->message(sd->fd, msg_sd(sd, 246));
+		return 1;
+	}
+
+	if ((mstor = idb_get(mstorage->db, sd->master_account_id)) == NULL) {
+		intif->request_master_storage(sd->status.account_id, sd->master_account_id);
+		return 0;
+	}
+	if (mstor->storage_status)
+		return 1;
+
+	if (mstor->lock)
+		return 1;
+
+	mstor->storage_status = 1;
+	sd->state.storage_flag = 3;
+	storage->sortitem(mstor->items, ARRAYLENGTH(mstor->items));
+	clif->storagelist(sd, mstor->items, ARRAYLENGTH(mstor->items));
+	clif->updatestorageamount(sd, mstor->storage_amount, MAX_MASTER_STORAGE);
+	return 0;
+}
+
+/*==========================================
+* Attempt to add an item in master storage, then refresh it
+* return
+*   0 : success
+*   1 : fail
+*------------------------------------------*/
+int master_storage_additem(struct map_session_data* sd, struct master_storage* stor, struct item* item_data, int amount)
+{
+	struct item_data *data;
+	int i;
+
+	nullpo_retr(1, sd);
+	nullpo_retr(1, stor);
+	nullpo_retr(1, item_data);
+
+	if (item_data->nameid <= 0 || amount <= 0)
+		return 1;
+
+	data = itemdb->search(item_data->nameid);
+
+	if (data->stack.storage && amount > data->stack.amount)
+	{// item stack limitation
+		return 1;
+	}
+
+	if (!itemdb_canstore(item_data, pc_get_group_level(sd)) || item_data->expire_time) {
+		//Check if item is storable. [Skotlex]
+		clif->message(sd->fd, msg_sd(sd, 264));
+		return 1;
+	}
+
+	if (item_data->bound && item_data->bound != IBT_CHARACTER && !pc_can_give_bound_items(sd)) {
+		clif->message(sd->fd, msg_sd(sd, 294));
+		return 1;
+	}
+
+	if (item_data->card[0] == CARD0_CREATE && (int)MakeDWord(item_data->card[2], item_data->card[3]) == BG_CHARID && (BG_TRADE & 64)>0)
+	{	// "Battleground's Items"
+		clif->message(sd->fd, msg_txt(264));
+		return 1;
+	}
+
+	if (itemdb->isstackable2(data)){ //Stackable
+		for (i = 0; i<MAX_MASTER_STORAGE; i++){
+			if (compare_item(&stor->items[i], item_data)) {
+				if (amount > MAX_AMOUNT - stor->items[i].amount || (data->stack.storage && amount > data->stack.amount - stor->items[i].amount))
+					return 1;
+				stor->items[i].amount += amount;
+				clif->storageitemadded(sd, &stor->items[i], i, amount);
+				stor->dirty = 1;
+				return 0;
+			}
+		}
+	}
+	//Add item
+	for (i = 0; i<MAX_MASTER_STORAGE && stor->items[i].nameid; i++);
+
+	if (i >= MAX_MASTER_STORAGE)
+		return 1;
+
+	memcpy(&stor->items[i], item_data, sizeof(stor->items[0]));
+	stor->items[i].amount = amount;
+	stor->storage_amount++;
+	clif->storageitemadded(sd, &stor->items[i], i, amount);
+	clif->updatestorageamount(sd, stor->storage_amount, MAX_MASTER_STORAGE);
+	stor->dirty = 1;
+	return 0;
+}
+
+/*==========================================
+* Attempt to delete an item in master storage, then refresh it
+* return
+*   0 : success
+*   1 : fail
+*------------------------------------------*/
+int master_storage_delitem(struct map_session_data* sd, struct master_storage* stor, int n, int amount)
+{
+	nullpo_retr(1, sd);
+	nullpo_retr(1, stor);
+
+	if (stor->items[n].nameid == 0 || stor->items[n].amount<amount)
+		return 1;
+
+	stor->items[n].amount -= amount;
+	if (stor->items[n].amount == 0){
+		memset(&stor->items[n], 0, sizeof(stor->items[0]));
+		stor->storage_amount--;
+		clif->updatestorageamount(sd, stor->storage_amount, MAX_MASTER_STORAGE);
+	}
+	clif->storageitemremoved(sd, n, amount);
+	stor->dirty = 1;
+	return 0;
+}
+
+/*==========================================
+* Attempt to add an item in master storage from inventory, then refresh it
+* @index : inventory idx
+* return
+*   0 : fail
+*   1 : succes
+*------------------------------------------*/
+int storage_master_storageadd(struct map_session_data* sd, int index, int amount)
+{
+	struct master_storage *stor;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	if (!stor->storage_status || stor->storage_amount > MAX_MASTER_STORAGE)
+		return 0;
+
+	if (index<0 || index >= MAX_INVENTORY)
+		return 0;
+
+	if (sd->status.inventory[index].nameid <= 0)
+		return 0;
+
+	if (amount < 1 || amount > sd->status.inventory[index].amount)
+		return 0;
+
+	if (stor->lock) {
+		mstorage->close(sd);
+		return 0;
+	}
+
+	if (mstorage->additem(sd, stor, &sd->status.inventory[index], amount) == 0)
+		pc->delitem(sd, index, amount, 0, 4, LOG_TYPE_MSTORAGE);
+	else
+		clif->dropitem(sd, index, 0);
+
+	return 1;
+}
+
+/*==========================================
+* Attempt to retrieve an item from master storage to inventory, then refresh it
+* @index : storage idx
+* return
+*   0 : fail
+*   1 : success
+*------------------------------------------*/
+int storage_master_storageget(struct map_session_data* sd, int index, int amount)
+{
+	struct master_storage *stor;
+	int flag;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	if (!stor->storage_status)
+		return 0;
+
+	if (index<0 || index >= MAX_MASTER_STORAGE)
+		return 0;
+
+	if (stor->items[index].nameid <= 0)
+		return 0;
+
+	if (amount < 1 || amount > stor->items[index].amount)
+		return 0;
+
+	if (stor->lock) {
+		mstorage->close(sd);
+		return 0;
+	}
+
+	if ((flag = pc->additem(sd, &stor->items[index], amount, LOG_TYPE_MSTORAGE)) == 0)
+		mstorage->delitem(sd, stor, index, amount);
+	else //inform fail
+		clif->additem(sd, 0, 0, flag);
+	//log_fromstorage(sd, index, 1);
+
+	return 0;
+}
+
+/*==========================================
+* Attempt to add an item in master storage from cart, then refresh it
+* @index : cart inventory idx
+* return
+*   0 : fail
+*   1 : success
+*------------------------------------------*/
+int storage_master_storageaddfromcart(struct map_session_data* sd, int index, int amount)
+{
+	struct master_storage *stor;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	if (!stor->storage_status || stor->storage_amount > MAX_MASTER_STORAGE)
+		return 0;
+
+	if (index < 0 || index >= MAX_CART)
+		return 0;
+
+	if (sd->status.cart[index].nameid <= 0)
+		return 0;
+
+	if (amount < 1 || amount > sd->status.cart[index].amount)
+		return 0;
+
+	if (mstorage->additem(sd, stor, &sd->status.cart[index], amount) == 0)
+		pc->cart_delitem(sd, index, amount, 0, LOG_TYPE_MSTORAGE);
+
+	return 1;
+}
+
+/*==========================================
+* Attempt to retrieve an item from master storage to cart, then refresh it
+* @index : storage idx
+* return
+*   0 : fail
+*   1 : success
+*------------------------------------------*/
+int storage_master_storagegettocart(struct map_session_data* sd, int index, int amount)
+{
+	struct master_storage *stor;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	if (!stor->storage_status)
+		return 0;
+
+	if (index<0 || index >= MAX_MASTER_STORAGE)
+		return 0;
+
+	if (stor->items[index].nameid <= 0)
+		return 0;
+
+	if (amount < 1 || amount > stor->items[index].amount)
+		return 0;
+
+	if (pc->cart_additem(sd, &stor->items[index], amount, LOG_TYPE_MSTORAGE) == 0)
+		mstorage->delitem(sd, stor, index, amount);
+
+	return 1;
+}
+
+/*==========================================
+* Request to save master storage
+* return
+*   0 : fail (no storage)
+*   1 : success
+*------------------------------------------*/
+int storage_master_storagesave(int account_id, int master_id, int flag)
+{
+	struct master_storage *stor = idb_get(mstorage->db, master_id);
+
+	if (stor)
+	{
+		if (flag) //Char quitting, close it.
+			stor->storage_status = 0;
+		if (stor->dirty)
+			intif->send_master_storage(account_id, stor); // TODO
+		return 1;
+	}
+	return 0;
+}
+
+/*==========================================
+* ACK save of master storage
+* return
+*   0 : fail (no storage)
+*   1 : success
+*------------------------------------------*/
+int storage_master_storagesaved(int master_id)
+{
+	struct master_storage *stor;
+
+	if ((stor = idb_get(mstorage->db, master_id)) != NULL) {
+		if (stor->dirty && stor->storage_status == 0) {
+			//Storage has been correctly saved.
+			stor->dirty = 0;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+//Close storage for sd and save it
+int storage_master_storageclose(struct map_session_data* sd) {
+	struct master_storage *stor;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	clif->storageclose(sd);
+	if (stor->storage_status) {
+		if (map->save_settings & 4)
+			chrif->save(sd, 0); //This one also saves the storage. [Skotlex]
+		else
+			gstorage->save(sd->status.account_id, sd->master_account_id, 0);
+		stor->storage_status = 0;
+	}
+	sd->state.storage_flag = 0;
+
+	return 0;
+}
+
+int storage_master_storage_quit(struct map_session_data* sd, int flag) {
+	struct master_storage *stor;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor = idb_get(mstorage->db, sd->master_account_id));
+
+	if (flag) {
+		sd->state.storage_flag = 0;
+		stor->storage_status = 0;
+		clif->storageclose(sd);
+		if (map->save_settings & 4)
+			chrif->save(sd, 0);
+		return 0;
+	}
+
+	if (stor->storage_status) {
+		if (map->save_settings & 4)
+			chrif->save(sd, 0);
+		else
+			mstorage->save(sd->status.account_id, sd->master_account_id, 1);
+	}
+	sd->state.storage_flag = 0;
+	stor->storage_status = 0;
+
+	return 0;
+}
+void do_init_mstorage(bool minimal) {
+	if (minimal)
+		return;
+	mstorage->db = idb_alloc(DB_OPT_RELEASE_DATA);
+}
+void do_final_mstorage(void) {
+	db_destroy(mstorage->db);
+}
+
 void storage_defaults(void) {
 	storage = &storage_s;
 
@@ -781,4 +1210,26 @@ void gstorage_defaults(void) {
 	gstorage->save = storage_guild_storagesave;
 	gstorage->saved = storage_guild_storagesaved;
 	gstorage->create = create_guildstorage;
+}
+void mstorage_defaults(void) {
+	mstorage = &mstorage_s;
+
+	/* */
+	mstorage->init = do_init_mstorage;
+	mstorage->final = do_final_mstorage;
+	/* */
+	mstorage->ensure = master2storage_ensure;
+	mstorage->delete = master_storage_delete;
+	mstorage->open = storage_master_storageopen;
+	mstorage->additem = master_storage_additem;
+	mstorage->delitem = master_storage_delitem;
+	mstorage->add = storage_master_storageadd;
+	mstorage->get = storage_master_storageget;
+	mstorage->addfromcart = storage_master_storageaddfromcart;
+	mstorage->gettocart = storage_master_storagegettocart;
+	mstorage->close = storage_master_storageclose;
+	mstorage->pc_quit = storage_master_storage_quit;
+	mstorage->save = storage_master_storagesave;
+	mstorage->saved = storage_master_storagesaved;
+	mstorage->create = create_masterstorage;
 }

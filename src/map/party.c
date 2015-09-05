@@ -1060,6 +1060,9 @@ int party_sub_count(struct block_list *bl, va_list ap)
 	if (battle_config.idle_no_share && pc_isidle(sd))
 		return 0;
 
+	if (pc_isdead(sd))
+		return 0;
+
 	return 1;
 }
 

@@ -155,13 +155,23 @@ prt_fild05,270,212,5	script	Culvert Guardian	8W_SOLDIER,{
 			end;
 		}
 		close;
+	} else {
+		mes "[Culvert Guardian]";
+		mes "You're not one of our volunteers, please go to the registration later.";
+		mes "But for now, do you wish to go inside?";
+		next;
+		if (select("Sure.:Quit.") == 1) {
+			warp "prt_sewb1",131,247;
+			end;
+		}
+		close;
 	}
-	mes "[Culvert Guardian]";
-	mes "I'm sorry, but we can only allow volunteers for the Culvert Campaign to enter.";
-	next;
-	mes "[Culvert Guardian]";
-	mes "If you'd like to volunteer, please visit the ^000077Culvert Registrar^000000 located in the 11 O'clock direction of Prontera.";
-	close;
+	//mes "[Culvert Guardian]";
+	//mes "I'm sorry, but we can only allow volunteers for the Culvert Campaign to enter.";
+	//next;
+	//mes "[Culvert Guardian]";
+	//mes "If you'd like to volunteer, please visit the ^000077Culvert Registrar^000000 located in the 11 O'clock direction of Prontera.";
+	//close;
 }
 
 // Ph.D Hat Quest :: npc_6cript

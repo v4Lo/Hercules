@@ -47,7 +47,7 @@
 // 20120307 - 2012-03-07aRagexeRE+ - 0x970
 
 #ifndef PACKETVER
-	#define PACKETVER 20141022
+	#define PACKETVER 20140205
 #endif // PACKETVER
 
 //Uncomment the following line if your client is ragexeRE instead of ragexe (required because of conflicting packets in ragexe vs ragexeRE).
@@ -115,6 +115,7 @@
 #define MAX_WALK_SPEED 1000
 #define MAX_STORAGE 600
 #define MAX_GUILD_STORAGE 600
+#define MAX_MASTER_STORAGE 100
 #define MAX_PARTY 12
 #define BASE_GUILD_SIZE 16               // Base guild members (without GD_EXTENSION)
 #define MAX_GUILD (BASE_GUILD_SIZE+10*6) // Increased max guild members +6 per 1 extension levels [Lupus]
@@ -389,6 +390,15 @@ struct guild_storage {
 	short storage_status;
 	short storage_amount;
 	struct item items[MAX_GUILD_STORAGE];
+	unsigned short lock;
+};
+
+struct master_storage {
+	int dirty;
+	int master_id;
+	short storage_status;
+	short storage_amount;
+	struct item items[MAX_MASTER_STORAGE];
 	unsigned short lock;
 };
 

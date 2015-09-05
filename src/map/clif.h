@@ -1313,11 +1313,22 @@ struct clif_interface {
 	/* */
 	void (*pNPCShopClosed) (int fd, struct map_session_data *sd);
 	/* NPC Market (by Ind after an extensive debugging of the packet, only possible thanks to Yommy <3) */
-	void (*pNPCMarketClosed) (int fd, struct map_session_data *sd);
-	void (*pNPCMarketPurchase) (int fd, struct map_session_data *sd);
+
+	void(*pNPCMarketClosed) (int fd, struct map_session_data *sd);
+	void(*pNPCMarketPurchase) (int fd, struct map_session_data *sd);
+	//eamod
+	void(*bg_belonginfo)(struct map_session_data *sd);
+	int(*visual_guild_id)(struct block_list *bl);
+	int(*visual_emblem_id)(struct block_list *bl);
+	void(*bg_emblem)(struct map_session_data *sd, struct guild *g);
+	void(*bg_memberlist)(struct map_session_data *sd);
+	void(*bg_leave)(struct map_session_data *sd, const char *name, const char *mes);
+	void(*bg_leave_single)(struct map_session_data *sd, const char *name, const char *mes);
+	void(*bg_expulsion_single)(struct map_session_data *sd, const char *name, const char *mes);
 	/* */
 	void (*add_random_options) (unsigned char* buf, struct item* item);
 	void (*pHotkeyRowShift) (int fd, struct map_session_data *sd);
+
 };
 
 #ifdef HERCULES_CORE

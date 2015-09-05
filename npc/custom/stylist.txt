@@ -10,7 +10,8 @@
 //= 1.1 Switched to 'getbattleflag', credits to Saithis. [Euphy]
 //============================================================
 
-prontera,170,180,1	script	Stylist#custom_stylist	2_M_DYEINGER,{
+-	script	custom_stylist	-1,{
+	mes "[Stylist]", ".";
 
 	setarray .@styles[1],getbattleflag("max_cloth_color"),getbattleflag("max_hair_style"),getbattleflag("max_hair_color");
 	setarray .@Look[1],7,1,6;
@@ -32,3 +33,6 @@ prontera,170,180,1	script	Stylist#custom_stylist	2_M_DYEINGER,{
 		}
 	}
 }
+
+prt_fild08,189,298,1	duplicate(custom_stylist)	Stylist#custom_stylist2	2_M_DYEINGER
+prontera,165,92,1	duplicate(custom_stylist)	Stylist#custom_stylist3	2_M_DYEINGER

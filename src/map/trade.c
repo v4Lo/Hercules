@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "battleground.h"
 
 struct trade_interface trade_s;
 struct trade_interface *trade;
@@ -354,7 +355,8 @@ void trade_tradeadditem(struct map_session_data *sd, short index, short amount) 
 	src_lv = pc_get_group_level(sd);
 	dst_lv = pc_get_group_level(target_sd);
 	if( !itemdb_cantrade(item, src_lv, dst_lv) && //Can't trade
-		(pc->get_partner(sd) != target_sd || !itemdb_canpartnertrade(item, src_lv, dst_lv)) ) //Can't partner-trade
+		(pc->get_partner(sd) != target_sd || !itemdb_canpartnertrade(item, src_lv, dst_lv)) && //Can't partner-trade
+		(sd->master_account_id < 0 || sd->master_account_id != target_sd->master_account_id || !itemdb_canmastertrade(item, src_lv, dst_lv))) //Can't master-trade
 	{
 		clif->message (sd->fd, msg_sd(sd,260));
 		clif->tradeitemok(sd, index+2, TIO_INDROCKS);
@@ -377,6 +379,13 @@ void trade_tradeadditem(struct map_session_data *sd, short index, short amount) 
 		return;
 	}
 
+	if (item->card[0] == CARD0_CREATE && (int)MakeDWord(item->card[2], item->card[3]) == BG_CHARID && (BG_TRADE & 2)>0)
+	{	// "Battleground's Items"
+		clif->message(sd->fd, msg_txt(260));
+		clif->tradeitemok(sd, index + 2, TIO_INDROCKS);
+		return;
+	}
+	
 	//Locate a trade position
 	ARR_FIND( 0, 10, trade_i, sd->deal.item[trade_i].index == index || sd->deal.item[trade_i].amount == 0 );
 	if( trade_i == 10 ) //No space left

@@ -1454,8 +1454,12 @@ bool login_parse_client_login(int fd, struct login_session_data* sd, const char 
 	{
 		ShowStatus("Request for connection of %s (ip: %s).\n", sd->userid, ip);
 		safestrncpy(sd->passwd, password, PASSWD_LEN);
-		if( login_config.use_md5_passwds )
+		if (login_config.use_md5_passwds) {
+			char buf[57];
 			MD5_String(sd->passwd, sd->passwd);
+			snprintf(buf, sizeof buf, "%s%s", sd->userid, sd->passwd);
+			MD5_String(buf, sd->passwd);
+		}
 		sd->passwdenc = PWENC_NONE;
 	}
 	else
@@ -1521,8 +1525,12 @@ void login_parse_request_connection(int fd, struct login_session_data* sd, const
 
 	safestrncpy(sd->userid, (char*)RFIFOP(fd,2), NAME_LENGTH);
 	safestrncpy(sd->passwd, (char*)RFIFOP(fd,26), NAME_LENGTH);
-	if( login_config.use_md5_passwds )
+	if( login_config.use_md5_passwds ) {
+		char buf[57];
 		MD5_String(sd->passwd, sd->passwd);
+		snprintf(buf, sizeof buf, "%s%s", sd->userid, sd->passwd);
+		MD5_String(buf, sd->passwd);
+	}
 	sd->passwdenc = PWENC_NONE;
 	sd->version = login_config.client_version_to_connect; // hack to skip version check
 	server_ip = ntohl(RFIFOL(fd,54));

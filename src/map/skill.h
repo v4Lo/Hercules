@@ -38,9 +38,9 @@ struct status_change_entry;
 #define MAX_SQUARE_LAYOUT         5 // 11*11 Placement of a maximum unit
 #define MAX_SKILL_UNIT_COUNT      ((MAX_SQUARE_LAYOUT*2+1)*(MAX_SQUARE_LAYOUT*2+1))
 #define MAX_SKILLTIMERSKILL       15
-#define MAX_SKILLUNITGROUP        25
+#define MAX_SKILLUNITGROUP        250
 #define MAX_SKILL_ITEM_REQUIRE    10
-#define MAX_SKILLUNITGROUPTICKSET 25
+#define MAX_SKILLUNITGROUPTICKSET 50
 #define MAX_SKILL_NAME_LENGTH     30
 
 // (Epoque:) To-do: replace this macro with some sort of skill tree check (rather than hard-coded skill names)
@@ -1913,6 +1913,7 @@ struct skill_interface {
 	bool (*is_combo) (int skill_id);
 	int (*name2id) (const char* name);
 	int (*isammotype) (struct map_session_data *sd, int skill_id);
+	int (*castend_final) (struct block_list* src, uint16 skill_id, uint16 skill_lv);
 	int (*castend_id) (int tid, int64 tick, int id, intptr_t data);
 	int (*castend_pos) (int tid, int64 tick, int id, intptr_t data);
 	int (*castend_map) ( struct map_session_data *sd,uint16 skill_id, const char *mapname);

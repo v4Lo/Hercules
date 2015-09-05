@@ -16,7 +16,7 @@
 
 // Guild Flags (Outside Castle)
 //============================================================
--	script	Holy Shadow#1::OutsideFlagsPA3	GUILD_FLAG,{
+-	script	Bool-Young#1::OutsideFlagsPA3	GUILD_FLAG,{
 
 	.@GID = getcastledata("payg_cas03",1);
 
@@ -66,14 +66,14 @@ OnRecvCastlePy03:
 	end;
 }
 
-pay_gld,321,298,2	duplicate(OutsideFlagsPA3)	Holy Shadow#1-2	GUILD_FLAG
-pay_gld,321,289,2	duplicate(OutsideFlagsPA3)	Holy Shadow#2	GUILD_FLAG
-pay_gld,327,304,1	duplicate(OutsideFlagsPA3)	Holy Shadow#3	GUILD_FLAG
-pay_gld,333,254,4	duplicate(OutsideFlagsPA3)	Holy Shadow#4	GUILD_FLAG
+pay_gld,321,298,2	duplicate(OutsideFlagsPA3)	Bool-Young#1-2	GUILD_FLAG
+pay_gld,321,289,2	duplicate(OutsideFlagsPA3)	Bool-Young#2	GUILD_FLAG
+pay_gld,327,304,1	duplicate(OutsideFlagsPA3)	Bool-Young#3	GUILD_FLAG
+pay_gld,333,254,4	duplicate(OutsideFlagsPA3)	Bool-Young#4	GUILD_FLAG
 
 // Guild Flags (Inside Castle)
 //============================================================
--	script	Holy Shadow#5::InsideFlagsPA3	GUILD_FLAG,{
+-	script	Bool-Young#5::InsideFlagsPA3	GUILD_FLAG,{
 	end;
 
 OnRecvCastlePy03:
@@ -81,17 +81,17 @@ OnRecvCastlePy03:
 	end;
 }
 
-payg_cas03,236,54,2	duplicate(InsideFlagsPA3)	Holy Shadow#5-2	GUILD_FLAG
-payg_cas03,236,45,2	duplicate(InsideFlagsPA3)	Holy Shadow#6	GUILD_FLAG
-payg_cas03,259,66,4	duplicate(InsideFlagsPA3)	Holy Shadow#7	GUILD_FLAG
-payg_cas03,266,66,4	duplicate(InsideFlagsPA3)	Holy Shadow#8	GUILD_FLAG
-payg_cas03,34,31,4	duplicate(InsideFlagsPA3)	Holy Shadow#9	GUILD_FLAG
-payg_cas03,43,31,4	duplicate(InsideFlagsPA3)	Holy Shadow#10	GUILD_FLAG
+payg_cas03,236,54,2	duplicate(InsideFlagsPA3)	Bool-Young#5-2	GUILD_FLAG
+payg_cas03,236,45,2	duplicate(InsideFlagsPA3)	Bool-Young#6	GUILD_FLAG
+payg_cas03,259,66,4	duplicate(InsideFlagsPA3)	Bool-Young#7	GUILD_FLAG
+payg_cas03,266,66,4	duplicate(InsideFlagsPA3)	Bool-Young#8	GUILD_FLAG
+payg_cas03,34,31,4	duplicate(InsideFlagsPA3)	Bool-Young#9	GUILD_FLAG
+payg_cas03,43,31,4	duplicate(InsideFlagsPA3)	Bool-Young#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-payon,113,322,4	duplicate(InsideFlagsPA3)	Holy Shadow#11	GUILD_FLAG
-payon,166,169,3	duplicate(InsideFlagsPA3)	Holy Shadow#12	GUILD_FLAG
+payon,113,322,4	duplicate(InsideFlagsPA3)	Bool-Young#11	GUILD_FLAG
+payon,166,169,3	duplicate(InsideFlagsPA3)	Bool-Young#12	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -126,7 +126,7 @@ payg_cas03,159,168,0	duplicate(Gld_Trea_Spawn)	Treasure#payg_cas03	-1
 
 // AGIT Manager
 //============================================================
-payg_cas03,269,265,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas03	-1
+//payg_cas03,269,265,0	duplicate(Gld_Agit_Manager)	Agit#payg_cas03	-1
 
 // Guardians
 //============================================================

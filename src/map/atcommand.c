@@ -57,6 +57,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <inttypes.h>
+
 struct atcommand_interface atcommand_s;
 struct atcommand_interface *atcommand;
 
@@ -887,12 +889,54 @@ ACMD(guildstorage)
 		return false;
 	}
 
+	if (sd->state.storage_flag == 3) {
+		clif->message(fd, msg_fd(fd, 1501));
+		return false;
+	}
+
 	if( gstorage->open(sd) ) {
 		clif->message(fd, msg_fd(fd,1201)); // Your guild's storage has already been opened by another member, try again later.
 		return false;
 	}
 
 	clif->message(fd, msg_fd(fd,920)); // Guild storage opened.
+	return true;
+}
+
+/*==========================================
+*
+*------------------------------------------*/
+ACMD(masterstorage)
+{
+	if (sd->master_account_id <= 0) { // 0 is probably not good
+		clif->message(fd, msg_fd(fd, 1500));
+		return false;
+	}
+
+	if (sd->npc_id || sd->state.vending || sd->state.buyingstore || sd->state.trading)
+		return false;
+
+	if (sd->state.storage_flag == 1) {
+		clif->message(fd, msg_fd(fd, 250));
+		return false;
+	}
+
+	if (sd->state.storage_flag == 2) {
+		clif->message(fd, msg_fd(fd, 251));
+		return false;
+	}
+
+	if (sd->state.storage_flag == 3) {
+		clif->message(fd, msg_fd(fd, 1501));
+		return false;
+	}
+
+	if (mstorage->open(sd)) {
+		clif->message(fd, msg_fd(fd, 1502)); // Your master's storage has already been opened by another member, try again later.
+		return false;
+	}
+
+	clif->message(fd, msg_fd(fd, 1503)); // Guild storage opened.
 	return true;
 }
 
@@ -963,6 +1007,7 @@ ACMD(hide) {
 			timer->delete( sd->pvp_timer, pc->calc_pvprank_timer );
 			sd->pvp_timer = INVALID_TIMER;
 		}
+		clif->clearunit_area(&sd->bl, 0);
 	}
 	clif->changeoption(&sd->bl);
 
@@ -1125,7 +1170,7 @@ ACMD(heal)
 	}
 
 	if ( hp < 0 && sp <= 0 ) {
-		status->damage(NULL, &sd->bl, -hp, -sp, 0, 0);
+		status->damage(NULL, &sd->bl, -hp, -sp, 0, 0, -1);
 		clif->damage(&sd->bl,&sd->bl, 0, 0, -hp, 0, BDT_ENDURE, 0);
 		clif->message(fd, msg_fd(fd,156)); // HP or/and SP modified.
 		return true;
@@ -1136,7 +1181,7 @@ ACMD(heal)
 		if (hp > 0)
 			status->heal(&sd->bl, hp, 0, 0);
 		else {
-			status->damage(NULL, &sd->bl, -hp, 0, 0, 0);
+			status->damage(NULL, &sd->bl, -hp, 0, 0, 0, -1);
 			clif->damage(&sd->bl,&sd->bl, 0, 0, -hp, 0, BDT_ENDURE, 0);
 		}
 	}
@@ -1145,7 +1190,7 @@ ACMD(heal)
 		if (sp > 0)
 			status->heal(&sd->bl, 0, sp, 0);
 		else
-			status->damage(NULL, &sd->bl, 0, -sp, 0, 0);
+			status->damage(NULL, &sd->bl, 0, -sp, 0, 0, -1);
 	}
 
 	clif->message(fd, msg_fd(fd,156)); // HP or/and SP modified.
@@ -1159,7 +1204,7 @@ ACMD(heal)
 ACMD(item)
 {
 	char item_name[100];
-	int number = 0, item_id, flag = 0, bound = 0;
+	int number = 0, item_id, flag = 0, bound = 0, costume = 0;
 	struct item item_tmp;
 	struct item_data *item_data;
 	int get_count, i;
@@ -1213,7 +1258,25 @@ ACMD(item)
 				break;
 		}
 	}
-
+	if (!strcmpi(info->command, "costumeitem"))
+	{
+		if (!battle_config.reserved_costume_id)
+		{
+			clif->message(fd, "Costume conversion is disable. Set a value for reserved_cosutme_id on your battle.conf file.");
+			return -1;
+		}
+		if (!(item_data->equip&EQP_HEAD_LOW) &&
+			!(item_data->equip&EQP_HEAD_MID) &&
+			!(item_data->equip&EQP_HEAD_TOP) &&
+			!(item_data->equip&EQP_COSTUME_HEAD_LOW) &&
+			!(item_data->equip&EQP_COSTUME_HEAD_MID) &&
+			!(item_data->equip&EQP_COSTUME_HEAD_TOP))
+		{
+			clif->message(fd, "You cannot costume this item. Costume only work for headgears.");
+			return -1;
+		}
+		costume = 1;
+	}
 	item_id = item_data->nameid;
 	get_count = number;
 	//Check if it's stackable.
@@ -1232,6 +1295,13 @@ ACMD(item)
 			item_tmp.nameid = item_id;
 			item_tmp.identify = 1;
 			item_tmp.bound = (unsigned char)bound;
+			
+			if (costume == 1)
+			{ // Costume Item
+				item_tmp.card[0] = CARD0_CREATE;
+				item_tmp.card[2] = GetWord(battle_config.reserved_costume_id, 0);
+				item_tmp.card[3] = GetWord(battle_config.reserved_costume_id, 1);
+			}
 
 			if ((flag = pc->additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
 				clif->additem(sd, 0, 0, flag);
@@ -1770,7 +1840,7 @@ ACMD(go) {
 		int x, y;
 		int min_match; ///< Minimum string length to match
 	} data[] = {
-		{ MAP_PRONTERA,    156, 191, 3 }, //  0 = Prontera
+		{ MAP_PRONTERA,    151, 92, 3 }, //  0 = Prontera
 		{ MAP_MORROC,      156,  93, 4 }, //  1 = Morroc
 		{ MAP_GEFFEN,      119,  59, 3 }, //  2 = Geffen
 		{ MAP_PAYON,       162, 233, 3 }, //  3 = Payon
@@ -2002,8 +2072,10 @@ int atkillmonster_sub(struct block_list *bl, va_list ap)
 	if (md->guardian_data)
 		return 0; //Do not touch WoE mobs!
 
-	if (flag)
-		status_zap(bl,md->status.hp, 0);
+	if (flag) {
+		int skill_id = -1;
+		status_zap(bl, md->status.hp, 0);
+	}
 	else
 		status_kill(bl);
 	return 1;
@@ -3795,6 +3867,8 @@ ACMD(mapinfo) {
 		strcat(atcmd_output, msg_fd(fd,1062)); // NoReturn |
 	if (map->list[m_id].flag.nomemo)
 		strcat(atcmd_output, msg_fd(fd,1064)); // NoMemo |
+	if (map->list[m_id].flag.enableec)
+		strcat(atcmd_output, "enableec |");
 	clif->message(fd, atcmd_output);
 
 	sprintf(atcmd_output, msg_fd(fd,1065),  // No Exp Penalty: %s | No Zeny Penalty: %s
@@ -4826,19 +4900,99 @@ ACMD(undisguiseguild)
 ACMD(exp)
 {
 	char output[CHAT_SIZE_MAX];
-	double nextb, nextj;
-
 	memset(output, '\0', sizeof(output));
+	
+	if (!message || !*message) {
+		sprintf(output, "!exp null : resets the exp counter ~ !exp info : shows metrics ~ !exp level : shows exp to next level ~ !exp show : toggles showexp");
+	} else if (message && *message && !strcmpi(message, "null")) {
+		sd->exp_counter.nulltick = timer->gettick();
+		sd->exp_counter.bexp = 0;
+		sd->exp_counter.jexp = 0;
 
-	nextb = pc->nextbaseexp(sd);
-	if (nextb)
-		nextb = sd->status.base_exp*100.0/nextb;
+		sprintf(output, "EXP Counter has been reset.");
+	}
+	else if (message && *message && !strcmpi(message, "show")){
+			if (sd->state.showexp) {
+				sd->state.showexp = 0;
+				clif->message(fd, msg_txt(1316)); // Gained exp will not be shown.
+				return true;
+			}
 
-	nextj = pc->nextjobexp(sd);
-	if (nextj)
-		nextj = sd->status.job_exp*100.0/nextj;
+			sd->state.showexp = 1;
+			clif->message(fd, msg_txt(1317)); // Gained exp is now shown.
+			return true;
+	}
+	else if (message && *message && !strcmpi(message, "info")) {
+		if (sd->exp_counter.nulltick > 0) {
+			unsigned int nextb = pc->nextbaseexp(sd) - sd->status.base_exp;
+			unsigned int nextj = pc->nextjobexp(sd) - sd->status.job_exp;
+			int64 time = timer->gettick() - sd->exp_counter.nulltick;
+			int64 seconds = time / 1000;
+			sprintf(output, "Tracking EXP for %dh %02dm %02ds", (int)(seconds / 60 / 60), (int)(seconds / 60 % 60), (int)(seconds % 60));
+			clif->message(fd, output);
+			int64 bexph = (int64)((double)sd->exp_counter.bexp / ((double)seconds / 3600.0));
+			int64 jexph = (int64)((double)sd->exp_counter.jexp / ((double)seconds / 3600.0));
+			if (seconds > 0) {
+				if (sd->exp_counter.bexp > 0) {
+					if (nextb > 0 && pc->nextbaseexp(sd) > 0) {
+						int64 tonextb = (int64)((double)nextb / ((double)sd->exp_counter.bexp / (double)seconds));
+						memset(output, '\0', sizeof(output));
+						sprintf(output, "Base EXP: %" PRId64 " / h | Next level: %dh %02dm %02ds  | Total: %" PRId64 " ", bexph, (int)(tonextb / 60 / 60), (int)(tonextb / 60 % 60), (int)(tonextb % 60), sd->exp_counter.bexp);
+						clif->message(fd, output);
+					}
+					else {
+						memset(output, '\0', sizeof(output));
+						sprintf(output, "Base EXP: %" PRId64 " / h | Total: %" PRId64 " ", bexph, sd->exp_counter.bexp);
+						clif->message(fd, output);
+					}
+				}
+				if (sd->exp_counter.jexp > 0 && pc->nextjobexp(sd) > 0) {
+					if (nextj > 0) {
+						int64 tonextj = (int64)((double)nextj / ((double)sd->exp_counter.jexp / (double)seconds));
+						memset(output, '\0', sizeof(output));
+						sprintf(output, "Job EXP: %" PRId64 " / h | Next level: %dh %02dm %02ds  | Total: %" PRId64 " ", jexph, (int)(tonextj / 60 / 60), (int)(tonextj / 60 % 60), (int)(tonextj % 60), sd->exp_counter.jexp);
+						clif->message(fd, output);
+					}
+					else {
+						memset(output, '\0', sizeof(output));
+						sprintf(output, "Job EXP: %" PRId64 " / h | Total: %" PRId64 " ", jexph, sd->exp_counter.jexp);
+						clif->message(fd, output);
+					}
+				}
+				return true;
+			}
+			else {
+				sprintf(output, "Please set a reference point in time by using !exp null or killing a monster.");
+			}
+		} else {
+			sprintf(output, "Please set a reference point in time by using !exp null or killing a monster.");
+		}
+	} else if (message && *message && !strcmpi(message, "level")) {
+		double nextb, nextj;
 
-	sprintf(output, msg_fd(fd,1148), sd->status.base_level, nextb, sd->status.job_level, nextj); // Base Level: %d (%.3f%%) | Job Level: %d (%.3f%%)
+		nextb = pc->nextbaseexp(sd);
+		if (nextb)
+			nextb = sd->status.base_exp*100.0 / nextb;
+
+		nextj = pc->nextjobexp(sd);
+		if (nextj)
+			nextj = sd->status.job_exp*100.0 / nextj;
+
+		sprintf(output, msg_fd(fd,1148), sd->status.base_level, nextb, sd->status.job_level, nextj); 	 // Base Level: %d (%.3f%%) | Job Level: %d (%.3f%%)
+		clif->message(fd, output);
+		if (pc->nextbaseexp(sd) > 0) {
+			memset(output, '\0', sizeof(output));
+			sprintf(output, "Exp base level up: %d / %d", sd->status.base_exp, pc->nextbaseexp(sd));
+			clif->message(fd, output);
+		}
+		if (pc->nextjobexp(sd) > 0) {
+			memset(output, '\0', sizeof(output));
+			sprintf(output, "Exp job level up: %d / %d", sd->status.job_exp, pc->nextjobexp(sd));
+			clif->message(fd, output);
+		}
+		return true;
+	}
+
 	clif->message(fd, output);
 	return true;
 }
@@ -7527,7 +7681,7 @@ ACMD(mapflag) {
 		CHECKFLAG(nojobexp);          CHECKFLAG(nomobloot);          CHECKFLAG(nomvploot);    CHECKFLAG(nightenabled);
 		CHECKFLAG(nodrop);            CHECKFLAG(novending);          CHECKFLAG(loadevent);
 		CHECKFLAG(nochat);            CHECKFLAG(partylock);          CHECKFLAG(guildlock);    CHECKFLAG(src4instance);
-		CHECKFLAG(notomb);            CHECKFLAG(nocashshop);
+		CHECKFLAG(notomb);            CHECKFLAG(nocashshop);		 CHECKFLAG(enableec);
 		clif->message(sd->fd," ");
 		clif->message(sd->fd,msg_fd(fd,1312)); // Usage: "@mapflag monster_noteleport 1" (0=Off | 1=On)
 		clif->message(sd->fd,msg_fd(fd,1313)); // Type "@mapflag available" to list the available mapflags.
@@ -7564,11 +7718,12 @@ ACMD(mapflag) {
 	SETFLAG(nojobexp);          SETFLAG(nomobloot);          SETFLAG(nomvploot);    SETFLAG(nightenabled);
 	SETFLAG(nodrop);            SETFLAG(novending);          SETFLAG(loadevent);
 	SETFLAG(nochat);            SETFLAG(partylock);          SETFLAG(guildlock);    SETFLAG(src4instance);
-	SETFLAG(notomb);            SETFLAG(nocashshop);
-
+	SETFLAG(notomb);            SETFLAG(nocashshop);		 SETFLAG(enableec);
+	
 	clif->message(sd->fd,msg_fd(fd,1314)); // Invalid flag name or flag.
 	clif->message(sd->fd,msg_fd(fd,1312)); // Usage: "@mapflag monster_noteleport 1" (0=Off | 1=On)
 	clif->message(sd->fd,msg_fd(fd,1315)); // Available Flags:
+
 	clif->message(sd->fd,"----------------------------------");
 	clif->message(sd->fd,"town, autotrade, allowks, nomemo, noteleport, noreturn, monster_noteleport, nosave,");
 	clif->message(sd->fd,"nobranch, noexppenalty, pvp, pvp_noparty, pvp_noguild, pvp_nightmaredrop,");
@@ -7576,7 +7731,7 @@ ACMD(mapflag) {
 	clif->message(sd->fd,"nozenypenalty, notrade, noskill, nowarp, nowarpto, noicewall, snow, clouds, clouds2,");
 	clif->message(sd->fd,"fog, fireworks, sakura, leaves, nobaseexp, nojobexp, nomobloot,");
 	clif->message(sd->fd,"nomvploot, nightenabled, nodrop, novending, loadevent, nochat, partylock,");
-	clif->message(sd->fd,"guildlock, src4instance, notomb, nocashshop");
+	clif->message(sd->fd,"guildlock, src4instance, notomb, nocashshop, enableec");
 #undef CHECKFLAG
 #undef SETFLAG
 
@@ -7623,6 +7778,72 @@ ACMD(showdelay)
 	sd->state.showdelay = 1;
 	clif->message(fd, msg_fd(fd,1321)); // Skill delay failures are now shown.
 	return true;
+}
+
+/*==========================================
+* Battleground Leader Commands
+*------------------------------------------*/
+ACMD(order)
+{
+	nullpo_retr(-1, sd);
+	if (!message || !*message)
+	{
+		clif->message(fd, "Please, enter a message (usage: @order <message>).");
+		return -1;
+	}
+
+	if (map->list[sd->bl.m].flag.battleground)
+	{
+		if (!sd->bmaster_flag)
+		{
+			clif->message(fd, "This command is reserved for Team Leaders Only.");
+			return -1;
+		}
+		clif->broadcast2(&sd->bl, message, (int)strlen(message) + 1, sd->bmaster_flag->color, 0x190, 20, 0, 0, BG);
+	}
+	else
+	{
+		if (!sd->state.gmaster_flag)
+		{
+			clif->message(fd, "This command is reserved for Guild Leaders Only.");
+			return -1;
+		}
+		clif->broadcast2(&sd->bl, message, (int)strlen(message) + 1, 0xFF0000, 0x190, 20, 0, 0, GUILD);
+	}
+
+	return 0;
+}
+
+ACMD(leader)
+{
+	struct map_session_data *pl_sd;
+	nullpo_retr(-1, sd);
+	if (!sd->bmaster_flag)
+		clif->message(fd, "This command is reserved for Team Leaders Only.");
+	else if (sd->ud.skilltimer != INVALID_TIMER)
+		clif->message(fd, "Command not allow while casting a skill.");
+	else if (!message || !*message)
+		clif->message(fd, "Please, enter the new Leader name (usage: @leader <name>).");
+	else if ((pl_sd = map->nick2sd((char *)message)) == NULL)
+		clif->message(fd, msg_txt(3)); // Character not found.
+	else if (sd->bg_id != pl_sd->bg_id)
+		clif->message(fd, "Destination Player is not in your Team.");
+	else if (sd == pl_sd)
+		clif->message(fd, "You are already the Team Leader.");
+	else
+	{ // Everytest OK!
+		sprintf(atcmd_output, "Team Leader transferred to [%s]", pl_sd->status.name);
+		clif->broadcast2(&sd->bl, atcmd_output, (int)strlen(atcmd_output) + 1, sd->bmaster_flag->color, 0x190, 20, 0, 0, BG);
+
+		sd->bmaster_flag->leader_char_id = pl_sd->status.char_id;
+		pl_sd->bmaster_flag = sd->bmaster_flag;
+		sd->bmaster_flag = NULL;
+
+		clif->charnameupdate(sd);
+		clif->charnameupdate(pl_sd);
+		return 0;
+	}
+	return -1;
 }
 
 /*==========================================
@@ -8365,9 +8586,13 @@ void atcommand_commands_sub(struct map_session_data* sd, const int fd, AtCommand
 	dbi_destroy(iter);
 	clif->message(fd,line_buff);
 
-	sprintf(atcmd_output, msg_fd(fd,274), count); // "%d commands found."
+	sprintf(atcmd_output, "joinbg leavebg joinbgparty autojoin leavechannel");
+
+	sprintf(atcmd_output, msg_fd(fd,274), count+5); // "%d commands found."
 	clif->message(fd, atcmd_output);
 
+	//sprintf(atcmd_output, msg_txt(274), count); // "%d commands found."
+	//clif->message(fd, atcmd_output);
 	return;
 }
 
@@ -9330,6 +9555,28 @@ ACMD(cddebug) {
 	return true;
 }
 
+ACMD(adopt) {
+	struct map_session_data *pl_sd = NULL, *p_sd = map->charid2sd(sd->status.partner_id);
+	if (!message || !*message) {
+		clif->message(fd, "Please enter a player name."); // Please enter a player name (usage: @recall <char name/ID>).
+		return false;
+	}
+
+	if ((pl_sd = map->nick2sd((char *)message)) == NULL && (pl_sd = map->charid2sd(atoi(message))) == NULL) {
+		clif->message(fd, msg_txt(3)); // Character not found.
+		return false;
+	}
+
+	if (pc->can_Adopt(sd, p_sd, pl_sd)) {
+		pl_sd->adopt_invite = sd->status.account_id;
+		clif->adopt_request(pl_sd, sd, p_sd->status.account_id);
+		clif->message(fd, "Adoption request sent.");
+		return true;
+	}
+	clif->message(fd, "Adoption request failed.");
+	return false;
+}
+
 /**
  *
  **/
@@ -9365,6 +9612,119 @@ ACMD(lang) {
 	
 	return true;
 }
+
+ACMD(resetglobalbgdelay)
+{
+	TBL_PC *pl_sd;
+	struct s_mapiterator* iter;
+
+	char varname[100];
+	iter = mapit_getallusers();
+	int value = 0;
+	for (pl_sd = (TBL_PC*)mapit->first(iter); mapit->exists(iter); pl_sd = (TBL_PC*)mapit->next(iter))
+	{
+		if (!(pl_sd->bg_id) && !(pl_sd->state.autotrade)) {
+			sprintf(varname, "$onlyro_bgdelay_%d", pl_sd->master_account_id);
+
+			mapreg->setreg(reference_uid(script->add_str(varname), 0), value);
+		}
+	}
+	mapit->free(iter);
+	clif->messages(fd, "BG delay has been reset for all online players.");
+	return true;
+}
+
+ACMD(resetbgdelay)
+{
+	char varname[100];
+	int value = 0;
+	sprintf(varname, "$onlyro_bgdelay_%d", sd->master_account_id);
+	mapreg->setreg(reference_uid(script->add_str(varname), 0), value);
+	clif->messages(fd, "BG delay has been reset for master account ID: %d.", sd->master_account_id);
+	return true;
+}
+
+ACMD(masterid)
+{
+	clif->messages(fd, "Master Account ID: %d", sd->master_account_id);
+	return true;
+}
+
+ACMD(bgdelay)
+{
+	char varname[100];
+	char temp[CHAT_SIZE_MAX];
+	memset(varname, '\0', sizeof(varname));
+	memset(temp, '\0', sizeof(temp));
+	sprintf(varname, "$onlyro_bgdelay_%d", sd->master_account_id);
+	time_t value = (time_t)mapreg->readreg(reference_uid(script->add_str(varname), 0));
+	// like sprintf, but only for date/time (Sunday, November 02 2003 15:12:52)
+	strftime(temp, sizeof(temp) - 1, "%d-%m-%Y %H:%M:%S", localtime(&value));
+	clif->messages(fd, "BG Delay until %s", temp);
+	return true;
+}
+
+ACMD(setbgdelay)
+{
+	int inputvalue;
+	if (!message || !*message || !(inputvalue = atoi(message))) {
+		clif->messages(fd, "Failed to set BG delay for ID %d. Please enter BG delay to set in minutes.", sd->master_account_id);
+		return true;
+	}
+	char varname[100];
+	memset(varname, '\0', sizeof(varname));
+
+	time_t rawtime;
+	time(&rawtime);
+	rawtime = rawtime + inputvalue*60;
+
+	sprintf(varname, "$onlyro_bgdelay_%d", sd->master_account_id);
+
+	mapreg->setreg(reference_uid(script->add_str(varname), 0), (int)rawtime); // long pls
+
+	
+	time_t value = (time_t)mapreg->readreg(reference_uid(script->add_str(varname), 0));
+	struct tm * timeinfo;
+	timeinfo = localtime(&value);
+	clif->messages(fd, "BG Delay until %s", asctime(timeinfo));
+	return true;
+}
+
+ACMD(punishmessage) {
+	char amountvar[100];
+	memset(amountvar, '\0', sizeof(amountvar));
+	sprintf(amountvar, "$onlyro_punish_amount_%d", sd->master_account_id);
+
+	if (!message || !*message) {
+		clif->messages(fd, "This command leaves a message for the punished person to read on next login.");
+		clif->message(fd, "Consider adding character name and context, but mind maximum character limit.");
+		return true;
+	}
+
+
+	int punish_index = mapreg->readreg(reference_uid(script->add_str(amountvar), 0));
+	if (punish_index > 120) {
+		punish_index = 0;
+		mapreg->setreg(reference_uid(script->add_str(amountvar), 0), punish_index); // long pls
+		char readvar[100];
+		memset(readvar, '\0', sizeof(readvar));
+		sprintf(readvar, "$onlyro_punish_read_%d", sd->master_account_id);
+		mapreg->setreg(reference_uid(script->add_str(readvar), 0), punish_index); // long pls
+	}
+	char punishtextvar[100];
+	memset(punishtextvar, '\0', sizeof(punishtextvar));
+	sprintf(punishtextvar, "$onlyro_punish_text_%d", sd->master_account_id);
+		
+	punish_index++;
+
+	mapreg->setreg(reference_uid(script->add_str(amountvar), 0), punish_index); // long pls
+	mapreg->setregstr(reference_uid(script->add_str(punishtextvar), punish_index), message);
+
+	clif->message(fd, "Punish message stored and will be shown on next character login or every 15 minutes.");
+
+	return true;
+}
+
 /**
  * Fills the reference of available commands in atcommand DBMap
  **/
@@ -9375,6 +9735,14 @@ void atcommand_basecommands(void) {
 	 * Command reference list, place the base of your commands here
 	 **/
 	AtCommandInfo atcommand_base[] = {
+		ACMD_DEF(masterstorage),
+		ACMD_DEF(punishmessage),
+		ACMD_DEF(bgdelay),
+		ACMD_DEF(masterid),
+		ACMD_DEF(resetglobalbgdelay),
+		ACMD_DEF(resetbgdelay),
+		ACMD_DEF(setbgdelay),
+		ACMD_DEF(adopt),
 		ACMD_DEF2("warp", mapmove),
 		ACMD_DEF(where),
 		ACMD_DEF(jumpto),
@@ -9634,6 +10002,9 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(searchstore),
 		ACMD_DEF(costume),
 		ACMD_DEF(skdebug),
+		ACMD_DEF2("costumeitem", item),
+		ACMD_DEF(order),
+		ACMD_DEF(leader),
 		ACMD_DEF(cddebug),
 		ACMD_DEF(lang),
 	};

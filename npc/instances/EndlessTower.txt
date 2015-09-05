@@ -215,7 +215,7 @@ e_tower,81,105,0	script	Tower Protection Stone	2_MONEMUS,{
 
 	.@etower_timer = questprogress(60200,PLAYTIME); // 1 week
 	.@etower_timer2 = questprogress(60201,PLAYTIME); // 4 hours
-
+	
 	if (!instance_check_party(.@party_id,2)) {
 		mes "Make or join a party with more than 1 member and try again.";
 		close;
@@ -267,23 +267,7 @@ e_tower,81,105,0	script	Tower Protection Stone	2_MONEMUS,{
 		case 3:
 			end;
 		}
-	} else if (.@etower_timer == 1 && .@etower_timer2 == 2) {
-
-		.@dun_lim_time = etower_timer+604800; // 1 week
-		.@dun_lim_time2 = etower_timer+14400; // 4 hours
-		.@dun_cur_time = gettimetick(2);
-		.@dun_ent_t = (.@dun_lim_time - .@dun_cur_time);
-		.@dun_h = (.@dun_ent_t / 3600);
-		.@dun_m = (.@dun_ent_t - (.@dun_h * 3600)) / 60;
-		.@dun_s = .@dun_ent_t - ((.@dun_h * 3600) + (.@dun_m * 60));
-
-		mes "Due to the tower's aftereffects, you cannot enter the dungeon right now, " + .@dun_h + "hours " + .@dun_m + "minutes " + .@dun_s + "seconds left to enter the next dungeon.";
-		next;
-		mes "It is dangerous here. Let me move you to Alberta.";
-		close2;
-		warp "alberta",223,36;
-		end;
-	} else if (.@etower_timer == 1) {
+	} else if (.@etower_timer == 1 && .@etower_timer2 == 1) {
 		mes "If you have the dungeon generated already, you can enter it. ";
 		next;
 		switch(select("Enter the "+.@md_name$+":Return to Alberta:Cancel")) {
@@ -298,6 +282,22 @@ e_tower,81,105,0	script	Tower Protection Stone	2_MONEMUS,{
 			break;
 		}
 		close;
+	} else if (.@etower_timer == 1 && .@etower_timer2 == 2) {
+
+		.@dun_lim_time = etower_timer+561600; // 1 week
+		.@dun_lim_time2 = etower_timer+14400; // 4 hours
+		.@dun_cur_time = gettimetick(2);
+		.@dun_ent_t = (.@dun_lim_time - .@dun_cur_time);
+		.@dun_h = (.@dun_ent_t / 3600);
+		.@dun_m = (.@dun_ent_t - (.@dun_h * 3600)) / 60;
+		.@dun_s = .@dun_ent_t - ((.@dun_h * 3600) + (.@dun_m * 60));
+
+		mes "Due to the tower's aftereffects, you cannot enter the dungeon right now, " + .@dun_h + "hours " + .@dun_m + "minutes " + .@dun_s + "seconds left to enter the next dungeon.";
+		next;
+		mes "It is dangerous here. Let me move you to Alberta.";
+		close2;
+		warp "alberta",223,36;
+		end;
 	} else {
 		etower_timer = 0;
 		erasequest 60200;
@@ -1241,12 +1241,13 @@ OnMyMobDead:
 	if (.@mob_dead_num < 1) {
 		initnpctimer;
 		//SetItemPartyInMap in_102floor 1
+		mapannounce instance_mapname("1@tower"), "All Monsters on the 1st Level have been defeated.",bc_map,"0xffff00";
 	} else
 		mapannounce .@map$, "Remaining Monsters on the 1st Level - "+.@mob_dead_num,bc_map,"0x00ff99";
 	end;
 
-OnTimer5000:
-	mapannounce instance_mapname("1@tower"), "All Monsters on the 1st Level have been defeated.",bc_map,"0xffff00";
+OnTimer3000:
+	
 	donpcevent instance_npcname("1FGate102tower")+"::OnEnable";
 	stopnpctimer;
 	end;
@@ -1280,13 +1281,13 @@ OnMyMobDead:
 	if (.@mob_dead_num < 1) {
 		initnpctimer;
 		//SetItemPartyInMap in_102floor .@level
+		mapannounce strnpcinfo(4), "All Monsters on the "+callsub(L_Display,.@level)+" Level have been defeated.",bc_map,"0xffff00";
 	} else
 		mapannounce .@map$, "Remaining Monsters on the "+callsub(L_Display,.@level)+" Level - "+.@mob_dead_num,bc_map,"0x00ff99";
 	end;
 
-OnTimer5000:
+OnTimer3000:
 	.@level = atoi(replacestr(strnpcinfo(0),"FGate102tower","")) + 1;
-	mapannounce strnpcinfo(4), "All Monsters on the "+callsub(L_Display,.@level)+" Level have been defeated.",bc_map,"0xffff00";
 	donpcevent instance_npcname(.@level+"FGate102tower")+"::OnEnable";
 	stopnpctimer;
 	end;
@@ -1419,13 +1420,14 @@ OnMyMobDead:
 	if (.@mob_dead_num < 1) {
 		initnpctimer;
 		//SetItemPartyInMap in_102floor 26
+		mapannounce instance_mapname("2@tower"), "All Monsters on the 26th Level have been defeated.",bc_map,"0xffff00";
 	}
 	else
 		mapannounce .@map$, "Remaining Monsters on the 26th Level - " + .@mob_dead_num,bc_map,"0x00ff99";
 	end;
 
-OnTimer5000:
-	mapannounce instance_mapname("2@tower"), "All Monsters on the 26th Level have been defeated.",bc_map,"0xffff00";
+OnTimer3000:
+	
 	donpcevent instance_npcname("26FGate102tower")+"::OnEnable";
 	stopnpctimer;
 	end;
@@ -1535,13 +1537,14 @@ OnMyMobDead:
 	if (.@mob_dead_num < 1) {
 		initnpctimer;
 		//SetItemPartyInMap in_102floor 51
+		mapannounce instance_mapname("3@tower"), "All Monsters on the 51st Level have been defeated.",bc_map,"0xffff00";
 	}
 	else
 		mapannounce .@map$, "Remaining Monsters on the 51st Level - " + .@mob_dead_num,bc_map,"0x00ff99";
 	end;
 
-OnTimer5000:
-	mapannounce instance_mapname("3@tower"), "All Monsters on the 51st Level have been defeated.",bc_map,"0xffff00";
+OnTimer3000:
+	
 	donpcevent instance_npcname("51FGate102tower")+"::OnEnable";
 	stopnpctimer;
 	end;
@@ -1651,13 +1654,14 @@ OnMyMobDead:
 	if (.@mob_dead_num < 1) {
 		initnpctimer;
 		//SetItemPartyInMap in_102floor 76
+		mapannounce instance_mapname("4@tower"),"All Monsters on the 76th Level have been defeated.",bc_map,"0xffff00";
 	}
 	else
 		mapannounce .@map$,"Remaining Monsters on the 76th Level - " + .@mob_dead_num,bc_map,"0x00ff99";
 	end;
 
-OnTimer5000:
-	mapannounce instance_mapname("4@tower"),"All Monsters on the 76th Level have been defeated.",bc_map,"0xffff00";
+OnTimer3000:
+	
 	donpcevent instance_npcname("76FGate102tower")+"::OnEnable";
 	stopnpctimer;
 	end;

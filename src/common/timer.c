@@ -28,7 +28,7 @@ struct timer_interface *timer;
 
 // If the server can't handle processing thousands of monsters
 // or many connected clients, please increase TIMER_MIN_INTERVAL.
-#define TIMER_MIN_INTERVAL 50
+#define TIMER_MIN_INTERVAL 20
 #define TIMER_MAX_INTERVAL 1000
 
 // timers (array)
@@ -274,7 +274,6 @@ static int acquire_timer(void) {
 
 	if( tid >= timer_data_num )
 		timer_data_num = tid + 1;
-
 	return tid;
 }
 

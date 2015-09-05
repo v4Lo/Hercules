@@ -1,0 +1,119 @@
+//===== eAthena Script =======================================
+//= BattleGround Supplier
+//===== By: ==================================================
+//= Brian
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= eAthena SVN (+ source edits)
+//===== Description: =========================================
+//= Sells consumables that can ONLY be used on 'bg_consume' maps.
+//===== Additional Comments: =================================
+//= http://www.eathena.ws/board/index.php?showtopic=268355
+//= 1. To use, create a char named "Battleground"
+//= 2. edit the #define BG_CHARID in battleground.h
+//= 3. edit the 'set .@BG_CHARID' in this file (line 43)
+//============================================================
+
+prontera,125,95,3	script	Telma	701,{
+	mes "[Telma]";
+	mes "Welcome, mighty warrior.";
+	mes "Do you need supplies for your battles?";
+	mes "I can exchange supplies for your ^993399"+getitemname(7829)+"^000000...";
+	next;
+	
+	switch(select("150 Battleground's "+getitemname(547)+":"+ // 1
+	"50 Battleground's "+getitemname(505)+":"+
+	"50 Battleground's "+getitemname(506)+":"+
+	"10 Battleground's Water "+getitemname(12115)+":"+
+	"10 Battleground's Fire "+getitemname(12114)+":"+ // 5
+	"10 Battleground's Wind "+getitemname(12117)+":"+
+	"10 Battleground's Earth "+getitemname(12116)+":"+
+	"10 Battleground's "+getitemname(645)+":"+
+	"10 Battleground's "+getitemname(656)+":"+
+	"10 Battleground's "+getitemname(657)+":"+ // 10
+	"10 Battleground's "+getitemname(12020)+":"+
+	
+	"5 Battleground's "+getitemname(678)+":"+
+	"25 Battleground's "+getitemname(7135)+":"+
+	"25 Battleground's "+getitemname(7136)+":"+
+	"25 Battleground's "+getitemname(7137)+":"+ // 15
+	"25 Battleground's "+getitemname(7138)+":"+
+	"20 Battleground's "+getitemname(7139)+":"+
+	"50 Battleground's "+getitemname(715)+":"+
+	"50 Battleground's "+getitemname(716)+":"+
+	"50 Battleground's "+getitemname(717)+":"+ // 20
+	"25 Battleground's "+getitemname(1025)+":"+
+	"30 Battleground's "+getitemname(523)+":"+
+	"10 Battleground's "+getitemname(662)+":"+// 23
+	"30 Battleground's "+getitemname(1065))) { 
+		case 1:		callsub S_BuyConsumableBG,547,150;	// Condensed White Potion
+		case 2:		callsub S_BuyConsumableBG,505,50;	// Blue Potion
+		case 3:		callsub S_BuyConsumableBG,506,50; // Green Potion
+		case 4:		callsub S_BuyConsumableBG,12115,10; // Ele
+		case 5:		callsub S_BuyConsumableBG,12114,10; // Ele
+		case 6:		callsub S_BuyConsumableBG,12117,10; // Ele
+		case 7:		callsub S_BuyConsumableBG,12116,10; // Ele
+		case 8:		callsub S_BuyConsumableBG,645,10; // Conc
+		case 9:		callsub S_BuyConsumableBG,656,10;
+		case 10:		callsub S_BuyConsumableBG,657,10;
+		case 11:		callsub S_BuyConsumableBG,12020,10; // cursed Water
+
+		case 12:		callsub S_BuyConsumableBG,678,5;	// Poison Bottle
+		case 13:		callsub S_BuyConsumableBG,7135,25;	// Fire Bottle
+		case 14:		callsub S_BuyConsumableBG,7136,25;	// Acid Bottle
+		case 15:		callsub S_BuyConsumableBG,7137,25;	// Plant Bottle
+		case 16:		callsub S_BuyConsumableBG,7138,25;	// Marine Sphere Bottle
+		case 17:		callsub S_BuyConsumableBG,7139,20;	// Glistening Coat
+		case 18:		callsub S_BuyConsumableBG,715,50;	// Yellow Gemstone
+		case 19:	callsub S_BuyConsumableBG,716,50;	// Red Gemstone
+		case 20:	callsub S_BuyConsumableBG,717,50;	// Blue Gemstone
+		case 21:	callsub S_BuyConsumableBG,1025,25;	// Cobweb
+		case 22:	callsub S_BuyConsumableBG,523,30;	// Holy Water
+		case 23:	callsub S_BuyConsumableBG,662,10;	// Authoritative Badge
+		case 24:	callsub S_BuyConsumableBG,1065,30; // Trap
+	}
+	end;
+
+S_BuyConsumableBG:
+	set .@BG_CHARID, 999997; // character named "Battleground"
+S_BuyConsumable:
+	set .@item_id, getarg(0);
+	set .@amt, getarg(1);
+	
+	.@badge = 7829;
+	
+	mes "[Telma]";
+	mes "How many sets of ^0000FF"+ .@amt +" "+ getitemname(.@item_id) +"s^000000 do you want?";
+	mes "1 = "+ .@amt   +" supplies = 1 badge";
+	mes "2 = "+ .@amt*2 +" supplies = 2 badges";
+	mes "3 = "+ .@amt*3 +" supplies = 3 badges";
+	mes "etc..";
+	next;
+	input .@sets;
+	mes "[Telma]";
+	if (.@sets < 1) {
+		mes "Enter a positive amount, greater than zero.";
+		close;
+	}
+	if (.@sets > 10) {
+		mes "More than 10? That's a bit much..";
+		close;
+	}
+	mes "So you want ^0000FF"+ (.@amt*.@sets) +" "+ getitemname(.@item_id) +"s^000000...";
+	mes "Remember these can only be used in Battlegrounds.";
+	mes "It will cost you "+ .@sets +" badge(s)...";
+	next;
+	mes "[Telma]";
+	if (countitem(.@badge) < .@sets) {
+		mes "You do not have enough ^FF0000"+getitemname(.@badge)+"s^000000 to buy "+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s.";
+	} else if (!checkweight(.@item_id, .@amt*.@sets)) {
+		mes "You are overweight or have too many items in your inventory.";
+	} else {
+		delitem .@badge, .@sets;
+		getitem2 .@item_id,(.@amt*.@sets),1,0,0, 254, 0, .@BG_CHARID & 0xFFFF, .@BG_CHARID >> 0x10;
+		mes "Here are your: ^0000FF"+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s^000000!";
+		mes "Remember, they can only be used in Battlegrounds.";
+	}
+	close;
+}

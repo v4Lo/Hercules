@@ -63,7 +63,7 @@ valkyrie,53,50,3	script	Biochemist#Valkyrie	2_M_DYEINGER,{
 			close;
 		}
 		jobchange Job_Creator;
-		ADVJOB = 0;
+		//ADVJOB = 0;
 		mes "[Biochemist]";
 		mes "Congratulations!";
 		mes "As a Biochemist,";

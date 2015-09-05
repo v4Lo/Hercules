@@ -1709,6 +1709,13 @@ alde_alche,101,184,4	script	Master Alchemist#am	2_M_DYEINGER,{
 		mes "illustrious Union.";
 		mes "I hope you learn a lot...";
 		next;
+		
+		getitem 2571, 1;
+		getitem 15011, 1;
+		getitem 2458, 1;
+		getitem 18514, 1;
+		getitem 13434, 1; //waffe
+		
 		if (.@jlevel == 50) {
 			getitem 7133,1; //Slim_Potion_Create_Book
 			mes "[Vincent Carsciallo]";

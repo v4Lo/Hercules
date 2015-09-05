@@ -446,6 +446,12 @@ OnTouch:
 			callfunc "Job_Change",Job_Soul_Linker;
 			callfunc "F_ClearJobVar";	// clears all job variables for the current player
 			SOUL_Q = 0;
+			getitem 2571, 1;
+			getitem 15011, 1;
+			getitem 2458, 1;
+			getitem 18514, 1;
+			getitem 1658, 1; //waffe
+			
 			mes "[Maia]";
 			mes "I wish the best of luck";
 			mes "in your new life. Surround";

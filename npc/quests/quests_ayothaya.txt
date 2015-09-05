@@ -2049,12 +2049,12 @@ ayo_dun01,16,188,0	script	 #hun_thai_6	HIDDEN_NPC,{
 }
 
 ayo_dun01,24,283,0	script	 #2_dun_in	HIDDEN_NPC,{
-	if (ayodunquest > 10) {
-		if (countitem(7287) > 0) {
-			mes "^3355FFThe holy threads";
-			mes "emanate a powerful sense";
-			mes "of safety and security.";
-			mes "With the protection of";
+	//if (ayodunquest > 10) {
+	//	if (countitem(7287) > 0) {
+	//		mes "^3355FFThe holy threads";
+	//		mes "emanate a powerful sense";
+	//		mes "of safety and security.";
+			mes "^3355FFWith the protection of";
 			mes "holiness, you begin your";
 			mes "descent into the 2nd level.^000000.";
 			close2;
@@ -2064,12 +2064,12 @@ ayo_dun01,24,283,0	script	 #2_dun_in	HIDDEN_NPC,{
 				warp "ayo_dun02",275,26;
 			}
 			end;
-		}
+	//	}
 		mes "^3355FFYou find what seems to be the entrance to the 2nd level. However, you are filled with an overwhelming sense of dread. Somehow, you can't bring yourself to go down...^000000";
 		close;
-	}
-	mes "^3355FFYou find what seems to be the entrance to the 2nd level. However, you are filled with an overwhelming sense of dread. Somehow, you can't bring yourself to go down...^000000";
-	close;
+	//}
+	//mes "^3355FFYou find what seems to be the entrance to the 2nd level. However, you are filled with an overwhelming sense of dread. Somehow, you can't bring yourself to go down...^000000";
+	//close;
 }
 
 ayo_dun02,268,108,0	script	 #reward_tiger	HIDDEN_NPC,{

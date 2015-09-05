@@ -90,6 +90,9 @@ unsigned char mail_setitem(struct map_session_data *sd, int idx, int amount) {
 			(sd->status.inventory[idx].bound && !pc_can_give_bound_items(sd)) )
 			return 1;
 
+		if (sd->status.inventory[idx].card[0] == CARD0_CREATE && (int)MakeDWord(sd->status.inventory[idx].card[2], sd->status.inventory[idx].card[3]) == BG_CHARID && (BG_TRADE & 128)>0)
+			return 1; // "Battleground's Items"
+		
 		sd->mail.index = idx;
 		sd->mail.nameid = sd->status.inventory[idx].nameid;
 		sd->mail.amount = amount;

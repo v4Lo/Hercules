@@ -14,7 +14,7 @@
 
 // Guild Flag (Outside Castle)
 //============================================================
--	script	Repherion#1::OutsideFlagsG1	GUILD_FLAG,{
+-	script	Leprion#1::OutsideFlagsG1	GUILD_FLAG,{
 
 	.@GID = getcastledata("gefg_cas01",1);
 
@@ -64,14 +64,14 @@ OnRecvCastleG01:
 	end;
 }
 
-gef_fild13,148,51,5	duplicate(OutsideFlagsG1)	Repherion#1-2	GUILD_FLAG
-gef_fild13,155,54,5	duplicate(OutsideFlagsG1)	Repherion#2	GUILD_FLAG
-gef_fild13,212,79,6	duplicate(OutsideFlagsG1)	Repherion#3	GUILD_FLAG
-gef_fild13,211,71,6	duplicate(OutsideFlagsG1)	Repherion#4	GUILD_FLAG
+gef_fild13,148,51,5	duplicate(OutsideFlagsG1)	Leprion#1-2	GUILD_FLAG
+gef_fild13,155,54,5	duplicate(OutsideFlagsG1)	Leprion#2	GUILD_FLAG
+gef_fild13,212,79,6	duplicate(OutsideFlagsG1)	Leprion#3	GUILD_FLAG
+gef_fild13,211,71,6	duplicate(OutsideFlagsG1)	Leprion#4	GUILD_FLAG
 
 // Guild Flag (Inside Castle)
 //============================================================
--	script	Repherion#5::InsideFlagsG1	GUILD_FLAG,{
+-	script	Leprion#5::InsideFlagsG1	GUILD_FLAG,{
 	end;
 
 OnRecvCastleG01:
@@ -79,16 +79,16 @@ OnRecvCastleG01:
 	end;
 }
 
-gefg_cas01,28,157,4	duplicate(InsideFlagsG1)	Repherion#5-2	GUILD_FLAG
-gefg_cas01,22,156,5	duplicate(InsideFlagsG1)	Repherion#6	GUILD_FLAG
-gefg_cas01,68,185,3	duplicate(InsideFlagsG1)	Repherion#7	GUILD_FLAG
-gefg_cas01,17,171,5	duplicate(InsideFlagsG1)	Repherion#8	GUILD_FLAG
-gefg_cas01,59,16,4	duplicate(InsideFlagsG1)	Repherion#9	GUILD_FLAG
-gefg_cas01,64,16,4	duplicate(InsideFlagsG1)	Repherion#10	GUILD_FLAG
+gefg_cas01,28,157,4	duplicate(InsideFlagsG1)	Leprion#5-2	GUILD_FLAG
+gefg_cas01,22,156,5	duplicate(InsideFlagsG1)	Leprion#6	GUILD_FLAG
+gefg_cas01,68,185,3	duplicate(InsideFlagsG1)	Leprion#7	GUILD_FLAG
+gefg_cas01,17,171,5	duplicate(InsideFlagsG1)	Leprion#8	GUILD_FLAG
+gefg_cas01,59,16,4	duplicate(InsideFlagsG1)	Leprion#9	GUILD_FLAG
+gefg_cas01,64,16,4	duplicate(InsideFlagsG1)	Leprion#10	GUILD_FLAG
 
 // Guild Flag (Town)
 //============================================================
-geffen,109,123,2	duplicate(InsideFlagsG1)	Repherion#11	GUILD_FLAG
+geffen,109,123,2	duplicate(InsideFlagsG1)	Leprion#11	GUILD_FLAG
 
 // Kafra Employee
 //============================================================
@@ -123,7 +123,7 @@ gefg_cas01,154,112,0	duplicate(Gld_Trea_Spawn)	Treasure#gefg_cas01	-1
 
 // AGIT Manager
 //============================================================
-gefg_cas01,198,182,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas01	-1
+//gefg_cas01,198,182,0	duplicate(Gld_Agit_Manager)	Agit#gefg_cas01	-1
 
 // Guardians
 //============================================================

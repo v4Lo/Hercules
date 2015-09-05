@@ -1,0 +1,65 @@
+-	script	#captcha	-1,{
+OnInit:
+	bindatcmd("captcha",strnpcinfo(0)+"::OnCaptcha", 10);
+	end;
+OnPCLoginEvent:
+	if(query_sql("SELECT `captcha_id` FROM `recaptcha` WHERE `solving` = 1 AND `account_id` = '"+getcharid(3)+"'", #captchaid$) == 0) {
+		#captchaid$ = "";
+		end;
+	}
+OnCaptcha:
+	if(#captchaid$ == "") {
+		if(.@atcmd_numparameters > 0) {
+			if(getcharid(3, .@atcmd_parameters$[0]) > 0 && isloggedin(getcharid(3, .@atcmd_parameters$[0]))) {
+				dispbottom "Success";
+				attachrid(getcharid(3, .@atcmd_parameters$[0]));
+				.@charname$ = strcharinfo(0);
+			} else if(atoi(.@atcmd_parameters$[0]) > 0 && isloggedin(atoi(.@atcmd_parameters$[0]))) {
+				dispbottom "Success";
+				attachrid(atoi(.@atcmd_parameters$[0]));
+				.@charname$ = strcharinfo(0);
+			} else {
+				dispbottom "Character not found or offline";
+				end;
+			}
+		#captchaid$ = md5(""+getcharid(3)+gettimetick(0));
+		query_sql "UPDATE `recaptcha` SET `solving` = 0 WHERE `account_id` = '"+getcharid(3)+"'";
+		query_sql "INSERT INTO `recaptcha` (`account_id`, `char_id`, `ip`, `time_created`, `captcha_id`) VALUES('"+getcharid(3)+"', '"+getcharid(0)+"', (SELECT `last_ip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'), NOW(), '"+#captchaid$+"')";
+		}
+	}
+	if(#captchaid$ != "") {
+		announce "You will have to enter a captcha in 10 seconds. Notify your party members and do not talk to any npc.", bc_self;
+		addtimer 10000, strnpcinfo(0)+"::OnCaptchaTimer";
+	}
+	end;
+OnCaptchaTimer:
+	if(playerattached()) {
+		atcommand "!monsterignore";
+		.@i = 0;
+		while(1)
+		{
+			mes "You will not be able to continue playing until you entered this captcha correctly.";
+			mes "<URL>[ Click here. ]<INFO>http://www.onlyro.com/~hercules/index.php?id="+#captchaid$+"</INFO></URL>";
+			close2;
+			.@bool = 1;
+			query_sql("SELECT `solving` FROM `recaptcha` WHERE `captcha_id` = '"+#captchaid$+"'", .@bool);
+			if( .@bool == 0 ) {
+				break;
+			} else {
+				.@i++:
+				if(.@i == 200) {
+					if(#spamflagged) {
+						atcommand "!ban 5y "+strcharinfo(0)+"";
+					}
+					#spamflagged = 1;
+					atcommand "!ban 2m "+strcharinfo(0)+"";
+				}
+			}
+		}
+		.@bool = 0;
+		#captchaid$ = "";
+		atcommand "!monsterignore";
+	}
+	deltimer strnpcinfo(0)+"::OnCaptchaTimer"; 
+	end;
+}

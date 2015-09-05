@@ -742,7 +742,7 @@ typedef enum sc_type {
 	SC_MTF_MSP,
 	SC_MTF_PUMPKIN,
 	SC_MTF_HITFLEE,
-
+	SC_POWERUP,
 	SC_MAX, //Automatically updated max, used in for's to check we are within bounds.
 } sc_type;
 
@@ -815,7 +815,7 @@ enum si_type {
 	SI_PROVIDENCE                            = 61,
 	SI_DEFENDER                              = 62,
 	//SI_MAGICROD                            = 63,
-	//SI_WEAPONPROPERTY                      = 64,
+	SI_WEAPONPROPERTY                      = 64,
 	SI_AUTOSPELL                             = 65,
 	//SI_SPECIALZONE                         = 66,
 	//SI_MASK                                = 67,
@@ -1850,9 +1850,9 @@ struct status_change {
 
 
 //Define for standard HP damage attacks.
-#define status_fix_damage(src, target, hp, walkdelay) (status->damage((src), (target), (hp), 0, (walkdelay), 0))
+#define status_fix_damage(src, target, hp, walkdelay) (status->damage((src), (target), (hp), 0, (walkdelay), 0, (skill_id)))
 //Define for standard HP/SP damage triggers.
-#define status_zap(bl, hp, sp) (status->damage(NULL, (bl), (hp), (sp), 0, 1))
+#define status_zap(bl, hp, sp) (status->damage(NULL, (bl), (hp), (sp), 0, 1, (skill_id)))
 //Easier handling of status->percent_change
 #define status_percent_heal(bl, hp_rate, sp_rate) (status->percent_change(NULL, (bl), -(hp_rate), -(sp_rate), 0))
 #define status_percent_damage(src, target, hp_rate, sp_rate, kill) (status->percent_change((src), (target), (hp_rate), (sp_rate), (kill)?1:2))
@@ -1975,7 +1975,7 @@ struct status_interface {
 	unsigned int (*sc2scb_flag) (sc_type sc);
 	int (*type2relevant_bl_types) (int type);
 	int (*get_sc_type) (sc_type idx);
-	int (*damage) (struct block_list *src,struct block_list *target,int64 hp,int64 sp, int walkdelay, int flag);
+	int (*damage) (struct block_list *src,struct block_list *target,int64 hp,int64 sp, int walkdelay, int flag, int skill_id);
 	//Define for standard HP/SP skill-related cost triggers (mobs require no HP/SP to use skills)
 	int (*charge) (struct block_list* bl, int64 hp, int64 sp);
 	int (*percent_change) (struct block_list *src,struct block_list *target,signed char hp_rate, signed char sp_rate, int flag);

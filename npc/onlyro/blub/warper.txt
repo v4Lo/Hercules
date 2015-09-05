@@ -1,0 +1,171 @@
+//===== Warper Script ======================================
+//= Warper 2.0
+
+-	script	Warper2	-1,{
+function Go;
+
+// --------------------------------------------------
+//	Main Menu:
+// --------------------------------------------------
+
+mes "[Warper]",".";
+
+cutin "kafra_01",2;
+	menu	"Last Warp ^777777["+lastwarp$+"]^000000 ( 2z )", -,
+			" ~ Towns ( 1z )", Towns, 
+			" ~ Dungeons ( 1z )", Dungeons;
+
+		
+	if (lastwarp$ == "")
+		mes "You haven't warped anywhere yet.";
+	else
+		Go(lastwarp$,lastwarpx,lastwarpy);
+	close2;
+	cutin "",255;
+	end;
+
+// --------------------------------------------------
+//	Town Menu:
+// --------------------------------------------------
+Towns:
+
+menu	"Prontera",T1, "Alberta",T2, "Aldebaran",T3, "Amatsu",T4, "Ayothaya",T5,
+		"Comodo",T6, "Einbech",T7,	"Einbroch",T8, "Geffen",T9, "Gonryun",T10, 
+		"Hugel",T11, "Izlude",T12, "Lighthalzen",T13, "Louyang",T14, "Lutie",T15,
+		"Manuk",T16, "Midgarts Expedition Camp",T17, "Morroc",T18, "Moscovia",T19, 
+		//"Nameless Island",T20, 
+		"Niflheim",T21, "Payon",T22, "Rachel",T23, "Splendide",T24, 
+		"Thor Camp",T25, "Umbala",T26, "Veins",T27, "Yuno",T28;
+
+T1: Go("prontera",155,183);
+T2: Go("alberta",28,234);
+T3: Go("aldebaran",140,131);
+T4: Go("amatsu",198,84);
+T5: Go("ayothaya",208,166);
+T6: Go("comodo",209,143);
+T7: Go("einbech",63,35);
+T8: Go("einbroch",64,200);
+T9: Go("geffen",119,59);
+T10: Go("gonryun",160,120);
+T11: Go("hugel",96,145);
+T12: Go("izlude",128,114);
+T13: Go("lighthalzen",158,92);
+T14: Go("louyang",217,100);
+T15: Go("xmas",147,134);
+T16: Go("manuk",282,138);
+T17: Go("mid_camp",210,288);
+T18: Go("morocc",156,93);
+T19: Go("moscovia",223,184);
+//T20: Go("nameless_n",256,215);
+T21: Go("niflheim",202,174);
+T22: Go("payon",179,100);
+T23: Go("rachel",130,110);
+T24: Go("splendide",201,147);
+T25: Go("thor_camp",246,68);
+T26: Go("umbala",97,153);
+T27: Go("veins",216,123);
+T28: Go("yuno",157,51);		
+
+// --------------------------------------------------
+//	Dungeon Menu:
+// --------------------------------------------------
+Dungeons:
+
+menu	"Abyss Lakes",D1, "Amatsu Dungeon",D2, "Anthell",D3,
+		"Ayothaya Dungeon",D4, 
+		// "Beach Dungeon",D5,
+		 "Bio Labs",D6,
+		"Byalan Dungeon",D8,
+		"Coal Mines",D10, "Culvert",D11, "Cursed Abbey",D12, 
+		//"Dewata Dungeon",D13,
+		"Einbroch Dungeon",D14, 
+		//"Gefenia",D15,
+		//"Geffen Dungeon",D16,
+		"Glast Heim Castle",D50, "Glast Heim Chivalry",D51, "Glast Heim Church",D52, "Glast Heim Staircase",D53, 
+		//"Gonryun Dungeon",D18, 
+		"Hidden Dungeon",D19,
+		"Ice Dungeon",D20, "Juperos",D21, "Kiel Dungeon",D22, 
+		//"Louyang Dungeon",D23,
+		"Magma Dungeon",D24, 
+		//"Malangdo Dungeon",D25, 
+		"Moscovia Dungeon",D26,
+		//"Odin Temple",D28, 
+		"Orc Dungeon",D29,
+		"Payon Dungeon",D30, "Pyramids",D31, "Rachel Sanctuary",D32,
+		// "Scaraba Hole",D33,
+		"Sphinx",D34, "Sunken Ship",D35, "Thanatos Tower",D36,
+		"Thor Volcano",D37, "Toy Factory",D38
+		//, "Turtle Dungeon",D39, "Umbala Dungeon",D40
+		;
+		next;
+
+D1: Go("hu_fild05",177,211);
+D2: Go("ama_in02",120,180);
+D3: Go("cmd_fild08",330,355);
+D4: Go("ayo_fild02",279,150);
+// beach dun direkt in comodo
+D6: Go("lhz_in01",19,129);
+D8: Go("izlu2dun",108,88);
+//D9: Go("c_tower1",199,159); direkt in alde
+D10: Go("mjolnir_02",79,363);
+D11: Go("prt_fild05",274,208);
+D12: Go("nameless_n",160,184);
+D14: Go("einbech",138,249);
+//D15: Go("gefenia01",40,103); direkt in geffen
+D16: Go("gef_tower",153,31);
+//D18: Go("gon_dun01",153,53); direkt in gon
+D19: Go("prt_fild01",136,369);
+D20: Go("ra_fild01",233,327);
+D21: Go("yuno_fild07",212,175);
+D22: Go("yuno_fild08",74,174);
+//D23: Go("lou_dun01",218,196); direkt in louyang
+D24: Go("yuno_fild03",34,139);
+D26: Go("mosk_fild02",190,254);
+//D28: Go("odin_tem01",298,167); schiff
+D29: Go("gef_fild10",65,335);
+D30: Go("pay_arche",39,131);
+D31: Go("moc_ruins",60,161);
+D32: Go("ra_temple",119,153);
+D34: Go("moc_fild19",108,99);
+D35: Go("alb2trea",85,107);
+D36: Go("hu_fild01",140,158);
+D37: Go("ve_fild03",168,235);
+D38: Go("xmas",143,311);
+//D39: Go("tur_dun01",154,49); schiff
+//D40: Go("um_dun01",42,31); direkt in umbala
+D50: Go("glast_01",200,294);
+D51: Go("glast_01",74,193);
+D52: Go("glast_01",200,134);
+D53: Go("glast_01",54,108);
+
+// --------------------------------------------------
+//	Functions:
+// --------------------------------------------------	
+function Go {
+	if(Zeny < .Towns) {
+		mes "^FF0000Not enough Zeny^000000";	
+		close2;
+		cutin "",255;
+		end;
+	}
+	
+	Zeny -= 1;
+	warp getarg(0),getarg(1,0),getarg(2,0);
+	getmapxy(lastwarp$,lastwarpx,lastwarpy,0);
+	end;
+}
+
+OnInit:
+	set .LastWarp,1;
+	set .Towns,1;
+	set .Dungeons,1;
+	end;
+}
+// --------------------------------------------------
+//	Duplicates:
+// --------------------------------------------------
+prontera,161,192,4	duplicate(Warper2)	Warper#prt	4_F_KAFRA1
+
+
+
+

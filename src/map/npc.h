@@ -77,7 +77,7 @@ struct npc_data {
 		struct {
 			struct script_code *script;
 			short xs,ys; // OnTouch area radius
-			int guild_id;
+			int guild_id, bg_id;
 			int timer,timerid,timeramount,rid;
 			int64 timertick;
 			struct npc_timerevent_list *timer_event;
@@ -173,6 +173,7 @@ struct npc_interface {
 	int (*final) (void);
 	/* */
 	int (*get_new_npc_id) (void);
+	int (*get_new_fake_npc_id) (void);
 	struct view_data* (*get_viewdata) (int class_);
 	int (*isnear_sub) (struct block_list *bl, va_list args);
 	bool (*isnear) (struct block_list *bl);

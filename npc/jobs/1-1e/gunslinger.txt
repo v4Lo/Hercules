@@ -181,11 +181,18 @@ que_ng,152,167,3	script	Master Miller	4_M_HUOLDARMY,{
 			callfunc "Job_Change",Job_Gunslinger;
 			GUNS_Q = 6;
 			completequest 6024;
-			if (rand(1,2) == 1) {
-				getitem 13100,1; // Six_Shooter
-			} else {
-				getitem 13150,1; // Branch
-			}
+			
+			getitem 5583, 1;
+			getitem 2456, 1;
+			getitem 15009, 1;
+			getitem 2560, 1;
+			getitem 13112, 1; //waffe
+			getitem 13150,1; // Branch
+			//if (rand(1,2) == 1) {
+			//	getitem 13100,1; // Six_Shooter
+			//} else {
+				
+			//}
 			close;
 		}
 	} else {

@@ -1,0 +1,154 @@
+-	shop	refershop	-1,512:-1
+
+-	script	referafriend	-1,{
+	
+	mes "[Refer-a-Friend]";
+	mes "Hi! I am here to help you out with your friend referrals. What would you like to do?";
+	next;
+	switch(select("Info about Refer-a-Friend:Trade in Points")) {
+	case 1:
+		mes "[Refer-a-Friend]";
+		mes "Refer a friend helps you spread the word about OnlyRO to all of your friends.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "Simply access the Control Panel and send them your personal referral link.";
+		mes "If they register a master account via this link their account will be connected to yours.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "When they reach level 90 with any character you can validate the referral in the control panel. All you have to do then is pay me a visit and collect your rewards!";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "There's just one little rule. No account sharing during this validation period or the validation will fail.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "Please understand that we cannot distinguish between people from the same household. These accounts will automatically be flagged as account sharers.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "That's it. Super easy, right?";
+		mes "Should you have any problems or questions the OnlyRO Team will happily assist you.";
+		close;
+		break;
+	case 2:
+		.@referrals[0] = 0;
+		.@cp_account_id[0] = -1;
+		query_sql("SELECT l.account_id, l.referrals FROM cp_login_login ll, cp_login l WHERE ll.account_id="+getcharid(3)+" AND ll.cp_account_id=l.account_id LIMIT 1", .@cp_account_id, .@referrals);
+		if(.@cp_account_id[0] == -1) {
+			mes "[Refer-a-Friend]";
+			mes "Failed to find your Masteraccount for ID"+getcharid(3)+".";
+			mes "Please notify the OnlyRO Staff.";
+			close;
+		}
+		mes "[Refer-a-Friend]";
+		mes "You validated ^0000FF"+.@referrals+"^000000 referrals.";
+		mes "Let me see if there's a new reward for you..";
+		next;
+		.@cp_account_id = .@cp_account_id[0];
+		.@referrals = .@referrals[0];
+		.@currentRewardItem = 0;
+		.@currentRewardAmount = 0;
+		.@i = 0;
+		if(.@referrals <= 0) {
+			mes "[Refer-a-Friend]";
+			mes "I can't seem to find any new rewards.";
+			mes "If you referred someone and he/she has met the validation requirement you still have to validate the referral via control panel manually.";
+			close;
+		}
+		for(.@redeemed = getd("$onlyro_referafriend_"+.@cp_account_id); .@redeemed <= .@referrals; .@redeemed++) {
+			.@checkRedeemed = ((.@redeemed-1) % 25) + 1;
+			if(.@checkRedeemed == 1) {
+					.@currentRewardItem = 5594; // headgear
+					.@currentRewardAmount = 1;
+			} else if(.@checkRedeemed == 2) {
+					.@currentRewardItem = 14533; // field manual
+					.@currentRewardAmount = 2;
+			} else if(.@checkRedeemed == 3) {
+					.@currentRewardItem = 12103; // 1 bb
+					.@currentRewardAmount = 1;
+			} else if(.@checkRedeemed == 4) {
+					.@currentRewardItem = 14533; // field manual
+					.@currentRewardAmount = 2;
+			} else if(.@checkRedeemed == 5) {
+					.@currentRewardAmount = 1; // choose 1 of 3 headgears
+					switch(select("Choose "+.@currentRewardAmount+" "+getitemname(5184)+":Choose "+.@currentRewardAmount+" "+getitemname(5139)+":Choose "+.@currentRewardAmount+" "+getitemname(5140)+":Cancel")) {
+						case 1:
+							.@currentRewardItem = 5184;
+						break;
+						case 2:
+							.@currentRewardItem = 5139;
+						break;
+						case 3:
+							.@currentRewardItem = 5140;
+						break;
+						case 4:
+							mes "[Refer-a-Friend]";
+							mes "See you soon.";
+							close;
+						break;
+					}
+			} else if(.@checkRedeemed == 7) {
+					.@currentRewardItem = 616; // 1 oca
+					.@currentRewardAmount = 1;
+			} else if(.@checkRedeemed == 10) {
+					.@currentRewardItem = 13995; // 10x10 speed pots
+					.@currentRewardAmount = 10;
+			} else if(.@checkRedeemed == 12) {
+					.@currentRewardItem = 616; // 1 oca
+					.@currentRewardAmount = 1;
+			} else if(.@checkRedeemed == 15) {
+					.@currentRewardItem = 14234; // 40*25 dbs 
+					.@currentRewardAmount = 40;
+			} else if(.@checkRedeemed == 17) {
+					.@currentRewardItem = 616; // 1 oca
+					.@currentRewardAmount = 1;
+			} else if(.@checkRedeemed == 20) { // 3 bbs
+					.@currentRewardItem = 12103;
+					.@currentRewardAmount = 3;
+			} else if(.@checkRedeemed == 25) { // 1 mca
+					.@currentRewardItem = 12246;
+					.@currentRewardAmount = 1;
+			}
+			if(.@currentRewardItem > 0) {
+				mes "[Refer-a-Friend]";
+				mes "Here's your reward for referring ^0000FF"+.@redeemed+"^000000 people.";
+				next;
+				switch(select("Collect "+.@currentRewardAmount+" "+getitemname(.@currentRewardItem)+":Cancel")) {
+					case 1:
+						if (!checkweight(.@currentRewardItem, .@currentRewardAmount)) {
+							mes "[Refer-a-Friend]";
+							mes "You do not have enough free weight.";
+							close;
+						}
+						if(getd("$onlyro_referafriend_"+.@cp_account_id) < (.@redeemed + 1)) {
+							emotion e_no1;
+							setd("$onlyro_referafriend_"+.@cp_account_id, (.@redeemed + 1));
+							getitem .@currentRewardItem, .@currentRewardAmount;
+						} else {
+							mes "[Refer-a-Friend]";
+							mes "You already claimed this item with a different account.";
+							close;
+						}
+						break;
+					case 2:
+						mes "[Refer-a-Friend]";
+						mes "See you soon.";
+						close;
+						break;
+				}
+			}
+			.@currentRewardItem = 0;
+			.@currentRewardAmount = 0;
+		}
+		emotion e_sry;
+		mes "[Refer-a-Friend]";
+		mes "I can't seem to find any more new rewards for you.";
+		mes "Please come by again when you have validated new referrals.";
+		close;
+		break;
+		
+	}
+	close;
+	end;
+}
+
+prontera,123,87,7	duplicate(referafriend)	Refer-a-Friend#ref_prt	1_F_MARIA
+prt_in,127,29,4	duplicate(referafriend)	Refer-a-Friend#ref_test	1_F_MARIA

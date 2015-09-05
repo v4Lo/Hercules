@@ -97,3 +97,14 @@ pvp_2vs2	mapflag	pvp
 turbo_e_4	mapflag	pvp
 turbo_e_8	mapflag	pvp
 turbo_e_16	mapflag	pvp
+
+//onlyro pvp
+2009rwc_03	mapflag	pvp
+2009rwc_04	mapflag	pvp
+guild_vs2	mapflag	pvp
+guild_vs3	mapflag	pvp
+guild_vs1	mapflag	pvp
+payon_mem	mapflag	pvp
+pvp_y_1-2	mapflag	pvp
+
+

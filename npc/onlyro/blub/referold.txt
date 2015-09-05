@@ -1,0 +1,98 @@
+-	shop	refershop	-1,512:-1
+
+-	script	referafriend	-1,{
+	
+	mes "[Refer-a-Friend]";
+	mes "Hi! I am here to help you out with your friend referrals. What would you like to do?";
+	next;
+	switch(select("Info about Refer-a-Friend:Trade in Points")) {
+	case 1:
+		mes "[Refer-a-Friend]";
+		mes "Refer a friend helps you spread the word about OnlyRO to all of your friends.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "Simply access the Control Panel and send them your personal referral link.";
+		mes "If they register a master account via this link their account will be connected to yours.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "When they reach level 80 with any character you can validate the referral in the control panel. All you have to do then is pay me a visit and I will exchange those points for awesome rewards!";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "There's just one little rule. No account sharing during this validation period or the validation will fail.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "Please understand that we cannot distinguish between people from the same household. These accounts will automatically be flagged as account sharers.";
+		next;
+		mes "[Refer-a-Friend]";
+		mes "That's it. Super easy, right?";
+		mes "Should you have any problems or questions the OnlyRO Team will happily assist you.";
+		close;
+	case 2:
+		.@referrals[0] = 0;
+		.@cp_account_id[0] = -1;
+		query_sql("SELECT l.account_id, l.referrals FROM cp_login_login ll, cp_login l WHERE ll.account_id="+getcharid(3)+" AND ll.cp_account_id=l.account_id LIMIT 1", .@cp_account_id, .@referrals);
+		if(.@cp_account_id[0] == -1) {
+			mes "[Refer-a-Friend]";
+			mes "Failed to find your Masteraccount for ID"+getcharid(3)+".";
+			mes "Please notify the OnlyRO Staff.";
+			close;
+		}
+		mes "[Refer-a-Friend]";
+		mes "Please have a look at my wares.";
+		next;
+		message strcharinfo(0),"This shop only accepts referral points.";
+		dispbottom "You have "+.@referrals[0]+" referral points.";
+		dispbottom "Please check your weight before buying.";
+		callshop "refershop",1;
+		npcshopattach "refershop";
+	}
+	end;
+OnBuyItem:
+	for(set .@i,0; .@i < getarraysize( @bought_nameid ); set .@i, .@i+1) {
+		for(set .@j,0; .@j < getarraysize( .Shop1MMH ); set .@j, .@j+1) {
+			if(.Shop1MMH[.@j] == @bought_nameid[.@i]) {
+				set @itemcostmm, (.Shop1MMH[.@j+1] * @bought_quantity[.@i]);
+				set @totalcostmm, @totalcostmm + @itemcostmm;
+				break;
+			}
+		}
+	}
+	query_sql("SELECT l.account_id, l.referrals FROM cp_login_login ll, cp_login l WHERE ll.account_id="+getcharid(3)+" AND ll.cp_account_id=l.account_id LIMIT 1", .@cp_account_id, .@referrals);
+	if (@totalcostmm > .@referrals[0]) {
+		dispbottom "You don't have enough referral points.";
+	} else {
+		.@temp = .@referrals[0];
+		.@i = 0;
+		query_sql("UPDATE cp_login SET referrals=referrals-"+@totalcostmm+" WHERE account_id="+.@cp_account_id[0]);
+		//query_sql("SELECT referrals FROM cp_login WHERE account_id="+.@cp_account_id+" LIMIT 1", .@referrals);
+		//if(.@referrals[0] == (.@temp-@totalcostmm)) {
+		while (.@i < getarraysize(@bought_nameid)) {
+			getitem @bought_nameid[.@i], @bought_quantity[.@i];
+			dispbottom "Purchased "+@bought_quantity[.@i]+"x "+getitemname(@bought_nameid[.@i])+".";
+			set .@i, .@i+1;
+		}
+		// } else {
+			// dispbottom "Hack attempt. Fuck off.";
+		// }
+	}
+	set @totalcostmm, 0;
+	deletearray @bought_nameid[0], 128;
+	deletearray @bought_quantity[0], 128;
+	end;
+
+OnInit:
+	if(.shopinit == 0) {
+		setarray .Shop1MMH[0],522,1;
+		//2351,1000,1000,2349,1000,2347,1000,
+
+		for(set .@j,0; .@j < getarraysize( .Shop1MMH ); set .@j, .@j+2) {
+			npcshopdelitem "refershop",512;
+			npcshopadditem "refershop", .Shop1MMH[.@j], .Shop1MMH[.@j+1];
+		}
+		.shopinit = 1;
+	}
+	end;
+}
+
+//prontera,123,87,7	duplicate(referafriend)	Refer-a-Friend#ref_prt	1_F_MARIA
+prt_in,127,29,4	duplicate(referafriend)	Refer-a-Friend#ref_test	1_F_MARIA

@@ -228,7 +228,23 @@ pay_arche,55,123,0	script	Kafra Employee::kaf_payon3	4_F_KAFRA3,{
 
 // Prontera
 //============================================================
-prontera,152,326,3	script	Kafra Employee::kaf_prontera	4_F_KAFRA6,{
+prontera,158,192,3	script	Kafra Employee::kaf_prontera	4_F_KAFRA6,{
+	cutin "kafra_06",2;
+	callfunc "F_KafSet";
+	mes "[Kafra Employee]";
+	mes "Welcome to the";
+	mes "Kafra Corporation~";
+	mes "The Kafra Services are";
+	mes "always here to support";
+	mes "you. So how can I be";
+	mes "of service today?";
+	callfunc "F_Kafra",5,0,0,40,800;
+	savepoint "prontera",159,187;
+	callfunc "F_KafEnd",0,1,"in the city of Prontera";
+}
+
+
+prontera,152,326,3	script	Kafra Employee::kaf_pronterav	4_F_KAFRA6,{
 	cutin "kafra_06",2;
 	callfunc "F_KafSet";
 	mes "[Kafra Employee]";
@@ -294,7 +310,7 @@ prontera,146,89,6	script	Kafra Employee::kaf_prontera5	4_F_KAFRA1,{
 	mes "are always on your side.";
 	mes "How may I assist you?";
 	callfunc "F_Kafra",5,0,0,40,800;
-	savepoint "prontera",116,73;
+	savepoint "prontera",140,82;
 	callfunc "F_KafEnd",0,1,"in the city of Prontera";
 }
 
@@ -309,7 +325,7 @@ yuno,152,187,4	script	Kafra Employee::kaf_yuno	4_F_KAFRA8,{
 	mes "you with convenient services.";
 	mes "How may I be of assistance?";
 	callfunc "F_Kafra",5,0,0,40,800;
-	savepoint "yuno",158,125;
+	savepoint "yuno",158,191;
 	callfunc "F_KafEnd",0,1,"in the city of Juno";
 }
 
@@ -337,6 +353,21 @@ yuno,277,221,4	script	Kafra Employee::kaf_yuno3	4_F_KAFRA9,{
 	callfunc "F_Kafra",5,0,0,40,800;
 	savepoint "yuno",274,229;
 	callfunc "F_KafEnd",0,1,"in the city of Juno";
+}
+
+
+// Lutie
+xmas,140,137,4	script	Kafra Employee::lutie	4_F_KAFRA9,{
+	cutin "kafra_09",2;
+	callfunc "F_KafSet";
+	mes "[Kafra Employee]";
+	mes "The Kafra Corporation";
+	mes "is always working to provide";
+	mes "you with convenient services.";
+	mes "How may I be of assistance?";
+	callfunc "F_Kafra",5,0,0,40,800;
+	savepoint "xmas",147,134;
+	callfunc "F_KafEnd",0,1,"in the village of Lutie";
 }
 
 // Alberta
@@ -425,7 +456,7 @@ moscovia,223,191,3	script	Kafra Employee::kaf_mosk	4_F_KAFRA4,{
 	cutin "kafra_04",2;
 	callfunc "F_Kafra",0,3,0,80,700;
 	savepoint "moscovia",221,194;;
-	callfunc "F_KafEnd",0,3,"in the city of Moscovia";
+	callfunc "F_KafEnd",0,0,"in the city of Moscovia";
 }
 
 // Amatsu
@@ -438,7 +469,7 @@ amatsu,102,149,4	script	Kafra Employee::kaf_amatsu	4_F_KAFRA2,{
 	mes "Kafra's Employees are";
 	mes "always ready to serve you.";
 	mes "How can I help you today?";
-	callfunc "F_Kafra",5,3,1,50,700;
+	callfunc "F_Kafra",5,0,1,50,700;
 	savepoint "amatsu",116,94;
 	callfunc "F_KafEnd",0,1,"in the city of Amatsu";
 }
@@ -453,7 +484,7 @@ ayothaya,212,169,5	script	Kafra Employee::kaf_ayothaya	4_F_KAFRA2,{
 	mes "Kafra's Employees are";
 	mes "always ready to serve you.";
 	mes "How can I help you today?";
-	callfunc "F_Kafra",5,3,1,50,700;
+	callfunc "F_Kafra",5,0,1,50,700;
 	savepoint "ayothaya",149,69;
 	callfunc "F_KafEnd",0,1,"in the city of Ayotaya";
 }
@@ -470,6 +501,21 @@ einbech,181,132,5	script	Kafra Employee#ein3::kaf_einbech	4_F_KAFRA8,{
 	callfunc "F_Kafra",5,4,1,40,850;
 	savepoint "einbech",182,124;
 	callfunc "F_KafEnd",0,1,"in the town of Einbech";
+}
+
+// Manuk
+//============================================================
+manuk,291,147,5	script	Kafra Employee#kaf_manuk	4_F_KAFRA8,{
+	cutin "kafra_08",2;
+	mes "[Kafra Employee]";
+	mes "Welcome to the";
+	mes "Kafra Corporation.";
+	mes "Kafra's Employees are";
+	mes "always ready to serve you.";
+	mes "How can I help you today?";
+	callfunc "F_Kafra",5,4,1,50,800;
+	savepoint "manuk",282,138;
+	callfunc "F_KafEnd",0,1,"in the city of Manuk";
 }
 
 // Einbroch
@@ -510,7 +556,7 @@ gonryun,159,122,4	script	Kafra Employee::kaf_gonryun	4_F_KAFRA2,{
 	mes "Kafra's Employees are";
 	mes "always ready to serve you.";
 	mes "How can I help you today?";
-	callfunc "F_Kafra",5,3,1,50,700;
+	callfunc "F_Kafra",5,0,1,50,700;
 	savepoint "gonryun",160,62;
 	callfunc "F_KafEnd",0,1,"in the city of Kunlun";
 }
@@ -564,9 +610,24 @@ louyang,210,104,5	script	Kafra Employee::kaf_louyang	4_F_KAFRA1,{
 	mes "Kafra's Employees are";
 	mes "always ready to serve you.";
 	mes "How can I help you today?";
-	callfunc "F_Kafra",5,3,1,50,700;
+	callfunc "F_Kafra",5,0,1,50,700;
 	savepoint "louyang",217,92;
 	callfunc "F_KafEnd",0,1,"in the city of Louyang";
+}
+
+// Splendide
+//============================================================
+splendide,202,153,5	script	Kafra Employee::kaf_splendide	4_F_KAFRA1,{
+	cutin "kafra_01",2;
+	mes "[Kafra Employee]";
+	mes "Welcome to the";
+	mes "Kafra Corporation.";
+	mes "Kafra's Employees are";
+	mes "always ready to serve you.";
+	mes "How can I help you today?";
+	callfunc "F_Kafra",5,0,1,50,700;
+	savepoint "splendide",207,148;
+	callfunc "F_KafEnd",0,1,"in the city of Splendide";
 }
 
 // Umbala
@@ -583,6 +644,22 @@ umbala,87,160,4	script	Kafra Employee::kaf_umbala	4_F_KAFRA7,{
 	callfunc "F_Kafra",5,0,1,80,0;
 	savepoint "umbala",126,131;
 	callfunc "F_KafEnd",0,1,"in the city of Umbala";
+}
+
+// Midgard Expedition Camp
+//============================================================
+mid_camp,221,241,4	script	Kafra Employee::kaf_mid	4_F_KAFRA7,{
+	cutin "kafra_07",2;
+	callfunc "F_KafSet";
+	mes "[Kafra Employee]";
+	mes "Welcome to the";
+	mes "Kafra Corporation.";
+	mes "You know that our";
+	mes "service is always";
+	mes "on your side~";
+	callfunc "F_Kafra",5,0,1,80,0;
+	savepoint "mid_camp",233,242;
+	callfunc "F_KafEnd",0,1,"in the Midgard Expedition Camp";
 }
 
 // Niflheim
@@ -684,4 +761,17 @@ alb2trea,59,69,5	script	Kafra Employee::kaf_alb2trea	4_F_KAFRA1,{
 	callfunc "F_Kafra",5,2,1,50,0;
 	savepoint "alb2trea",92,64;
 	callfunc "F_KafEnd",0,1,0,"at Sunken Ship";
+}
+
+bat_room,161,152,5	script	Kafra Employee::bat_room	4_F_KAFRA1,{
+	cutin "kafra_01",2;
+	mes "[Kafra Employee]";
+	mes "Welcome to the";
+	mes "Kafra Corporation.";
+	mes "The Kafra services";
+	mes "are always on your side.";
+	mes "How may I assist you?";
+	callfunc "F_Kafra",5,0,0,30,750;
+	savepoint "bat_room",154,150;
+	callfunc "F_KafEnd",0,1,0,"in the Battleground Room";
 }

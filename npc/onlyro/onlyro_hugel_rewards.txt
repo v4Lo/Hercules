@@ -1,0 +1,96 @@
+//===== eAthena Script =======================================
+//= Custom-Currency Multi-Shop
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.2
+//===== Description: =========================================
+//= Allows for better organization in a single shop call.
+//= Note that there are two configuration areas.
+//============================================================
+
+
+-	shop	MSHOP1	-1,512:-1
+
+-	script	mmedaltrader	-1,{
+	if (!checkweight(909,550)) {
+		mes "["+strnpcinfo(1)+"]";
+		mes "Hold on a second...";
+		mes "If you want to exchange";
+		mes "your Prize Medals for items,";
+		mes "you'd better free up more space";
+		mes "in your Inventory first. Why don't you use your Kafra Storage?";
+		close;
+	} else {
+		mes "["+strnpcinfo(1)+"]";
+		mes "Hello, there! Ever wonder";
+		mes "what you could do with all";
+		mes "the Prize Medals you can win";
+		mes "in Monster Race Arena?";
+		next;
+		mes "["+strnpcinfo(1)+"]";
+		mes "You can exchange them";
+		mes "for items, right here and right";
+		mes "now, with me. As always, the";
+		mes "choice is really up to you.";
+		next;
+		mes "["+strnpcinfo(1)+"]";
+		mes "Now, how many Prize Medals";
+		mes "would you like to exchange?";
+		mes "It doesn't take a genius to";
+		mes "figure out that you can get";
+		mes "more valuable items by trading";
+		mes "more Prize Medals at a time.";
+		next;
+
+		message strcharinfo(0),"This shop only accepts "+getitemname(.CurrencyMMH)+".";
+		dispbottom "You have "+countitem(.CurrencyMMH)+" "+getitemname(.CurrencyMMH)+".";
+		dispbottom "Please check your weight before buying.";
+		callshop "MSHOP1",1;
+		npcshopattach "MSHOP1";
+	}
+	end;
+
+OnBuyItem:
+	for(set .@i,0; .@i < getarraysize( @bought_nameid ); set .@i, .@i+1) {
+		for(set .@j,0; .@j < getarraysize( .Shop1MMH ); set .@j, .@j+1) {
+			if(.Shop1MMH[.@j] == @bought_nameid[.@i]) {
+				set @itemcostmm, (.Shop1MMH[.@j+1] * @bought_quantity[.@i]);
+				set @totalcostmm, @totalcostmm + @itemcostmm;
+				break;
+			}
+		}
+	}
+	if (@totalcostmm > countitem(.CurrencyMMH)) {
+		dispbottom "You don't have enough "+getitemname(.CurrencyMMH)+".";
+	} else {
+		set .@i,0;
+		while (.@i < getarraysize(@bought_nameid)) {
+			getitem @bought_nameid[.@i], @bought_quantity[.@i];
+			dispbottom "Purchased "+@bought_quantity[.@i]+"x "+getitemname(@bought_nameid[.@i])+".";
+			set .@i, .@i+1;
+		}
+		delitem .CurrencyMMH, @totalcostmm;
+	}
+	set @totalcostmm, 0;
+	deletearray @bought_nameid[0], 128;
+	deletearray @bought_quantity[0], 128;
+	end;
+
+OnInit:
+	if(.shopinit == 0) {
+		set .CurrencyMMH,7515;
+		setarray .Shop1MMH[0],522,1,526,1,644,8,603,16,12105,25,617,42,12109,59,2319,500,2345,1000,2347,1000,13002,1500,1237,1500,13001,1500,1225,1500,1231,1500,1224,1500,1236,1500,1229,1500,1235,1500,1233,1500,1232,1500,1234,1500,1227,1500,1241,1500,1242,1500,1230,1500,1228,1500,1223,1500,1130,1500,1141,1500,1138,1500,1140,1500,1148,1500,1134,1500,1131,1500,1137,1500,1132,1500,1135,1500,1136,1500,1139,1500,1133,1500,1166,1500,1165,1500,1164,1500,1167,1500,1169,1500,1168,1500,1170,1500,1364,1500,1369,1500,1366,1500,1363,1500,1365,1500,1367,1500,1305,1500,1368,1500,1524,1500,1528,1500,1525,1500,1523,1500,1526,1500,1527,1500,1719,1500,1724,1500,1720,1500,1722,1500,1616,1500,1473,1500,1559,1500,1557,1500,1558,1500,1561,1500,1474,1500,1414,1500,1413,1500,1415,1500,1469,1500,1470,1500,1467,1500,1468,1500,1466,1500,1416,1500,1471,1500,1261,1500,1265,1500,1263,1500,1815,1500,1814,1500,1813,1500,1962,1500,1963,1500,1969,1500,1964,1500,1970,1500,1918,1500,1913,1500;
+		//2351,1000,1000,2349,1000,
+
+		for(set .@j,0; .@j < getarraysize( .Shop1MMH ); set .@j, .@j+2) {
+			npcshopdelitem "MSHOP1",512;
+			npcshopadditem "MSHOP1", .Shop1MMH[.@j], .Shop1MMH[.@j+1];
+		}
+		.shopinit = 1;
+	}
+	end;
+}
+
+ein_in01,85,208,5	duplicate(mmedaltrader)	Ei'felle#repay01	4_M_EINMAN2
+hugel,71,83,4	duplicate(mmedaltrader)	Wayne	4_M_HUMERCHANT

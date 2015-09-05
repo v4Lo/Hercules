@@ -2901,7 +2901,9 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(unit->skillcastcancel, HP_unit_skillcastcancel) },
 	{ HP_POP(unit->dataset, HP_unit_dataset) },
 	{ HP_POP(unit->counttargeted, HP_unit_counttargeted) },
+#if 0
 	{ HP_POP(unit->fixdamage, HP_unit_fixdamage) },
+#endif
 	{ HP_POP(unit->changeviewsize, HP_unit_changeviewsize) },
 	{ HP_POP(unit->remove_map, HP_unit_remove_map) },
 	{ HP_POP(unit->remove_map_pc, HP_unit_remove_map_pc) },

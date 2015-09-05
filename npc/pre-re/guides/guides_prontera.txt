@@ -238,3 +238,5 @@ prontera,29,200,6	duplicate(PrtGuide)	West Gate-Guide	8W_SOLDIER
 prontera,160,29,0	duplicate(PrtGuide)	South Gate-Guide	8W_SOLDIER
 
 prontera,151,330,4	duplicate(PrtGuide)	North Gate-Guide	8W_SOLDIER
+
+//prontera,146,83,4	duplicate(PrtGuide)	Guide#prtguide	8W_SOLDIER
